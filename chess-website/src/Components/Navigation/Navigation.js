@@ -8,8 +8,8 @@ class Navigation extends React.Component {
         <div>
             <nav>
                 <ul>
-                    <li><button>Log In</button></li>
-                    <li><button>Sign Up</button></li>
+                    <li><Link to="/login"><button>Log In</button></Link></li>
+                    <li><Link to="/signup"><button>Sign Up</button></Link></li>
                 </ul>
             </nav>
         </div>
