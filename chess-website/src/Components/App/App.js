@@ -31,13 +31,6 @@ class App extends Component {
               </Route>
         </Routes>
       {/* {<Footer />} */}
-
-      {/* Chessboard display - comment out Routes + uncomment below to see interactive board */}
-      {/* <Chessboard 
-        className="Chessboard"
-        boardWidth={800}
-        boardHeight={800}
-      /> */}
       </div>
     );
   }
