@@ -1,21 +1,11 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
-import { Chessboard } from "react-chessboard";
+import ChessGame from '../ChessGame/ChessGame.js';
+
 
 function App() {
   return (
-    <>
-    <div className="App">
-      <header className="App-header">
-      </header>
-      
-    </div>
-    <Chessboard 
-        className="Chessboard"
-        boardWidth={800}
-        boardHeight={800}
-      />
-    </>
+    <ChessGame />
   );
 }
 
