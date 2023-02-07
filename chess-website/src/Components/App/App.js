@@ -31,32 +31,9 @@ class App extends Component {
               </Route>
         </Routes>
       {/* {<Footer />} */}
-
-      {/* Chessboard display - comment out Routes + uncomment below to see interactive board */}
-      {/* <Chessboard 
-        className="Chessboard"
-        boardWidth={800}
-        boardHeight={800}
-      /> */}
       </div>
     );
   }
 }
 
 export default App;
-
-
-// return (
-//   <>
-//   <div className="App">
-//     <header className="App-header">
-//     </header>
-    
-//   </div>
-//   <Chessboard 
-//       className="Chessboard"
-//       boardWidth={800}
-//       boardHeight={800}
-//     />
-//   </>
-// );
