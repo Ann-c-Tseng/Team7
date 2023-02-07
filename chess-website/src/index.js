@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './Components/App/App.js';
 import reportWebVitals from './reportWebVitals';
+<<<<<<< HEAD
 import {BrowserRouter as Routes} from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,6 +13,15 @@ root.render(
       <App/>
     </React.StrictMode>
   </Routes>
+=======
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+>>>>>>> 82395e7 (Moved routing to App)
 );
 
 // If you want to start measuring performance in your app, pass a function

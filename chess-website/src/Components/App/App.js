@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Route, Routes} from "react-router-dom";
 import './App.css';
+<<<<<<< HEAD
 
 import Navigation from "../Navigation/Navigation";
 import HomePage from "../Pages/HomePage";
@@ -41,6 +42,19 @@ class App extends Component {
       </div>
     );
   }
+=======
+import ChessGame from '../ChessGame/ChessGame.js';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+
+function App() {
+  return (
+   <BrowserRouter> 
+      <Routes>
+        <Route path="/" element={<ChessGame/>}> </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+>>>>>>> 82395e7 (Moved routing to App)
 }
 
 export default App;
