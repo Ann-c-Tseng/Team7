@@ -1,4 +1,4 @@
-.Chess{
+.ChessPage{
     padding: 30px;
     border-radius: 10px;
     display:flex;
@@ -17,7 +17,7 @@
     user-select: none;
 }
 
-.BoardTimer{
+.GameInfo{
     display:flex;
     flex-direction:row;
 }

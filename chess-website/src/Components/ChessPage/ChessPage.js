@@ -12,10 +12,10 @@ class ChessPage extends React.Component{
     }
     render(){
         return (
-            <Box className="Chess">
+            <Box className="ChessPage">
                 <Box className="GameUserContainer">
                     <UserCard className="UserCard" username="Opponent"/>
-                    <Box className="BoardTimer">
+                    <Box className="GameInfo">
                         <aside className="TimerSidePanel">
                             <Timer className="OpponentTimer" time={600000}/>
                             <Timer className="UserTimer" time={600000}/>
@@ -23,11 +23,12 @@ class ChessPage extends React.Component{
                         <Box className="Game">
                             <ChessGame />
                         </Box>
+                        <GameInfo  className="Info"/>
                     </Box>
                     
                     <UserCard className="UserCard" username="Myself"/>
                 </Box>
-                <GameInfo  className="Info"/>
+                
             </Box>
         )
     }
