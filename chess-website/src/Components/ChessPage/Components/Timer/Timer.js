@@ -58,11 +58,17 @@ class Timer extends React.Component{
             }
             return "00:00";
         }
-        const minutes = Math.floor(this.state.time / 60000);
-        const seconds = (Math.floor(this.state.time % 60000) / 1000).toFixed(0);
+        let minutes = Math.floor(this.state.time / 60000);
+        let seconds = (Math.floor(this.state.time % 60000) / 1000).toFixed(0);
 
-        const minutesString = minutes < 10 ? "0" + minutes : minutes;
+        if (seconds == 60){
+            seconds = 0;
+            minutes++;
+        }
+
         const secondsString = seconds < 10 ? "0" + seconds : seconds;
+        const minutesString = minutes < 10 ? "0" + minutes : minutes;
+        
 
         return minutesString + ":" + secondsString;
     }
@@ -70,7 +76,7 @@ class Timer extends React.Component{
     render(){
         return (
             <Box className="Timer">
-                <Typography variant="h5">
+                <Typography variant="h4">
                  {this.getRemainingTime()}</Typography>
             </Box>
         );

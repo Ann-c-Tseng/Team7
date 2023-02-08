@@ -27,7 +27,6 @@ class ChessPage extends React.Component{
                     
                     <UserCard className="UserCard"/>
                 </Box>
-                
                 <GameInfo  className="Info"/>
             </Box>
         )
