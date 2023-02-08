@@ -1,13 +1,14 @@
 import React, {Component} from "react";
 import {Route, Routes} from "react-router-dom";
+import {Link} from "react-router-dom";
 import './App.css';
 
 import Navigation from "../Navigation/Navigation";
 import HomePage from "../Pages/HomePage";
 import LoginForm from "../Forms/LoginForms";
 import SignupForm from "../Forms/SignupForms";
+import Profile from "../Pages/Profile";
 import PageNotFound from "../Pages/PageNotFound";
-// import Footer from "../Footer/Footer";
 import ChessGame from "../ChessGame/ChessGame.js";
 
 class App extends Component {
@@ -19,13 +20,14 @@ class App extends Component {
 
     return(
       <div className="App">
-      {<Navigation />}
-      <h1 style={ChessMasterTitleStyle}>Chess Master</h1>
+      {<Navigation />}                     
+      <h1 style={ChessMasterTitleStyle}><Link to="/" title='Home'>Chess Master</Link></h1>
         <Routes>
               <Route>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/chess" element={<ChessGame />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
