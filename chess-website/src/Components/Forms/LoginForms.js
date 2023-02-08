@@ -8,8 +8,6 @@ function LoginForm() {
         <>
             <div className="card">
                 <form>
-                    <p className="title"><Link to="/" title='Home'>Return to Home</Link></p>
-                    <p className="or"><span></span></p>
                     <div>
                         <h2 className="title"> Login</h2>
                     </div>
