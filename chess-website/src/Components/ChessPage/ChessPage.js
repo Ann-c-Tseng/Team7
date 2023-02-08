@@ -9,12 +9,13 @@ import Box from "@mui/material/Box";
 class ChessPage extends React.Component{
     constructor(props){
         super(props);
-
     }
     render(){
         return (
             <Box className="Chess">
-                <ChessGame className="Game"/>
+                <Box className="Game">
+                    <ChessGame />
+                </Box>
                 <GameInfo  className="Info"/>
                 <Timer className="Timer"/>
                 <UserCard className="UserCard"/>
