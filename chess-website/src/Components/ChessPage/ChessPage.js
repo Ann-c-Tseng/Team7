@@ -1,10 +1,10 @@
 import React from 'react';
-import './ChessPage.css';
 import GameInfo from "./Components/GameInfo/GameInfo.js";
 import Timer from "./Components/Timer/Timer.js";
 import UserCard from "./Components/UserCard/UserCard.js";
 import ChessGame from "./Components/ChessGame/ChessGame.js";
 import Box from "@mui/material/Box";
+import './ChessPage.css';
 
 class ChessPage extends React.Component{
     constructor(props){
@@ -13,8 +13,8 @@ class ChessPage extends React.Component{
     render(){
         return (
             <Box className="Chess">
-                <Box className="GameUserContainter">
-                    <UserCard className="UserCard"/>
+                <Box className="GameUserContainer">
+                    <UserCard className="UserCard" username="Opponent"/>
                     <Box className="BoardTimer">
                         <aside className="TimerSidePanel">
                             <Timer className="OpponentTimer" time={600000}/>
@@ -25,7 +25,7 @@ class ChessPage extends React.Component{
                         </Box>
                     </Box>
                     
-                    <UserCard className="UserCard"/>
+                    <UserCard className="UserCard" username="Myself"/>
                 </Box>
                 <GameInfo  className="Info"/>
             </Box>

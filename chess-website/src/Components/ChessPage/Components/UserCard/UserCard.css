@@ -1,3 +1,22 @@
 .UserCard{
-
+    background-color: #f0d9b5;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    margin: 10px;
+    border: solid #60330e;
+    border-width: 3px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px 1px rgba(0,0,0,0.2);
+}
+.Username{
+    display:flex;
+    padding-top: 9px;
+    padding-left: 10px;
+    padding-right:10px;
+    height:30px;
+}
+.ProfilePicture{
+    border-radius:5px;
 }
