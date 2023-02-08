@@ -5,7 +5,7 @@ import { Chess } from "chess.js";
 class ChessGame extends React.Component{
     constructor(props){
         super(props)
-        this.state = {game: undefined};
+        this.state = {game: null};
         this.onDrop = this.onDrop.bind(this);
     }
     componentDidMount(){
@@ -32,8 +32,8 @@ class ChessGame extends React.Component{
             this.state.game ?
             <Chessboard 
                 className="Chessboard"
-                boardWidth={800}
-                boardHeight={800}
+                boardWidth={675}
+                boardHeight={675}
                 position={this.state.game.fen()}
                 onPieceDrop={this.onDrop}
             /> : null

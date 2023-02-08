@@ -7,9 +7,10 @@ import Navigation from "../Navigation/Navigation";
 import HomePage from "../Pages/HomePage";
 import LoginForm from "../Forms/LoginForms";
 import SignupForm from "../Forms/SignupForms";
-import Profile from "../Pages/Profile";
+import ChessPage from "../ChessPage/ChessPage";
 import PageNotFound from "../Pages/PageNotFound";
-import ChessGame from "../ChessGame/ChessGame.js";
+import Profile from "../Pages/Profile";
+
 
 class App extends Component {
   render() {
@@ -22,13 +23,14 @@ class App extends Component {
       <div className="App">
       {<Navigation />}                     
       <h1 style={ChessMasterTitleStyle}><Link to="/" title='Home'>Chess Master</Link></h1>
+
         <Routes>
               <Route>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
+                <Route path="/chess" element={<ChessPage />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/chess" element={<ChessGame />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
         </Routes>
