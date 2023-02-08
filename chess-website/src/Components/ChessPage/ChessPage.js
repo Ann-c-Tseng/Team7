@@ -13,15 +13,18 @@ class ChessPage extends React.Component{
     render(){
         return (
             <Box className="Chess">
-                <aside className="TimerSidePanel">
-                    <Timer className="OpponentTimer" time={610000}/>
-                    <Timer className="UserTimer" time={610000}/>
-                </aside>
                 <Box className="GameUserContainter">
                     <UserCard className="UserCard"/>
-                    <Box className="Game">
-                        <ChessGame />
+                    <Box className="BoardTimer">
+                        <aside className="TimerSidePanel">
+                            <Timer className="OpponentTimer" time={600000}/>
+                            <Timer className="UserTimer" time={600000}/>
+                        </aside>
+                        <Box className="Game">
+                            <ChessGame />
+                        </Box>
                     </Box>
+                    
                     <UserCard className="UserCard"/>
                 </Box>
                 
