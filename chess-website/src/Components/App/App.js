@@ -20,7 +20,7 @@ class App extends Component {
     return(
       <div className="App">
       {<Navigation />}
-      <h1 style={ChessMasterTitleStyle}>Chess Master</h1>
+      {/*<h1 style={ChessMasterTitleStyle}>Chess Master</h1>*/}
         <Routes>
               <Route>
                 <Route path="/" element={<HomePage />} />
