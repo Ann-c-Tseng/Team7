@@ -36,8 +36,6 @@ class ChessPage extends React.Component{
         }
     }
     componentDidMount(){
-        this.enableTimer("w");
-        this.enableTimer("b");
     }
 
     //If white, create new object and push it in with move info,
@@ -73,6 +71,11 @@ class ChessPage extends React.Component{
         this.setState({game: this.state.game});
         if (moveResult){
             this.addMove(moveResult.san, moveResult.color);
+            //TODO: Clean this up
+            if (this.state.moveNum > 0){
+                this.disableTimer(moveResult.color);
+                this.enableTimer(this.getOpponentColor(moveResult.color));
+            }
             return true;
         }
         else{
@@ -100,12 +103,17 @@ class ChessPage extends React.Component{
     }
 
     disableTimer(color){
-
+        let timer = this.getTimer(color);
+        clearInterval(timer.intervalId);
+        timer.enabled = false;
+        this.setState({timers: this.state.timers});
     }
 
     hasTimeLeft(color){
-
+        let timer = this.getTimer(color);
+        return timer.time > 0;
     }
+
     getTimer(color){
         if (color == "w"){
             return this.state.timers[0];
@@ -113,6 +121,10 @@ class ChessPage extends React.Component{
         else{
             return this.state.timers[1];
         }
+    }
+
+    getOpponentColor(color){
+        return color === "w" ? "b" : "w";
     }
 
 
