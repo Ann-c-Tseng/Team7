@@ -3,15 +3,8 @@ import {Box, Typography, Button} from "@mui/material";
 
 import "./GameInfo.css";
 
+//A view component (MVC)
 class GameInfo extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            moves: [{number: 1, white: "e4", black: "e5"}, {number: 2, white: "Ng3", black: "Nc6"}] //This needs to be better
-        }
-    }
-    
-
     render(){
         return (
             <Box className="MainGameInfo">
@@ -24,7 +17,9 @@ class GameInfo extends React.Component{
                         <span> | </span>
                         <span>Black</span>
                     </p></strong>
-                    {this.state.moves.map((move) => {
+                    {
+                        this.props.moves ? 
+                        this.props.moves.map((move) => {
                         return (
                             <p  className={move.number % 2 === 0 ? "DarkMove" : ""}key={move.number}>
                                 <span>{move.number}. </span>
@@ -32,8 +27,9 @@ class GameInfo extends React.Component{
                                 <span> | </span>
                                 <span>{move.black}</span>
                             </p>
-                        )
-                    })}
+                        ) 
+                    }) : null
+                    }
                 </Box>
             </Box>
         )

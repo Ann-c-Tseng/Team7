@@ -15,7 +15,7 @@ class Timer extends React.Component{
         };
     }
     componentDidMount(){
-        
+
 
         this.enable();
     }
@@ -53,7 +53,7 @@ class Timer extends React.Component{
     //Otherwise, display as :SS.T (tenths)
     getRemainingTime(){
         if (!this.hasTimeLeft()){
-            if (this.state.time == undefined || this.state.time == null){
+            if (this.state.time === undefined || this.state.time === null){
                 return "--:--";
             }
             return "00:00";
