@@ -13,14 +13,31 @@ class ChessPage extends React.Component{
     constructor(props){
         super(props);
 
+        this.attemptMove = this.attemptMove.bind(this);
+        
         this.state = {
             game: new Chess(),
             moveNum: 0,
             moves: [],
-            turn: "w"
+            turn: "w",
+            timers: [
+            {   
+                color: "w",
+                intervalId: null, //Keep track of the intervalId (if enabled)
+                enabled: false,
+                time: props.time || 600000, //How long the timer is in milliseconds
+            },
+            {   
+                color: "b",
+                intervalId: null, //Keep track of the intervalId (if enabled)
+                enabled: false,
+                time: props.time || 600000, //How long the timer is in milliseconds
+            }],
         }
-        this.attemptMove = this.attemptMove.bind(this);
-        
+    }
+    componentDidMount(){
+        this.enableTimer("w");
+        this.enableTimer("b");
     }
 
     //If white, create new object and push it in with move info,
@@ -63,6 +80,42 @@ class ChessPage extends React.Component{
         }
     }
 
+    //Start a timer. Only allow a timer that is disabled to be enabled.
+    enableTimer(color){
+        let timer = this.getTimer(color);
+        if (timer.enabled){
+            return;
+        }
+
+        let start = Date.now()
+        timer.enabled = true;
+        timer.intervalId = setInterval(() => {
+            const now = Date.now()
+            const diff = now - start;
+            timer.time -= diff;
+            start = now;
+
+            this.setState({timers: this.state.timers});
+        }, 100);
+    }
+
+    disableTimer(color){
+
+    }
+
+    hasTimeLeft(color){
+
+    }
+    getTimer(color){
+        if (color == "w"){
+            return this.state.timers[0];
+        }
+        else{
+            return this.state.timers[1];
+        }
+    }
+
+
 
     render(){
         return (
@@ -71,8 +124,8 @@ class ChessPage extends React.Component{
                     <UserCard className="UserCard" username="Opponent"/>
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
-                            <Timer className="OpponentTimer" time={600000}/>
-                            <Timer className="UserTimer" time={600000}/>
+                            <Timer className="OpponentTimer" time={this.state.timers[1].time}/>
+                            <Timer className="UserTimer" time={this.state.timers[0].time}/>
                         </aside>
                         <Box className="Game">
                             <ChessGame
