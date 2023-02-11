@@ -5,6 +5,10 @@ import { Chessboard } from "react-chessboard";
 //A view and controller component (MVC)
 class ChessGame extends React.Component{
 
+    getOrientationString(col){
+        return (col === "w" ? "white" : "black");
+    }
+
     render(){
         return (
             <Chessboard 
@@ -13,6 +17,7 @@ class ChessGame extends React.Component{
                 boardHeight={675}
                 position={this.props.gameState}
                 onPieceDrop={this.props.moveHandler}
+                boardOrientation={this.getOrientationString(this.props.boardOrientation)}
                 /* Special styling options for later
                 customBoardStyle={}
                 customSquareStyles={}

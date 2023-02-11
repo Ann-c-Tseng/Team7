@@ -18,22 +18,34 @@ class ChessPage extends React.Component{
         this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
         this.timerFinishCallback = this.timerFinishCallback.bind(this);
 
+        const whiteTimer = new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
+        const blackTimer = new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
+
         this.state = {
             game: new Chess(),
             gameOver: false,
             moveNum: 0,
             moves: [],
             turn: "w",
-            timers: [
-                new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback), 
-                new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback)
-            ],
+            user: props.userColor,
+
+            timers: [whiteTimer, blackTimer],
+            topTimer: null,
+            bottomTimer: null,
+
+            orientation: props.userColor,
         }
+
+        this.state.topTimer = this.getTimer(this.getOpponentColor(props.userColor));
+        this.state.bottomTimer = this.getTimer(props.userColor);
     }
 
     attemptMove(fromSquare, toSquare){
         if (this.state.gameOver){
             return;
+        }
+        if (this.usersTurn()){
+            return; //User tried to make their opponent's move.
         }
 
         const move = {
@@ -42,13 +54,14 @@ class ChessPage extends React.Component{
             promotion: "q" //Always promote to queen (for now)
         };
 
-        //TODO: Add check for time left
         let moveResult;
         try{
             moveResult = this.state.game.move(move);
         } catch(e){
-            //Invalid move attempt
+            //Throws error if invalid move attempt
+            //Notify the player?
         }
+
         this.setState({game: this.state.game});
         if (moveResult){
             this.successfulMove(moveResult);
@@ -61,6 +74,8 @@ class ChessPage extends React.Component{
     }
 
     successfulMove(moveResult){
+        //Also send move to server
+
         this.addMove(moveResult.san, moveResult.color);
         if (this.state.moveNum > 0){
             this.disableTimer(moveResult.color);
@@ -68,7 +83,14 @@ class ChessPage extends React.Component{
         }
 
         this.checkGameOver();
+        this.switchTurn();
+    }
 
+    usersTurn(plr){
+        return this.state.turn === this.state.user;
+    }
+    switchTurn(){
+        this.setState({turn: this.getOpponentColor(this.state.turn)});
     }
     
     //If white, create new object and push it in with move info,
@@ -156,6 +178,14 @@ class ChessPage extends React.Component{
         return color === "w" ? "b" : "w";
     }
 
+    flipBoard(){
+        this.setState({
+            topTimer: this.state.bottomTimer,
+            bottomTimer: this.state.topTimer,
+            orientation: this.getOpponentColor(this.state.orientation),
+        });
+    }
+
     render(){
         return (
             <Box className="ChessPage">
@@ -163,13 +193,24 @@ class ChessPage extends React.Component{
                     <UserCard className="UserCard" username="Opponent"/>
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
-                            <TimerView className="OpponentTimer" color={this.state.timers[1].color} time={this.state.timers[1].time} enabled={this.state.timers[1].enabled}/>
-                            <TimerView className="UserTimer" color={this.state.timers[0].color} time={this.state.timers[0].time} enabled={this.state.timers[0].enabled}/>
+                            <TimerView 
+                                className="TopTimer"
+                                color={this.state.topTimer.color}
+                                time={this.state.topTimer.time}
+                                enabled={this.state.topTimer.enabled}
+                            />
+                            <TimerView 
+                                className="BottomTimer"
+                                color={this.state.bottomTimer.color}
+                                time={this.state.bottomTimer.time}
+                                enabled={this.state.bottomTimer.enabled}
+                            />
                         </aside>
                         <Box className="Game">
                             <ChessGame
                                 moveHandler={this.attemptMove}
                                 gameState={this.state.game.fen()}
+                                boardOrientation={this.state.orientation}
                             />
                         </Box>
                         <GameInfo moves={this.state.moves} className="Info"/>
