@@ -26,8 +26,10 @@ class ChessPage extends React.Component{
             gameOver: false,
             moveNum: 0,
             moves: [],
+
             turn: "w",
             user: props.userColor,
+            opponent: null,
 
             timers: [whiteTimer, blackTimer],
             topTimer: null,
@@ -38,14 +40,56 @@ class ChessPage extends React.Component{
 
         this.state.topTimer = this.getTimer(this.getOpponentColor(props.userColor));
         this.state.bottomTimer = this.getTimer(props.userColor);
+        this.state.opponent = this.getOpponentColor(this.state.user);
+    }
+
+    //TEMPORARY FOR RANDOM MOVE COMPUTER
+    componentDidMount(){
+        setInterval(() => {
+            if (!this.opponentsTurn() || this.state.game.isGameOver()){
+                return;
+            }
+
+            let moves = this.state.game.moves({verbose: true});
+            let move = moves[Math.floor(Math.random() * moves.length)];
+            this.opponentMove(move.from, move.to);
+        }, 4000)
+    }
+
+    opponentMove(fromSquare, toSquare){
+        if (this.state.gameOver || !this.opponentsTurn()){
+            return false;
+        }
+        const move = {
+            from: fromSquare,
+            to: toSquare,
+            promotion: "q" //Always promote to queen (for now)
+        };
+
+        let moveResult;
+        try{
+            moveResult = this.state.game.move(move);
+            
+        } catch(e){
+            //Throws error if invalid move attempt
+            //Notify the player?
+        }
+
+        this.setState({game: this.state.game});
+        if (moveResult){
+            
+            this.successfulMove(moveResult);
+            return true;
+        }
+        else{
+            //Failed move
+            return false;
+        }
     }
 
     attemptMove(fromSquare, toSquare){
-        if (this.state.gameOver){
-            return;
-        }
-        if (this.usersTurn()){
-            return; //User tried to make their opponent's move.
+        if (this.state.gameOver || !this.usersTurn()){
+            return false;
         }
 
         const move = {
@@ -57,6 +101,7 @@ class ChessPage extends React.Component{
         let moveResult;
         try{
             moveResult = this.state.game.move(move);
+            
         } catch(e){
             //Throws error if invalid move attempt
             //Notify the player?
@@ -64,6 +109,7 @@ class ChessPage extends React.Component{
 
         this.setState({game: this.state.game});
         if (moveResult){
+            
             this.successfulMove(moveResult);
             return true;
         }
@@ -75,7 +121,7 @@ class ChessPage extends React.Component{
 
     successfulMove(moveResult){
         //Also send move to server
-
+        this.switchTurn();
         this.addMove(moveResult.san, moveResult.color);
         if (this.state.moveNum > 0){
             this.disableTimer(moveResult.color);
@@ -83,10 +129,12 @@ class ChessPage extends React.Component{
         }
 
         this.checkGameOver();
-        this.switchTurn();
     }
 
-    usersTurn(plr){
+    opponentsTurn(){
+        return this.state.turn === this.state.opponent;
+    }
+    usersTurn(){
         return this.state.turn === this.state.user;
     }
     switchTurn(){

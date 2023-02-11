@@ -29,7 +29,7 @@ class App extends Component {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
-                <Route path="/chess" element={<ChessPage userColor = {"b"}/>} />
+                <Route path="/chess" element={<ChessPage userColor = {"w"}/>} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
