@@ -14,7 +14,7 @@ class ChessPage extends React.Component{
     constructor(props){
         super(props);
 
-        this.attemptMove = this.attemptMove.bind(this);
+        this.userMove = this.userMove.bind(this);
         this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
         this.timerFinishCallback = this.timerFinishCallback.bind(this);
 
@@ -56,42 +56,20 @@ class ChessPage extends React.Component{
         }, 4000)
     }
 
+    userMove(fromSquare, toSquare){
+        if (this.state.gameOver || !this.usersTurn()){
+            return false;
+        }
+        this.attemptMove(fromSquare, toSquare);
+    }
     opponentMove(fromSquare, toSquare){
         if (this.state.gameOver || !this.opponentsTurn()){
             return false;
         }
-        const move = {
-            from: fromSquare,
-            to: toSquare,
-            promotion: "q" //Always promote to queen (for now)
-        };
-
-        let moveResult;
-        try{
-            moveResult = this.state.game.move(move);
-            
-        } catch(e){
-            //Throws error if invalid move attempt
-            //Notify the player?
-        }
-
-        this.setState({game: this.state.game});
-        if (moveResult){
-            
-            this.successfulMove(moveResult);
-            return true;
-        }
-        else{
-            //Failed move
-            return false;
-        }
+        this.attemptMove(fromSquare, toSquare);
     }
 
     attemptMove(fromSquare, toSquare){
-        if (this.state.gameOver || !this.usersTurn()){
-            return false;
-        }
-
         const move = {
             from: fromSquare,
             to: toSquare,
@@ -256,7 +234,7 @@ class ChessPage extends React.Component{
                         </aside>
                         <Box className="Game">
                             <ChessGame
-                                moveHandler={this.attemptMove}
+                                moveHandler={this.userMove}
                                 gameState={this.state.game.fen()}
                                 boardOrientation={this.state.orientation}
                             />
