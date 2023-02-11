@@ -16,6 +16,7 @@ class ChessPage extends React.Component{
 
         this.attemptMove = this.attemptMove.bind(this);
         this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
+        this.timerFinishCallback = this.timerFinishCallback.bind(this);
 
         this.state = {
             game: new Chess(),
@@ -23,9 +24,44 @@ class ChessPage extends React.Component{
             moves: [],
             turn: "w",
             timers: [
-                new Timer("w", props.time || 600000, this.timerUpdateCallback), 
-                new Timer("b", props.time || 600000, this.timerUpdateCallback)],
+                new Timer("w", props.time || 10000, this.timerUpdateCallback, this.timerFinishCallback), 
+                new Timer("b", props.time || 10000, this.timerUpdateCallback, this.timerFinishCallback)
+            ],
         }
+    }
+
+    attemptMove(fromSquare, toSquare){
+        const move = {
+            from: fromSquare,
+            to: toSquare,
+            promotion: "q" //Always promote to queen (for now)
+        };
+
+        //TODO: Add check for time left
+        const moveResult = this.state.game.move(move);
+        this.setState({game: this.state.game});
+        if (moveResult){
+            this.successfulMove(moveResult);
+            return true;
+        }
+        else{
+            //Failed move
+            return false;
+        }
+    }
+
+    successfulMove(moveResult){
+        //Checkmate?
+        //Insufficient material?
+        //Stalemate?
+        //Threefold repetition?
+        this.addMove(moveResult.san, moveResult.color);
+        if (this.state.moveNum > 0){
+            this.disableTimer(moveResult.color);
+            this.enableTimer(this.getOpponentColor(moveResult.color));
+        }
+
+
     }
 
     //If white, create new object and push it in with move info,
@@ -49,34 +85,14 @@ class ChessPage extends React.Component{
             this.setState({moves: this.state.moves});
         }
     }
-    
-    attemptMove(fromSquare, toSquare){
-        const move = {
-            from: fromSquare,
-            to: toSquare,
-            promotion: "q" //Always promote to queen (for now)
-        };
-
-        const moveResult = this.state.game.move(move);
-        this.setState({game: this.state.game});
-        if (moveResult){
-            this.addMove(moveResult.san, moveResult.color);
-            //TODO: Clean this up
-            if (this.state.moveNum > 0){
-                this.disableTimer(moveResult.color);
-                this.enableTimer(this.getOpponentColor(moveResult.color));
-            }
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
     //Pass this to the timer objects, so that when they update,
     //they call this function to update this game state.
     timerUpdateCallback(){
         this.setState({timers: this.state.timers});
+    }
+    timerFinishCallback(){
+        console.log("Finished!!!");
     }
 
     //Start a timer. Only allow a timer that is disabled to be enabled.
@@ -109,8 +125,8 @@ class ChessPage extends React.Component{
                     <UserCard className="UserCard" username="Opponent"/>
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
-                            <TimerView className="OpponentTimer" time={this.state.timers[1].time}/>
-                            <TimerView className="UserTimer" time={this.state.timers[0].time}/>
+                            <TimerView className="OpponentTimer" color={this.state.timers[1].color} time={this.state.timers[1].time} enabled={this.state.timers[1].enabled}/>
+                            <TimerView className="UserTimer" color={this.state.timers[0].color} time={this.state.timers[0].time} enabled={this.state.timers[0].enabled}/>
                         </aside>
                         <Box className="Game">
                             <ChessGame

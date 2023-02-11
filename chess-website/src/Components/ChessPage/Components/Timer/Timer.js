@@ -1,15 +1,16 @@
 class Timer{
 
-    constructor(color, time, updateCallback){
+    constructor(color, time, updateCallback, finishedCallback){
         this.color = color;
         this.time = time;
         this.enabled = false;
         this.intervalId = null;
         this.updateCallback = updateCallback;
+        this.finishedCallback = finishedCallback;
     }
 
     enable(){
-        if (this.enabled){
+        if (this.enabled || !this.timeLeft()){
             return;
         }
 
@@ -22,9 +23,24 @@ class Timer{
             start = now;
 
             this.updateCallback();
+            if (!this.timeLeft()){
+                this.finish();
+            }
+
         }, 100);
     }
-    
+
+    timeLeft(){
+        return this.time > 0;
+    }
+
+    finish(){
+        this.time = 0;
+        this.disable();
+        this.finishedCallback();
+    }
+
+
     disable(){
         clearInterval(this.intervalId);
         this.enabled = false;

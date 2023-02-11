@@ -5,8 +5,21 @@ import '@fontsource/roboto/700.css';
 import "./TimerView.css";
 
 class TimerView extends React.Component{
+
     hasTimeLeft(){
         return this.props.time > 0;
+    }
+
+    getStylingClasses(){
+        let stylingClasses = "TimerView";
+
+        if (!this.props.enabled){
+            stylingClasses += " Disabled";
+        }
+        if (this.props.color === "b"){
+            stylingClasses += " Black";
+        }
+        return stylingClasses;
     }
 
     //Returns the remaining time in string format.
@@ -36,7 +49,7 @@ class TimerView extends React.Component{
 
     render(){
         return (
-            <Box className="TimerView">
+            <Box className={this.getStylingClasses()} >
                 <Typography variant="h4">
                     {this.getRemainingTime()}
                 </Typography>
