@@ -1,7 +1,14 @@
-.Timer{
+.TimerView{
     background-color: white;
     margin: 5px;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 1px 1px 10px 1px rgba(0,0,0,0.2);
+}
+.Black{
+    background-color: rgb(50,50,50);
+    color:white;
+}
+.Disabled{
+    filter: opacity(70%);
 }
