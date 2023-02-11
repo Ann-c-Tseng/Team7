@@ -25,8 +25,8 @@ class ChessPage extends React.Component{
             moves: [],
             turn: "w",
             timers: [
-                new Timer("w", props.time || 10000, this.timerUpdateCallback, this.timerFinishCallback), 
-                new Timer("b", props.time || 10000, this.timerUpdateCallback, this.timerFinishCallback)
+                new Timer("w", props.time || 2000, this.timerUpdateCallback, this.timerFinishCallback), 
+                new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback)
             ],
         }
     }
@@ -58,21 +58,39 @@ class ChessPage extends React.Component{
             this.enableTimer(this.getOpponentColor(moveResult.color));
         }
 
-        if (this.isGameOver()){
-            this.gameOver();
-        }
+        this.checkGameOver();
 
     }
-    gameOver(){
+    
+    //Checks if the game is over. Calls gameOver with the reason if it is.
+    checkGameOver(){
+        if (this.state.game.isCheckmate()){
+            let winner = this.getOpponentColor(this.state.game.turn());
+            winner = (winner === "w" ? "White" : "Black");
+            this.gameOver(winner + " has won", "Checkmate");
+        }
+        else if (this.state.game.isStalemate()){
+            this.gameOver("Draw", "Stalemate");
+        }
+        else if (this.state.game.isThreefoldRepetition()){
+            this.gameOver("Draw", "Threefold Repetition");
+        }
+        else if (this.state.game.isInsufficientMaterial()){
+            this.gameOver("Draw", "Insufficient Material");
+        }
+        else if (this.state.game.isDraw()){
+            this.gameOver("Draw", "50-move rule");
+        }
+        
+    }
+
+    gameOver(result, reason){
         this.disableTimer("w");
         this.disableTimer("b");
         this.setState({gameOver: true});
-
+        console.log("Game over. " + result + " by " + reason);
     }
-
-    isGameOver(){
-
-    }
+    
 
     //If white, create new object and push it in with move info,
     //if black, just place move info
@@ -101,8 +119,10 @@ class ChessPage extends React.Component{
     timerUpdateCallback(){
         this.setState({timers: this.state.timers});
     }
-    timerFinishCallback(){
-        this.gameOver();
+    timerFinishCallback(color){
+        let winner = this.getOpponentColor(this.state.game.turn());
+        winner = (winner === "w" ? "White" : "Black");
+        this.gameOver(winner + " has won", "Timeout");
     }
 
     //Start a timer. Only allow a timer that is disabled to be enabled.
