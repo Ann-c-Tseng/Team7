@@ -25,13 +25,17 @@ class ChessPage extends React.Component{
             moves: [],
             turn: "w",
             timers: [
-                new Timer("w", props.time || 60000, this.timerUpdateCallback, this.timerFinishCallback), 
+                new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback), 
                 new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback)
             ],
         }
     }
 
     attemptMove(fromSquare, toSquare){
+        if (this.state.gameOver){
+            return;
+        }
+
         const move = {
             from: fromSquare,
             to: toSquare,
@@ -39,7 +43,12 @@ class ChessPage extends React.Component{
         };
 
         //TODO: Add check for time left
-        const moveResult = this.state.game.move(move);
+        let moveResult;
+        try{
+            moveResult = this.state.game.move(move);
+        } catch(e){
+            //Invalid move attempt
+        }
         this.setState({game: this.state.game});
         if (moveResult){
             this.successfulMove(moveResult);
