@@ -20,6 +20,7 @@ class ChessPage extends React.Component{
 
         this.state = {
             game: new Chess(),
+            gameOver: false,
             moveNum: 0,
             moves: [],
             turn: "w",
@@ -51,16 +52,25 @@ class ChessPage extends React.Component{
     }
 
     successfulMove(moveResult){
-        //Checkmate?
-        //Insufficient material?
-        //Stalemate?
-        //Threefold repetition?
         this.addMove(moveResult.san, moveResult.color);
         if (this.state.moveNum > 0){
             this.disableTimer(moveResult.color);
             this.enableTimer(this.getOpponentColor(moveResult.color));
         }
 
+        if (this.isGameOver()){
+            this.gameOver();
+        }
+
+    }
+    gameOver(){
+        this.disableTimer("w");
+        this.disableTimer("b");
+        this.setState({gameOver: true});
+
+    }
+
+    isGameOver(){
 
     }
 
@@ -86,13 +96,13 @@ class ChessPage extends React.Component{
         }
     }
 
-    //Pass this to the timer objects, so that when they update,
-    //they call this function to update this game state.
+    //Pass these to the timer objects, so that when they update,
+    //they call these functions to update this game's state.
     timerUpdateCallback(){
         this.setState({timers: this.state.timers});
     }
     timerFinishCallback(){
-        console.log("Finished!!!");
+        this.gameOver();
     }
 
     //Start a timer. Only allow a timer that is disabled to be enabled.
@@ -104,6 +114,7 @@ class ChessPage extends React.Component{
         let timer = this.getTimer(color);
         timer.disable();
     }
+
 
     getTimer(color){
         if (color == "w"){
