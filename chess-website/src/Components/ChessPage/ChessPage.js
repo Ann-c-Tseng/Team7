@@ -25,7 +25,7 @@ class ChessPage extends React.Component{
             moves: [],
             turn: "w",
             timers: [
-                new Timer("w", props.time || 2000, this.timerUpdateCallback, this.timerFinishCallback), 
+                new Timer("w", props.time || 60000, this.timerUpdateCallback, this.timerFinishCallback), 
                 new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback)
             ],
         }
