@@ -1,5 +1,6 @@
 import React from 'react';
 import GameInfo from "./Components/GameInfo/GameInfo.js";
+import TimerView from "./Components/Timer/TimerView.js";
 import Timer from "./Components/Timer/Timer.js";
 import UserCard from "./Components/UserCard/UserCard.js";
 import ChessGame from "./Components/ChessGame/ChessGame.js";
@@ -14,28 +15,17 @@ class ChessPage extends React.Component{
         super(props);
 
         this.attemptMove = this.attemptMove.bind(this);
-        
+        this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
+
         this.state = {
             game: new Chess(),
             moveNum: 0,
             moves: [],
             turn: "w",
             timers: [
-            {   
-                color: "w",
-                intervalId: null, //Keep track of the intervalId (if enabled)
-                enabled: false,
-                time: props.time || 600000, //How long the timer is in milliseconds
-            },
-            {   
-                color: "b",
-                intervalId: null, //Keep track of the intervalId (if enabled)
-                enabled: false,
-                time: props.time || 600000, //How long the timer is in milliseconds
-            }],
+                new Timer("w", props.time || 600000, this.timerUpdateCallback), 
+                new Timer("b", props.time || 600000, this.timerUpdateCallback)],
         }
-    }
-    componentDidMount(){
     }
 
     //If white, create new object and push it in with move info,
@@ -83,35 +73,20 @@ class ChessPage extends React.Component{
         }
     }
 
-    //Start a timer. Only allow a timer that is disabled to be enabled.
-    enableTimer(color){
-        let timer = this.getTimer(color);
-        if (timer.enabled){
-            return;
-        }
-
-        let start = Date.now()
-        timer.enabled = true;
-        timer.intervalId = setInterval(() => {
-            const now = Date.now()
-            const diff = now - start;
-            timer.time -= diff;
-            start = now;
-
-            this.setState({timers: this.state.timers});
-        }, 100);
-    }
-
-    disableTimer(color){
-        let timer = this.getTimer(color);
-        clearInterval(timer.intervalId);
-        timer.enabled = false;
+    //Pass this to the timer objects, so that when they update,
+    //they call this function to update this game state.
+    timerUpdateCallback(){
         this.setState({timers: this.state.timers});
     }
 
-    hasTimeLeft(color){
+    //Start a timer. Only allow a timer that is disabled to be enabled.
+    enableTimer(color){
         let timer = this.getTimer(color);
-        return timer.time > 0;
+        timer.enable();
+    }
+    disableTimer(color){
+        let timer = this.getTimer(color);
+        timer.disable();
     }
 
     getTimer(color){
@@ -127,8 +102,6 @@ class ChessPage extends React.Component{
         return color === "w" ? "b" : "w";
     }
 
-
-
     render(){
         return (
             <Box className="ChessPage">
@@ -136,8 +109,8 @@ class ChessPage extends React.Component{
                     <UserCard className="UserCard" username="Opponent"/>
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
-                            <Timer className="OpponentTimer" time={this.state.timers[1].time}/>
-                            <Timer className="UserTimer" time={this.state.timers[0].time}/>
+                            <TimerView className="OpponentTimer" time={this.state.timers[1].time}/>
+                            <TimerView className="UserTimer" time={this.state.timers[0].time}/>
                         </aside>
                         <Box className="Game">
                             <ChessGame

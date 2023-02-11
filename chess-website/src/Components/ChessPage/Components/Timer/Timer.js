@@ -1,47 +1,34 @@
-import React from 'react';
-import { Box, Typography } from "@mui/material";
-import '@fontsource/roboto/700.css';
+class Timer{
 
-import "./Timer.css";
-
-class Timer extends React.Component{
-    hasTimeLeft(){
-        return this.props.time > 0;
+    constructor(color, time, updateCallback){
+        this.color = color;
+        this.time = time;
+        this.enabled = false;
+        this.intervalId = null;
+        this.updateCallback = updateCallback;
     }
 
-    //Returns the remaining time in string format.
-    //If >30 seconds remain, display as "MM:SS".
-    //Otherwise, display as :SS.T (tenths)
-    getRemainingTime(){
-        if (!this.hasTimeLeft()){
-            if (this.props.time === undefined || this.props.time === null){
-                return "--:--";
-            }
-            return "00:00";
-        }
-        let minutes = Math.floor(this.props.time / 60000);
-        let seconds = (Math.floor(this.props.time % 60000) / 1000).toFixed(0);
-
-        if (seconds == 60){
-            seconds = 0;
-            minutes++;
+    enable(){
+        if (this.enabled){
+            return;
         }
 
-        const secondsString = seconds < 10 ? "0" + seconds : seconds;
-        const minutesString = minutes < 10 ? "0" + minutes : minutes;
-        
+        let start = Date.now()
+        this.enabled = true;
+        this.intervalId = setInterval(() => {
+            const now = Date.now()
+            const diff = now - start;
+            this.time -= diff;
+            start = now;
 
-        return minutesString + ":" + secondsString;
+            this.updateCallback();
+        }, 100);
     }
-
-    render(){
-        return (
-            <Box className="Timer">
-                <Typography variant="h4">
-                    {this.getRemainingTime()}
-                </Typography>
-            </Box>
-        );
+    
+    disable(){
+        clearInterval(this.intervalId);
+        this.enabled = false;
+        this.updateCallback();
     }
 }
 
