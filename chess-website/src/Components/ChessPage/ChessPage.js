@@ -62,6 +62,28 @@ class ChessPage extends React.Component{
 
     }
     
+    //If white, create new object and push it in with move info,
+    //if black, just place move info
+    addMove(move, color){
+        if (color === "w"){
+            this.setState({moves: [...this.state.moves, {
+                number: this.state.moveNum+1,
+                white: move,
+                black: ""
+            }]});
+            this.setState({moveNum: this.state.moveNum+1});
+        }
+        else{
+            if (this.state.moveNum === 0){
+                console.warn("Black attempted to move first: " + move);
+                return;
+            }
+            const lastMove = this.state.moveNum;
+            this.state.moves[lastMove-1].black = move;
+            this.setState({moves: this.state.moves});
+        }
+    }
+
     //Checks if the game is over. Calls gameOver with the reason if it is.
     checkGameOver(){
         if (this.state.game.isCheckmate()){
@@ -91,29 +113,6 @@ class ChessPage extends React.Component{
         console.log("Game over. " + result + " by " + reason);
     }
     
-
-    //If white, create new object and push it in with move info,
-    //if black, just place move info
-    addMove(move, color){
-        if (color === "w"){
-            this.setState({moves: [...this.state.moves, {
-                number: this.state.moveNum+1,
-                white: move,
-                black: ""
-            }]});
-            this.setState({moveNum: this.state.moveNum+1});
-        }
-        else{
-            if (this.state.moveNum === 0){
-                console.warn("Black attempted to move first: " + move);
-                return;
-            }
-            const lastMove = this.state.moveNum;
-            this.state.moves[lastMove-1].black = move;
-            this.setState({moves: this.state.moves});
-        }
-    }
-
     //Pass these to the timer objects, so that when they update,
     //they call these functions to update this game's state.
     timerUpdateCallback(){
@@ -125,7 +124,6 @@ class ChessPage extends React.Component{
         this.gameOver(winner + " has won", "Timeout");
     }
 
-    //Start a timer. Only allow a timer that is disabled to be enabled.
     enableTimer(color){
         let timer = this.getTimer(color);
         timer.enable();
