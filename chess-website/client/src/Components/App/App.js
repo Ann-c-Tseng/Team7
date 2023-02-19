@@ -10,6 +10,7 @@ import SignupForm from "../Forms/SignupForms";
 import ChessPage from "../ChessPage/ChessPage";
 import PageNotFound from "../Pages/PageNotFound";
 import Profile from "../Pages/Profile";
+import Matchmaking from "../Matchmaking/Matchmaking";
 
 
 class App extends Component {
@@ -30,6 +31,7 @@ class App extends Component {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
                 <Route path="/chess" element={<ChessPage userColor = {"b"}/>} />
+                <Route path="/matchmaking" element={<Matchmaking/>} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
