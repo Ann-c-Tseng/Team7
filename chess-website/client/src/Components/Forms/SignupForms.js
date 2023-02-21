@@ -55,15 +55,15 @@ class SignupForm extends Component {
         axios.post('http://localhost:4000/signup', registered)
         .then(response => console.log(response.data))
 
-        // window.location = '/' //In a normal application, we may send user back home after sign up...
+        window.location = '/login' //Redirect to login after signing up
     
-        //For now though, we just return the state back to empty
-        this.setState({
-            fullName:'',
-            username:'',
-            email:'',
-            password:''
-        })
+        // //For now though, we just return the state back to empty
+        // this.setState({
+        //     fullName:'',
+        //     username:'',
+        //     email:'',
+        //     password:''
+        // })
     }
 
 
