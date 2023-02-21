@@ -22,4 +22,11 @@ router.post('/signup', async (request, response) => {
     })
 })
 
-module.exports = router
+//Still figuring out GET with email entry matching db...
+router.get('/login/:email', (request, response) => {
+    signUpTemplateCopy.findOne(request.params.email)
+    .then(data => response.json(data))
+    .catch(error => response.json(error))
+})
+
+module.exports = router;
