@@ -1,3 +1,12 @@
+GET http://localhost:4000/login/
+Content-Type: application/json
+
+{
+    "email": "fl@testing.com",
+    "password": "test123"
+}
+
+
 # POST http://localhost:4000/signup
 # Content-Type: application/json
 
@@ -7,6 +16,3 @@
 #     "email": "fl@testing.com",
 #     "password": "test123"
 # }
-
-GET http://localhost:4000/login/reactclient@react.com
-Content-Type: application/json
