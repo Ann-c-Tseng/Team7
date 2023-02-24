@@ -29,7 +29,6 @@ router.post('/login', (request, response) => {
     //2. Remember that password is hashed so must compare with input password (unhashed)
     //to see if password authentication is/isn't correct.
     //3. Return json response boolean based on result.
-
     let InputEmail = request.body.email;
     let InputPassword = request.body.password;
 
@@ -37,13 +36,14 @@ router.post('/login', (request, response) => {
     signUpTemplateCopy.findOne({"email": InputEmail})
     .then(data => {
         if(!data) {
+            console.log("invalid email");
             response.json(false) //invalid email
         } else {
             //Otherwise, we did fine someone and we need to check password.
             //...Check if InputPassword and db stored hashed password matches  
             //using bcrypt compare function
             
-            bcrypt.compare(InputPassword, retrievedUserInfo.password, function(err, result) {
+            bcrypt.compare(InputPassword, data.password, function(err, result) {
                 if (result) {
                     // password is valid
                     console.log("logged in");
