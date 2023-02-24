@@ -66,9 +66,11 @@ class LoginForm extends Component {
             if (response.data === true){
                 console.log("success")
                 console.log(response);
+                window.location = '/profile' //Redirect to user profile after login successful
             }
             else{
                 console.log("login failure");
+                alert("Your email or password is incorrect")
             }
         })
     }
