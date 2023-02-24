@@ -59,21 +59,11 @@ class LoginForm extends Component {
 
     onSubmit(event){
         event.preventDefault()
-        var authPassed = Boolean(false);
 
         //Super Important: Connects to Server and MongoDB, code is async so need .then for further response processing
-        axios.get('http://localhost:4000/login', {email: this.state.email, password: this.state.password})
+        axios.post('http://localhost:4000/login', {email: this.state.email, password: this.state.password})
         .then((response) => {
-            console.log("user input from login: " + this.state.email + " " + this.state.password)
-            if(Object.keys(response.data).length === 0) {
-                //If response.data return empty object {}, then cannot find user in database
-                alert("Cannot find user's email");
-            } else {
-                //Otherwise, either we get a response of "true", meaning password and email are both correct and within database
-                //Or false, which means password is incorrect (but email is found in database) - all these checks are done in backend already.
-                alert("it passed");
-
-            }
+            console.log(response);
         })
     }
 

@@ -23,24 +23,21 @@ router.post('/signup', async (request, response) => {
 })
 
 //Still figuring out GET with email entry matching db...
-router.get('/login/', (request, response) => {
+router.post('/login', (request, response) => {
     //1. Grab input email from user input field, and check mongodb for user info if found
     //2. Remember that password is hashed so must compare with input password (unhashed)
     //to see if password authentication is/isn't correct.
     //3. Return json response boolean based on result.
 
-    var InputEmail = request.body.email;
-    var InputPassword = request.body.password;
-
-    signUpTemplateCopy.find({"email": InputEmail})
+    let InputEmail = request.body.email;
+    let InputPassword = request.body.password;
+    console.log(InputEmail);
+    console.log(InputPassword);
+    response.send({email: InputEmail, pass: InputPassword});
+    /*signUpTemplateCopy.find({"email": InputEmail})
     .then(data => {
         const retrievedUserInfo = data[0];
-        console.log("data retrieved: " + retrievedUserInfo);
-        // console.log("retrieved password: " + retrievedUserInfo.password)
-        // console.log("user input password: " + InputPassword)
-    
-        //If retrievedUserInfo equals {}, that means we did not 
-        //find any user in DB with that email. 
+
         if(isObjEmpty(retrievedUserInfo)) {
             response.json(false)
             console.log("hello");
@@ -59,7 +56,7 @@ router.get('/login/', (request, response) => {
             });
         }
     })
-    .catch(error => response.json(error))
+    .catch(error => response.json(error))*/
 });
 
 module.exports = router;
