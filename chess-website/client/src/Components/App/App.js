@@ -11,7 +11,9 @@ import ChessPage from "../ChessPage/ChessPage";
 import PageNotFound from "../Pages/PageNotFound";
 import Profile from "../Pages/Profile";
 import Matchmaking from "../Matchmaking/Matchmaking";
-
+import History from "../Pages/History";
+import Leaderboard from "../Pages/Leaderboard";
+import Rules from "../Pages/Rules";
 
 class App extends Component {
   render() {
@@ -33,6 +35,9 @@ class App extends Component {
                 <Route path="/chess" element={<ChessPage userColor = {"b"}/>} />
                 <Route path="/matchmaking" element={<Matchmaking/>} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/rules" element={<Rules />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
         </Routes>
