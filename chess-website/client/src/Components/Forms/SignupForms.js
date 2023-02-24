@@ -53,9 +53,10 @@ class SignupForm extends Component {
 
         //Super Important: Connects to Server and MongoDB
         axios.post('http://localhost:4000/signup', registered)
-        .then(response => console.log(response.data))
-
-        window.location = '/login' //Redirect to login after signing up
+        .then(response => {
+            console.log(response.data);
+            window.location = '/login' //Redirect to login after signing up
+        })
     
         // //For now though, we just return the state back to empty
         // this.setState({

@@ -1,4 +1,5 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const router = express.Router()
 const signUpTemplateCopy = require('../models/SignUpModels')
 const bcrypt = require('bcrypt')
@@ -22,7 +23,7 @@ router.post('/signup', async (request, response) => {
     })
 })
 
-//Still figuring out GET with email entry matching db...
+//Use POST when not submitting data via query string in the URL.
 router.post('/login', (request, response) => {
     //1. Grab input email from user input field, and check mongodb for user info if found
     //2. Remember that password is hashed so must compare with input password (unhashed)
@@ -31,32 +32,31 @@ router.post('/login', (request, response) => {
 
     let InputEmail = request.body.email;
     let InputPassword = request.body.password;
-    console.log(InputEmail);
-    console.log(InputPassword);
-    response.send({email: InputEmail, pass: InputPassword});
-    /*signUpTemplateCopy.find({"email": InputEmail})
-    .then(data => {
-        const retrievedUserInfo = data[0];
 
-        if(isObjEmpty(retrievedUserInfo)) {
-            response.json(false)
-            console.log("hello");
+    //Search the DB for an entry
+    signUpTemplateCopy.findOne({"email": InputEmail})
+    .then(data => {
+        if(!data) {
+            response.json(false) //invalid email
         } else {
             //Otherwise, we did fine someone and we need to check password.
             //...Check if InputPassword and db stored hashed password matches  
             //using bcrypt compare function
+            
             bcrypt.compare(InputPassword, retrievedUserInfo.password, function(err, result) {
                 if (result) {
                     // password is valid
+                    console.log("logged in");
                     response.json(true)
                 } else {
                     // password is invalid
+                    console.log("invalid password");
                     response.json(false)
                 }
             });
         }
     })
-    .catch(error => response.json(error))*/
+    .catch(error => response.json(error))
 });
 
 module.exports = router;

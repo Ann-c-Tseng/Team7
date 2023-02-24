@@ -63,7 +63,13 @@ class LoginForm extends Component {
         //Super Important: Connects to Server and MongoDB, code is async so need .then for further response processing
         axios.post('http://localhost:4000/login', {email: this.state.email, password: this.state.password})
         .then((response) => {
-            console.log(response);
+            if (response.data === true){
+                console.log("success")
+                console.log(response);
+            }
+            else{
+                console.log("login failure");
+            }
         })
     }
 
