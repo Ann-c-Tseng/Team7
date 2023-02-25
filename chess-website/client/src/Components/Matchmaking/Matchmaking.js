@@ -4,7 +4,9 @@ import React from "react";
 class Matchmaking extends React.Component{
     
     render(){
-        return null;
+        return (
+            <p>Hello World!</p>
+        );
     }
 }
 
