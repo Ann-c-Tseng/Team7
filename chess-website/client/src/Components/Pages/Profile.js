@@ -1,8 +1,12 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 const Profile = () => {
     const userProfilePic = require('../../Images/tentativeProfile.png');
+    const username = useSelector((state) => state.auth.user.username);
+
+
 
     const overallDivStyle = {
         width: '40vw',
@@ -38,12 +42,12 @@ const Profile = () => {
         fontWeight: 'bold',
         color: 'white',
     }
-  
+
     return (
         <>
             <div style={overallDivStyle}>
                 <img style={ProfilePicStyle} src={userProfilePic} alt="User profile"/>
-                <h3> Username: PorcupineKnight</h3>
+                <h3> Username: {username}</h3>
                 <h4 style={h4Style}>ELO: 1601</h4>
                 <h4 style={h4Style}> User ID: aBrIABLECKSHaUC</h4>
                 <h4 style={h4Style}> Longest Win Streak: 4 out of 5 games </h4>
