@@ -39,6 +39,7 @@ router.post('/login', (request, response) => {
             console.log("invalid email");
             response.json(false) //invalid email
         } else {
+            console.log(data);
             //Otherwise, we did fine someone and we need to check password.
             //...Check if InputPassword and db stored hashed password matches  
             //using bcrypt compare function
@@ -47,7 +48,17 @@ router.post('/login', (request, response) => {
                 if (result) {
                     // password is valid
                     console.log("logged in");
-                    response.json(true)
+                    //TODO: Session tokens to more reliably check authentication
+
+                    const body = {
+                        fullName: data.fullName,
+                        username: data.username,
+                        email: data.email,
+                        success: true,
+                        message: "Successfully logged in.",
+                    }
+
+                    response.json(body);
                 } else {
                     // password is invalid
                     console.log("invalid password");

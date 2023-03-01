@@ -1,37 +1,9 @@
-// import React from 'react';
-// import {Link} from 'react-router-dom';
-// import './Forms.css';
-
-
-// function LoginForm() {
-//     return (
-//         <>
-//             <div className="card">
-//                 <form>
-//                     <div>
-//                         <h2 className="title"> Login</h2>
-//                     </div>
-//                     <div className="email-login">
-//                         <label htmlFor="email"> <b>Email</b></label>
-//                         <input type="text" placeholder="name@abc.com" name="uname" required />
-//                         <label htmlFor="psw"><b>Password</b></label>
-//                         <input type="password" placeholder="8+ (a, A, 1, #)" name="psw" required />
-//                     </div>
-//                     <button className="cta-btn">Login</button>
-//                     <Link className="forget-pass" to="/signup">Create an Account</Link>
-//                 </form>
-//             </div>
-//         </>
-//     );
-
-// }
-
-// export default LoginForm;
-
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import {connect} from "react-redux";
+import {login} from '../../Store/Slices/authSlice';
 
 class LoginForm extends Component {
     constructor() {
@@ -59,14 +31,11 @@ class LoginForm extends Component {
 
     onSubmit(event){
         event.preventDefault()
-
-        //Super Important: Connects to Server and MongoDB, code is async so need .then for further response processing
         axios.post('http://localhost:4000/login', {email: this.state.email, password: this.state.password})
         .then((response) => {
-            if (response.data === true){
-                console.log("success")
-                console.log(response);
-                window.location = '/profile' //Redirect to user profile after login successful
+            if (response.data?.success === true){
+                this.props.login(response.data.username, response.data.email);
+                window.location = '/profile';
             }
             else{
                 console.log("login failure");
@@ -105,5 +74,18 @@ class LoginForm extends Component {
         );
     }
 }
- 
-export default LoginForm;
+
+const mapDispatchToProps = dispatch => {
+    return {
+        login: (username, email) => {
+            dispatch(login({username, email}))
+        }
+    }
+}
+const mapStateToProps = state => {
+    return {
+        user: state.auth.user,
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
