@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import {login} from '../../Store/Slices/authSlice';
+import {connect} from "react-redux";
 
 class SignupForm extends Component {
     constructor() {
@@ -51,20 +53,12 @@ class SignupForm extends Component {
             password: this.state.password
         }
 
-        //Super Important: Connects to Server and MongoDB
         axios.post('http://localhost:4000/signup', registered)
         .then(response => {
             console.log(response.data);
-            window.location = '/login' //Redirect to login after signing up
+            this.props.login(response.data.username, response.data.email);
+            window.location = '/profile'; //Redirect to login after signing up
         })
-    
-        // //For now though, we just return the state back to empty
-        // this.setState({
-        //     fullName:'',
-        //     username:'',
-        //     email:'',
-        //     password:''
-        // })
     }
 
 
@@ -110,5 +104,13 @@ class SignupForm extends Component {
         );
     }
 }
- 
-export default SignupForm;
+
+const mapDispatchToProps = dispatch => {
+    return {
+        login: (username, email) => {
+            dispatch(login({username, email}))
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(SignupForm);
