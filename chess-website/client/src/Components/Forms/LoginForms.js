@@ -35,9 +35,7 @@ class LoginForm extends Component {
         .then((response) => {
             if (response.data?.success === true){
                 this.props.login(response.data.username, response.data.email);
-                setTimeout(() => {console.log(this.props.username)}, 1000);
-                setTimeout(() => {window.location = '/profile'}, 3000);
-                //Redirect to user profile after login successful
+                window.location = '/profile';
             }
             else{
                 console.log("login failure");
@@ -86,7 +84,7 @@ const mapDispatchToProps = dispatch => {
 }
 const mapStateToProps = state => {
     return {
-        username: state.auth.user.username,
+        user: state.auth.user,
     }
 }
 

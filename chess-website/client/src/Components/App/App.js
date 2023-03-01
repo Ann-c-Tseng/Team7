@@ -23,6 +23,7 @@ class App extends Component {
       backgroundColor: '#FFF0F5',
     };
 
+    //Split between protected routes and non-protected routes?
     return(
       <div className="App">
       {<Navigation />}                     
@@ -35,7 +36,7 @@ class App extends Component {
                 <Route path="/signup" element={<SignupForm />} />
                 <Route path="/chess" element={<ProtectedRoute component={<ChessPage userColor = {"b"}/>} />} />
                 <Route path="/matchmaking" element={<ProtectedRoute component={<Matchmaking/>} />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile" element={<ProtectedRoute component={<Profile/>} />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/rules" element={<Rules />} />
