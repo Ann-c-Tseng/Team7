@@ -13,6 +13,9 @@ class Navigation extends React.Component {
             <>
               <li><Link to="/matchmaking"><button>Play Chess!</button></Link></li>
               <li><Link to="/profile"><button>Profile</button></Link></li>
+              <li><Link to="/history"><button>History</button></Link></li>
+              <li><Link to="/leaderboard"><button>Leaderboard</button></Link></li>
+              <li><Link to="/rules"><button>Rules</button></Link></li>
             </>
             :
             <>
