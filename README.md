@@ -1,1 +1,1 @@
-# Team7
+# Team7 | Chess React Web Application
