@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
 const signUpTemplateCopy = require('../models/SignUpModels')
+const gameModel = require('../models/Games')
 const bcrypt = require('bcrypt')
 
 router.post('/signup', async (request, response) => {
@@ -69,5 +70,14 @@ router.post('/login', (request, response) => {
     })
     .catch(error => response.json(error))
 });
+
+router.post('/history', async (request, response) => {
+    let user = request.body.username;
+    console.log(user);
+    const games = [];
+    games = await gameModel.find({$or: [{black: user}, {white: user}]});
+    console.log(games);
+    response.json(games);
+})
 
 module.exports = router;
