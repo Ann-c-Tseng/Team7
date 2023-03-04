@@ -8,23 +8,23 @@ const gameManager = {
             ...playerSockets
         }
         this.games.push(game);
-
-        //this.setHandlers(game.white, game.black);
-        //this.setHandlers(game.black, game.white);
         
         game.white.emit('initialize', {color: "w"});
         game.black.emit('initialize', {color: "b"});
 
+        this.setHandlers(game.white, game.black);
+        this.setHandlers(game.black, game.white);
+
     },
 
     setHandlers(socket, opponentSocket){   
-        socket.on('move', () => {
-            opponentSocket.emit('move')
+        socket.on('move', (move) => {
+            opponentSocket.emit('opponentMove', move);
         })
     },
 
     abortGame(game){
-        
+
     }
 }
 

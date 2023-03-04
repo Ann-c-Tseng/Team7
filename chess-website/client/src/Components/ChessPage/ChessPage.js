@@ -22,6 +22,8 @@ class ChessPage extends React.Component{
 
         const whiteTimer = new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
         const blackTimer = new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
+        
+        let userColor = props.userColor || "w";
 
         this.state = {
             game: new Chess(),
@@ -30,47 +32,52 @@ class ChessPage extends React.Component{
             moves: [],
 
             turn: "w",
-            user: props.userColor || "w",
+            user: userColor,
             opponent: null,
 
             timers: [blackTimer, whiteTimer],
             topTimer: null,
             bottomTimer: null,
 
-            orientation: props.userColor || "w",
+            orientation: props.userColor || "w", //orientation should be separate from user, though they start with the same value
         }
 
-        this.state.topTimer = this.getTimer(this.getOpponentColor(props.userColor));
-        this.state.bottomTimer = this.getTimer(props.userColor);
+        this.state.topTimer = this.getTimer(this.getOpponentColor(userColor));
+        this.state.bottomTimer = this.getTimer(userColor);
         this.state.opponent = this.getOpponentColor(this.state.user);
+
+        this.socket = null;
+
     }
 
     componentDidMount(){
 
         //Begin the match making!
         //Establish a socket connection with the server
-        console.log("establishing socket");
         try{
             const socket = io("http://localhost:4000");
 
-            socket.on('initialize', (data) => {
-                console.log(data)
+            this.socket = socket;
+            this.socket.on('initialize', (data) => {
                 this.setState({
                     user: data.color,
+                    opponent: this.getOpponentColor(data.color),
                 })
-
                 if (data.color === "b"){
                     this.flipBoard();
                 }
             });
 
-            socket.on('opponentMove', (move) => {
-                this.opponentMove(move);
+            this.socket.on('opponentMove', (move) => {
+                console.log("Received opponent move: " + move)
+                this.opponentMove(move.from, move.to, move.promotion);
             });
         }
         catch(err){
             console.log(err);
         }
+        //For singleplayer testing
+        //this.startRandomMoveComp();
     }
 
     //TEMPORARY FOR RANDOM MOVE COMPUTER (move to server?)
@@ -86,24 +93,24 @@ class ChessPage extends React.Component{
         }, 4000)
     }
 
-    userMove(fromSquare, toSquare){
+    userMove(fromSquare, toSquare, promotion){
         if (this.state.gameOver || !this.usersTurn()){
             return false;
         }
-        this.attemptMove(fromSquare, toSquare);
+        this.attemptMove(fromSquare, toSquare, promotion);
     }
-    opponentMove(fromSquare, toSquare){
+    opponentMove(fromSquare, toSquare, promotion){
         if (this.state.gameOver || !this.opponentsTurn()){
             return false;
         }
-        this.attemptMove(fromSquare, toSquare);
+        this.attemptMove(fromSquare, toSquare, promotion);
     }
 
-    attemptMove(fromSquare, toSquare){
+    attemptMove(fromSquare, toSquare, promotion="q"){
         const move = {
             from: fromSquare,
             to: toSquare,
-            promotion: "q" //Always promote to queen (for now)
+            promotion: promotion //Always promote to queen (for now)
         };
 
         let moveResult;
@@ -129,12 +136,11 @@ class ChessPage extends React.Component{
 
     successfulMove(moveResult){
         //Also send move to server
+        this.socket.emit('move', moveResult.san);
+        console.log(moveResult);
         this.switchTurn();
         this.addMove(moveResult.san, moveResult.color);
-        if (this.state.moveNum > 0){
-            this.disableTimer(moveResult.color);
-            this.enableTimer(this.getOpponentColor(moveResult.color));
-        }
+        this.handleTimers(moveResult.color);
 
         this.checkGameOver();
     }
@@ -211,6 +217,25 @@ class ChessPage extends React.Component{
         this.gameOver(winner + " has won", "Timeout");
     }
 
+    //Color is of the user who just made a move
+    handleTimers(color){
+        //Don't start the timers on the first move of the game, for fairness.
+        if (this.state.moveNum === 0 && color === "w"){
+            //Do nothing
+        }
+        else{
+            this.toggleTimers(color);
+        }
+    }
+
+    beginTimers(){
+        this.enableTimer("b");
+    }
+    toggleTimers(color){
+        this.disableTimer(color);
+        this.enableTimer(this.getOpponentColor(color));
+    }
+
     enableTimer(color){
         let timer = this.getTimer(color);
         timer.enable();
@@ -223,10 +248,10 @@ class ChessPage extends React.Component{
 
     getTimer(color){
         if (color == "w"){
-            return this.state.timers[0];
-        }
-        else{
             return this.state.timers[1];
+        }
+        else if (color == "b"){
+            return this.state.timers[0];
         }
     }
 
