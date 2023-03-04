@@ -33,7 +33,7 @@ class App extends Component {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
-                <Route path="/chess" element={<ProtectedRoute component={<ChessPage userColor = {"b"}/>} />} />
+                <Route path="/chess" element={<ProtectedRoute component={<ChessPage/>} />} />
                 <Route path="/profile" element={<ProtectedRoute component={<Profile/>} />} />
                 <Route path="/history" element={<ProtectedRoute component={<History/>} />} />
                 <Route path="/leaderboard" element={<ProtectedRoute component={<Leaderboard/>} />} />

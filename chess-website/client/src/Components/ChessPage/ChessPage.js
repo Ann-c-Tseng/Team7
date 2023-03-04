@@ -30,14 +30,14 @@ class ChessPage extends React.Component{
             moves: [],
 
             turn: "w",
-            user: props.userColor,
+            user: props.userColor || "w",
             opponent: null,
 
-            timers: [whiteTimer, blackTimer],
+            timers: [blackTimer, whiteTimer],
             topTimer: null,
             bottomTimer: null,
 
-            orientation: props.userColor,
+            orientation: props.userColor || "w",
         }
 
         this.state.topTimer = this.getTimer(this.getOpponentColor(props.userColor));
@@ -50,7 +50,27 @@ class ChessPage extends React.Component{
         //Begin the match making!
         //Establish a socket connection with the server
         console.log("establishing socket");
-        const socket = io("http://localhost:4000");
+        try{
+            const socket = io("http://localhost:4000");
+
+            socket.on('initialize', (data) => {
+                console.log(data)
+                this.setState({
+                    user: data.color,
+                })
+
+                if (data.color === "b"){
+                    this.flipBoard();
+                }
+            });
+
+            socket.on('opponentMove', (move) => {
+                this.opponentMove(move);
+            });
+        }
+        catch(err){
+            console.log(err);
+        }
     }
 
     //TEMPORARY FOR RANDOM MOVE COMPUTER (move to server?)
