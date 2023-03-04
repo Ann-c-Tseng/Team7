@@ -28,8 +28,8 @@ const Table = (props) => {
         <thead>
             <tr className='header'>
                 <th></th>
-                <th>Opponent</th>
-                <th>Result</th>
+                <th>White</th>
+                <th>Black</th>
                 <th>Moves</th>
                 <th>Date</th>
             </tr>
@@ -37,9 +37,9 @@ const Table = (props) => {
         <tbody>
             {data?.map(row =>
                 <Row duration={row.duration}
-                    opponent={row.opponent}
-                    result={row.result}
-                    moves={row.moves}
+                    white={row.white}
+                    black={row.black}
+                    moves={row.numMoves}
                     date={row.date} />
             )}
         </tbody>
@@ -51,13 +51,12 @@ const History = () => {
     const user = useSelector((state) => state.auth.user.username)
 
     useEffect(() => {axios.post('http://localhost:4000/history', user).then(response => {
-        console.log(response);
         if (response) {
             setRows(response.data);
         }
     })}, [user]);
 
-    console.log(user);
+    console.log(rows);
 
     return (
         <div className='history'>

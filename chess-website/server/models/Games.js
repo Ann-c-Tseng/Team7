@@ -24,7 +24,11 @@ const game = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
+    },
+    duration: {
+        type: String,
+        required: true,
     }
 })
 
-module.exports = mongoose.model('games', game);
+module.exports = mongoose.model('games', game)

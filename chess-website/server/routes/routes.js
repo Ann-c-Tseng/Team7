@@ -73,9 +73,13 @@ router.post('/login', (request, response) => {
 
 router.post('/history', async (request, response) => {
     let user = request.body.username;
-    console.log(user);
     const games = [];
-    games = await gameModel.find({$or: [{black: user}, {white: user}]});
+    gameModel.find({black: user}).then(data => {
+        if (data) {
+            games.push(data);
+        }
+    }).catch(error => response.json(error));
+    // {$or: [{black: user}, {white: user}]}
     console.log(games);
     response.json(games);
 })
