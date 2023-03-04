@@ -7,9 +7,11 @@ import ChessGame from "./Components/ChessGame/ChessGame.js";
 import { Chess } from "chess.js";
 import Box from "@mui/material/Box";
 import './ChessPage.css';
+import {connect} from "react-redux";
+import io from "socket.io-client";
 
 
-//The model (MVC)
+
 class ChessPage extends React.Component{
     constructor(props){
         super(props);
@@ -43,8 +45,16 @@ class ChessPage extends React.Component{
         this.state.opponent = this.getOpponentColor(this.state.user);
     }
 
-    //TEMPORARY FOR RANDOM MOVE COMPUTER
     componentDidMount(){
+
+        //Begin the match making!
+        //Establish a socket connection with the server
+        console.log("establishing socket");
+        const socket = io("http://localhost:4000");
+    }
+
+    //TEMPORARY FOR RANDOM MOVE COMPUTER (move to server?)
+    startRandomMoveComp(){
         setInterval(() => {
             if (!this.opponentsTurn() || this.state.game.isGameOver()){
                 return;
@@ -250,4 +260,11 @@ class ChessPage extends React.Component{
     }
 }
 
-export default ChessPage;
+const mapStateToProps = state => {
+    return {
+        user: state.auth.user
+    }
+}
+
+
+export default connect(mapStateToProps)(ChessPage);

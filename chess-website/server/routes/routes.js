@@ -60,15 +60,4 @@ router.post('/login', (request, response) => {
     .catch(error => response.json(error))
 });
 
-router.post("/matchmaking", async (req, res) => {
-    //Verify user first
-    const userEmail = req.body.email;
-    const user = await signUpTemplateCopy.findOne({email: userEmail}).exec();
-    if (!user){
-        res.status(404).json(false);
-    }
-    //Establish connection
-    res.json(true);
-})
-
 module.exports = router;

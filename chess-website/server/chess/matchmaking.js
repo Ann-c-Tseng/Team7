@@ -1,9 +1,11 @@
-let matchmakingPlayers = [];
+const matchmaking = {
+    queue: [],
+    addToMatchmaking: () => {
 
-const addToMatchmaking = () => {
+    },
+    pairPlayers: () => {
 
+    }
 }
 
-const pairPlayers = () => {
-    
-}
+module.exports = matchmaking;

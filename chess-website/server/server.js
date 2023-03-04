@@ -11,7 +11,6 @@ const io = new Server(httpServer, {
     }
 });
 
-
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const routes = require('./routes/routes')
@@ -26,6 +25,7 @@ app.use(cors())
 app.use('/', routes)
 
 io.on('connection', (socket) => {
+    //Connection means they would like to play a game of chess.
     console.log("A user connected!");
     socket.on('disconnect', () => {
         console.log("A user disconnected!");
