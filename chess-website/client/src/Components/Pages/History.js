@@ -50,7 +50,7 @@ const History = () => {
     let [rows, setRows] = useState();
     const user = useSelector((state) => state.auth.user.username)
 
-    useEffect(() => {axios.post('http://localhost:4000/history', user).then(response => {
+    useEffect(() => {axios.post('http://localhost:4000/history', {username: user}).then(response => {
         if (response) {
             setRows(response.data);
         }

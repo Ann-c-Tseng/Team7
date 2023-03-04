@@ -1,5 +1,4 @@
 const express = require('express')
-const mongoose = require('mongoose')
 const router = express.Router()
 const signUpTemplateCopy = require('../models/SignUpModels')
 const gameModel = require('../models/Games')
@@ -73,14 +72,8 @@ router.post('/login', (request, response) => {
 
 router.post('/history', async (request, response) => {
     let user = request.body.username;
-    const games = [];
-    gameModel.find({black: user}).then(data => {
-        if (data) {
-            games.push(data);
-        }
-    }).catch(error => response.json(error));
-    // {$or: [{black: user}, {white: user}]}
-    console.log(games);
+    console.log(user);
+    const games = await gameModel.find({$or: [{black: user}, {white: user}]}).exec();
     response.json(games);
 })
 
