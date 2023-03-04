@@ -69,7 +69,7 @@ class ChessPage extends React.Component{
             });
 
             this.socket.on('opponentMove', (move) => {
-                console.log("Received opponent move: " + move)
+                console.log("Received opponent move");
                 this.opponentMove(move.from, move.to, move.promotion);
             });
         }
@@ -97,7 +97,7 @@ class ChessPage extends React.Component{
         if (this.state.gameOver || !this.usersTurn()){
             return false;
         }
-        this.attemptMove(fromSquare, toSquare, promotion);
+        this.attemptMove(fromSquare, toSquare, 'q');
     }
     opponentMove(fromSquare, toSquare, promotion){
         if (this.state.gameOver || !this.opponentsTurn()){
@@ -106,7 +106,7 @@ class ChessPage extends React.Component{
         this.attemptMove(fromSquare, toSquare, promotion);
     }
 
-    attemptMove(fromSquare, toSquare, promotion="q"){
+    attemptMove(fromSquare, toSquare, promotion){
         const move = {
             from: fromSquare,
             to: toSquare,
@@ -124,7 +124,6 @@ class ChessPage extends React.Component{
 
         this.setState({game: this.state.game});
         if (moveResult){
-            
             this.successfulMove(moveResult);
             return true;
         }
@@ -136,8 +135,12 @@ class ChessPage extends React.Component{
 
     successfulMove(moveResult){
         //Also send move to server
-        this.socket.emit('move', moveResult.san);
-        console.log(moveResult);
+        this.socket.emit('move', {
+            from: moveResult.from,
+            to: moveResult.to,
+            promotion: moveResult?.promotion
+        });
+
         this.switchTurn();
         this.addMove(moveResult.san, moveResult.color);
         this.handleTimers(moveResult.color);
