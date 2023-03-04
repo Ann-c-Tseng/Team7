@@ -1,5 +1,17 @@
 const express = require('express')
+const {createServer} = require('http');
+const {Server} = require('socket.io');
+
 const app = express()
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+    }
+});
+
+
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const routes = require('./routes/routes')
@@ -12,4 +24,13 @@ mongoose.connect(process.env.DATABASE_ACCESS, () => console.log("Database connec
 app.use(express.json())
 app.use(cors())
 app.use('/', routes)
-app.listen(4000, () => console.log("server is up and running"))
+
+io.on('connection', (socket) => {
+    console.log("A user connected!");
+    socket.on('disconnect', () => {
+        console.log("A user disconnected!");
+    })
+})
+
+httpServer.listen(4000, () => console.log("server is up and running"))
+

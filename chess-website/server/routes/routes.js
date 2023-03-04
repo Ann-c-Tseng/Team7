@@ -67,21 +67,8 @@ router.post("/matchmaking", async (req, res) => {
     if (!user){
         res.status(404).json(false);
     }
-    res.setHeader('content-type', 'text/plain');
-    res.write("Test");
-    setTimeout(() => {
-        res.write("Test 2");
-    }, 3000);
-    
-    setTimeout(() => {
-        res.write("Hello World!");
-        res.end();
-        console.log("ended");
-    }, 5000);
-})
-
-router.post("/chessmove", async (req, res) => {
-    
+    //Establish connection
+    res.json(true);
 })
 
 module.exports = router;
