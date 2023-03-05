@@ -4,6 +4,7 @@ import TimerView from "./Components/Timer/TimerView.js";
 import Timer from "./Components/Timer/Timer.js";
 import UserCard from "./Components/UserCard/UserCard.js";
 import ChessGame from "./Components/ChessGame/ChessGame.js";
+import PromotionSelect from './Components/PromotionSelect/PromotionSelect.js';
 import { Chess } from "chess.js";
 import Box from "@mui/material/Box";
 import './ChessPage.css';
@@ -32,6 +33,7 @@ class ChessPage extends React.Component{
             moves: [],
 
             turn: "w",
+            promoting: false,
             user: userColor,
             opponent: null,
 
@@ -97,12 +99,13 @@ class ChessPage extends React.Component{
         }, 4000)
     }
 
-    userMove(fromSquare, toSquare, promotion){
+    userMove(fromSquare, toSquare, piece){
         console.log(promotion);
+
         if (this.state.gameOver || !this.usersTurn()){
             return false;
         }
-        this.attemptMove(fromSquare, toSquare, 'q');
+        this.attemptMove(fromSquare, toSquare, promotion);
     }
     opponentMove(fromSquare, toSquare, promotion){
         if (this.state.gameOver || !this.opponentsTurn()){
@@ -307,11 +310,10 @@ class ChessPage extends React.Component{
                             />
                         </Box>
                         <GameInfo moves={this.state.moves} className="Info"/>
+                        { this.state.promoting ? <PromotionSelect userColor={this.state.user}/> : null}
                     </Box>
-                    
                     <UserCard className="UserCard" username="Myself"/>
                 </Box>
-                
             </Box>
         )
     }
