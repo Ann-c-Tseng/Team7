@@ -31,6 +31,7 @@ io.on('connection', (socket) => {
     //Connection means they would like to play a game of chess.
     console.log("A user connected!");
 
+    //Disconnecting before a match is made should cause no penalty
     socket.on('disconnect', () => {
         console.log("A user disconnected!");
     })

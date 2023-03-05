@@ -10,11 +10,16 @@ const gameManager = {
     
     addNewGame(playerSockets) {
         const game = {
-            state: null,
+            state: new this.Chess.Chess(),
+            spectators: [],
             ...playerSockets
         }
         this.games.push(game);
         
+        //Each socket needs a reference to their own game
+        game.white.game = game.state;
+        game.black.game = game.state;
+
         game.white.emit('initialize', {color: "w"});
         game.black.emit('initialize', {color: "b"});
 
@@ -22,15 +27,34 @@ const gameManager = {
         this.setHandlers(game.black, game.white);
     },
 
-    setHandlers(socket, opponentSocket){   
+    setHandlers(socket, opponentSocket){
+        //A game has been made at this point. If the user leaves after the first moves are made then
+        //they should be penalized.
         socket.on('move', (move) => {
-            opponentSocket.emit('opponentMove', move);
+            try{
+                this.handleMove(socket.game, move);
+                opponentSocket.emit('opponentMove', move);
+            }
+            catch(err){
+                console.log("Invalid move was sent to the server");
+                socket.emit('invalid', {message: "Invalid move"});
+            }
+            
         })
     },
 
-    abortGame(game){
+    //Do stuff upon game overs
+    handleMove(game, move){
+        game.move(move);
+        if (game.isCheckmate()){
+            console.log("checkmate!");
+        }
+    },
 
+    handleGameOver(){
+        //send to DB
     }
+
 }
 
 loader();

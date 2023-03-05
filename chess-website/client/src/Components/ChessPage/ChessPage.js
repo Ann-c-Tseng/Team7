@@ -72,6 +72,10 @@ class ChessPage extends React.Component{
                 console.log("Received opponent move");
                 this.opponentMove(move.from, move.to, move.promotion);
             });
+            
+            this.socket.on('invalid', (data) => {
+                console.log(data.message);   
+            })
         }
         catch(err){
             console.log(err);
@@ -134,12 +138,16 @@ class ChessPage extends React.Component{
     }
 
     successfulMove(moveResult){
-        //Also send move to server
-        this.socket.emit('move', {
-            from: moveResult.from,
-            to: moveResult.to,
-            promotion: moveResult?.promotion
-        });
+        
+        //Only send move to server if it's this user's move
+        if (moveResult.color === this.state.user){
+            this.socket.emit('move', {
+                from: moveResult.from,
+                to: moveResult.to,
+                promotion: moveResult?.promotion
+            });
+        }
+        
 
         this.switchTurn();
         this.addMove(moveResult.san, moveResult.color);
