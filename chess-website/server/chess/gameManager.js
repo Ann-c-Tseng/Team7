@@ -47,7 +47,7 @@ const gameManager = {
     handleMove(game, move){
         game.move(move);
         if (game.isCheckmate()){
-            console.log("checkmate!");
+            this.handleGameOver();
         }
     },
 
