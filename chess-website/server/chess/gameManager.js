@@ -1,4 +1,10 @@
-//TODO: Verify chess moves made by players. The chess.js import is being weird.
+//node got fussy when trying to require chess.js normally. This is a mess
+async function loader(){
+    const Chess = await import('chess.js')
+    //Give the game manager access to the chess library
+    gameManager.Chess = Chess;
+}
+
 const gameManager = {
     games: [],
     
@@ -14,7 +20,6 @@ const gameManager = {
 
         this.setHandlers(game.white, game.black);
         this.setHandlers(game.black, game.white);
-
     },
 
     setHandlers(socket, opponentSocket){   
@@ -27,5 +32,7 @@ const gameManager = {
 
     }
 }
+
+loader();
 
 module.exports = gameManager;
