@@ -98,6 +98,7 @@ class ChessPage extends React.Component{
     }
 
     userMove(fromSquare, toSquare, promotion){
+        console.log(promotion);
         if (this.state.gameOver || !this.usersTurn()){
             return false;
         }
