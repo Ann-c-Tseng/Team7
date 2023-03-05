@@ -38,6 +38,7 @@ class Timer{
         this.time = 0;
         this.disable();
         this.finishedCallback(this.color);
+        console.log("finish called");
     }
 
 

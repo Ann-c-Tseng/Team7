@@ -20,6 +20,11 @@ const signUpTemplate = new mongoose.Schema({
     date:{
         type:Date,
         default:Date.now
+    },
+    elo: {
+        type: Number,
+        default: 0,
+        required: true
     }
 })
 
