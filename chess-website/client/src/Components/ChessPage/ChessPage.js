@@ -91,6 +91,17 @@ class ChessPage extends React.Component{
             this.socket.on('disconnect', (reason) => {
                 console.log("Disconnected: " + reason)
             });
+            this.socket.on('requestDraw', () => {
+                console.log("Opponent requested a draw");
+            })
+            this.socket.on('drawConfirm', () => {
+                this.gameOver("Draw", "Agreement");
+            })
+            this.socket.on('resign', () => {
+                console.log("Opponent resigned");
+                let winner = (this.state.user === "w" ? "White" : "Black");
+                this.gameOver(winner + " has won", "Resignation");
+            })
 
             this.socket.on('opponentMove', (move) => {
                 console.log("Received opponent move");
@@ -313,13 +324,19 @@ class ChessPage extends React.Component{
     }
     
     requestDraw(){
-        //Socket emit draw
+        if (this.state.gameOver){
+            return;
+        }
+        this.socket.emit('requestDraw');
         //TODO add a confirm
         console.log("Requested draw");
     }
 
     resign(){
-        //Socket emit resign
+        if (this.state.gameOver){
+            return;
+        }
+        this.socket.emit('resign');
         //TODO add a confirm
         console.log("Resigned");
     }

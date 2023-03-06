@@ -19,8 +19,11 @@ const gameManager = {
         this.games.push(game);
         
         //Each socket needs a reference to their own game
-        game.white.game = game.state;
-        game.black.game = game.state;
+        game.white.game = game;
+        game.black.game = game;
+
+        game.white.drawRequest = false;
+        game.black.drawRequest = false;
 
         game.white.emit('initialize', {color: "w", opponent: {
             username: game.black.user.username,
@@ -48,11 +51,29 @@ const gameManager = {
             }
             
         })
+        socket.on('requestDraw', () => {
+            if (opponentSocket.drawRequest){
+                socket.emit('drawConfirm');
+                opponentSocket.emit('drawConfirm');
+                this.handleGameOver();
+                
+            }
+            else{
+                opponentSocket.emit('requestDraw');
+                socket.drawRequest = true;
+            }
+            
+        })
+        socket.on('resign', () => {
+            opponentSocket.emit('resign');
+            this.handleGameOver();
+        })
     },
 
-    //Do stuff upon game overs
     handleMove(game, move){
         game.move(move);
+        game.white.drawRequest = false;
+        game.black.drawRequest = false;
         if (game.isCheckmate()){
             this.handleGameOver();
         }
