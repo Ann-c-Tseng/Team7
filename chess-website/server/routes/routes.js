@@ -47,7 +47,7 @@ router.post('/login', async (request, response, next) => {
     let InputPassword = request.body.password;
 
     try{
-        const userData = await await findUser(InputEmail);
+        const userData = await findUser(InputEmail);
         
         //Check email
         if(!userData) {
