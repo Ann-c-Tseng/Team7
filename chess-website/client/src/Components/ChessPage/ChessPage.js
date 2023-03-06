@@ -67,7 +67,7 @@ class ChessPage extends React.Component{
         //Begin the match making!
         //Establish a socket connection with the server
         try{
-            const socket = io("http://localhost:4000");
+            const socket = io("http://localhost:4000", {query: {email: this.props.user.email}});
 
             this.socket = socket;
             this.socket.on('initialize', (data) => {
@@ -98,7 +98,7 @@ class ChessPage extends React.Component{
             })
         }
         catch(err){
-            console.log(err);
+            console.err("Connection error");
         }
         //For singleplayer testing
         //this.startRandomMoveComp();

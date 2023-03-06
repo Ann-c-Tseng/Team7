@@ -1,4 +1,5 @@
 const gameManager = require("./gameManager");
+const findUser = require("../dbActions/findUser");
 
 const matchmaking = {
     queue: [],
@@ -22,13 +23,20 @@ const matchmaking = {
     }
 }
 
-const newConnection = (socket) => {
+const newConnection = async (socket) => {
     //Connection means they would like to play a game of chess.
-    console.log("A user connected!");
+
+    const user = await findUser(socket.handshake.query.email);
+    if (!user){
+        socket.disconnect();
+        return;
+    }
+
+    socket.user = user;
 
     //Disconnecting before a match is made should cause no penalty
     socket.on('disconnect', () => {
-        console.log("A user disconnected!");
+        console.log(socket.user.username + " has disconnected!");
     })
 
 
