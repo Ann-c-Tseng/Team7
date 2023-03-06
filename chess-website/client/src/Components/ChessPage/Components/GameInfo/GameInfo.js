@@ -40,7 +40,7 @@ class GameInfo extends React.Component{
                 <Box className="GameActionButtons">
                 {
                     this.props.drawRequestPopup && 
-                    <Box className="drawRequest popup active">
+                    <Box className="drawRequest popup">
                         <p>Opponent requested draw</p>
                     </Box>
                 }

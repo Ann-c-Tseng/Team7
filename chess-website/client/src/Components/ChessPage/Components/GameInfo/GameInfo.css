@@ -58,11 +58,11 @@ p > span:nth-child(4){
 }
 
 /*TODO: popup animation doesn't seem to work*/
-.popup{
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+@keyframes fadeIn {
+    0% { opacity: 0;}
+    100% {opacity: 1;}
 }
-
-.popup.active{
+.popup{
     opacity: 1;
+    animation: fadeIn 1s;
 }
