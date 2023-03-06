@@ -1,3 +1,5 @@
+const gameManager = require("./gameManager");
+
 const matchmaking = {
     queue: [],
     addToMatchmaking(socket) {
@@ -20,4 +22,24 @@ const matchmaking = {
     }
 }
 
-module.exports = matchmaking;
+const newConnection = (socket) => {
+    //Connection means they would like to play a game of chess.
+    console.log("A user connected!");
+
+    //Disconnecting before a match is made should cause no penalty
+    socket.on('disconnect', () => {
+        console.log("A user disconnected!");
+    })
+
+
+    const game = matchmaking.addToMatchmaking(socket)
+    if (game !== null){
+        console.log("a match made!");
+        gameManager.addNewGame(game);
+    }
+}
+
+module.exports = {
+    matchmaking,
+    newConnection
+};
