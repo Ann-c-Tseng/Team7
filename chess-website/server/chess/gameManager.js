@@ -46,6 +46,7 @@ const gameManager = {
                 opponentSocket.emit('opponentMove', move);
             }
             catch(err){
+                console.log(err)
                 console.log("Invalid move was sent to the server");
                 socket.emit('invalid', {message: "Invalid move"});
             }
@@ -71,10 +72,10 @@ const gameManager = {
     },
 
     handleMove(game, move){
-        game.move(move);
+        game.state.move(move);
         game.white.drawRequest = false;
         game.black.drawRequest = false;
-        if (game.isCheckmate()){
+        if (game.state.isCheckmate()){
             this.handleGameOver();
         }
     },
