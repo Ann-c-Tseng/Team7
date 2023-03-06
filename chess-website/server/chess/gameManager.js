@@ -20,8 +20,13 @@ const gameManager = {
         game.white.game = game.state;
         game.black.game = game.state;
 
-        game.white.emit('initialize', {color: "w"});
-        game.black.emit('initialize', {color: "b"});
+        game.white.emit('initialize', {color: "w", opponent: {
+            username: game.black.user.username,
+        }});
+
+        game.black.emit('initialize', {color: "b", opponent: {
+            username: game.white.user.username,
+        }});
 
         this.setHandlers(game.white, game.black);
         this.setHandlers(game.black, game.white);
