@@ -379,7 +379,7 @@ class ChessPage extends React.Component{
                         />
                         :
                         <UserCard className="UserCard"
-                            username="User"
+                            username="Opponent"
                             elo={1000}
                         />
                     }
