@@ -2,16 +2,23 @@
     margin-left:20px;
     padding:0px;
     background-color: #d6d4cc;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex-direction:column;
     border: solid #96948f;
     border-width: 3px;
     border-radius: 3px;
     box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
     max-height: 675px;
+    display:flex;
+    flex-direction:column;
+    justify-content: space-between;
 
 }
+.Moves{
+    display:flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 .MoveList p{
     display: flex;
     justify-content: space-between;
@@ -39,7 +46,6 @@ p > span:nth-child(4){
 .DarkMove{
     background-color: rgba(0,0,0,0.15);
 }
-
 
 .MoveText{
     width:250px;

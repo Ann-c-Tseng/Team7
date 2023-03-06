@@ -22,6 +22,9 @@ class ChessPage extends React.Component{
         this.timerFinishCallback = this.timerFinishCallback.bind(this);
         
         this.changePromotionSelection = this.changePromotionSelection.bind(this);
+        this.flipBoard = this.flipBoard.bind(this);
+        this.requestDraw = this.requestDraw.bind(this);
+        this.resign = this.resign.bind(this);
 
         const whiteTimer = new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
         const blackTimer = new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
@@ -44,12 +47,16 @@ class ChessPage extends React.Component{
             topTimer: null,
             bottomTimer: null,
 
+            topUser: null,
+            bottomUser: props.user,
+
             orientation: props.userColor || "w", //orientation should be separate from user, though they start with the same value
         }
 
+        this.state.opponent = this.getOpponentColor(this.state.user);
+
         this.state.topTimer = this.getTimer(this.getOpponentColor(userColor));
         this.state.bottomTimer = this.getTimer(userColor);
-        this.state.opponent = this.getOpponentColor(this.state.user);
 
         this.socket = null;
 
@@ -71,6 +78,12 @@ class ChessPage extends React.Component{
                 })
                 if (data.color === "b"){
                     this.flipBoard();
+
+                    this.setState({
+                        topUser: data.opponent,
+                        bottomUser: this.props.user
+                    })
+
                 }
             });
 
@@ -278,9 +291,15 @@ class ChessPage extends React.Component{
     }
 
     flipBoard(){
+        console.log(this.state.topUser);
+        console.log(this.state.bottomUser);
         this.setState({
             topTimer: this.state.bottomTimer,
             bottomTimer: this.state.topTimer,
+
+            topUser: this.state.bottomUser,
+            bottomUser: this.state.topUser,
+
             orientation: this.getOpponentColor(this.state.orientation),
         });
     }
@@ -289,12 +308,36 @@ class ChessPage extends React.Component{
             promotionChoice: choice
         })
     }
+    
+    requestDraw(){
+        //Socket emit draw
+        //TODO add a confirm
+        console.log("Requested draw");
+    }
+
+    resign(){
+        //Socket emit resign
+        //TODO add a confirm
+        console.log("Resigned");
+    }
 
     render(){
         return (
             <Box className="ChessPage">
                 <Box className="GameUserContainer">
-                    <UserCard className="UserCard" username="Opponent"/>
+                    {
+                        this.state.topUser ?
+                        <UserCard className="UserCard"
+                            username={this.state.topUser.username}
+                            elo={this.state.topUser.elo}
+                        />
+                        :
+                        <UserCard className="UserCard"
+                            username="Opponent"
+                            elo={1000}
+                        />
+                    }
+                    
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
                             <TimerView 
@@ -318,10 +361,27 @@ class ChessPage extends React.Component{
                                 boardOrientation={this.state.orientation}
                             />
                         </Box>
-                        <GameInfo moves={this.state.moves} className="Info"/>
+                        <GameInfo 
+                            moves={this.state.moves}
+                            className="Info"
+                            flipBoard={this.flipBoard}
+                            requestDraw={this.requestDraw}
+                            resign={this.resign}
+                            />
                         
                     </Box>
-                    <UserCard className="UserCard" username="Myself"/>
+                    {
+                        this.state.bottomUser ?
+                        <UserCard className="UserCard"
+                            username={this.state.bottomUser.username}
+                            elo={this.state.bottomUser.elo}
+                        />
+                        :
+                        <UserCard className="UserCard"
+                            username="User"
+                            elo={1000}
+                        />
+                    }
                 </Box>
             </Box>
         )

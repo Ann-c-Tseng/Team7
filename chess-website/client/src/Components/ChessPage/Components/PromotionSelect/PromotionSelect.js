@@ -17,9 +17,9 @@ const whitePieces = [{picture: whiteQueen, value: 'q'}, {picture: whiteRook, val
 const blackPieces = [{picture: blackQueen, value: 'q'}, {picture: blackRook, value: 'r'}, {picture: blackBishop, value: 'b'}, {picture: blackKnight, value: 'n'}];
 
 
-
+//TODO maybe change to SVGIcon
 const buttonMaker = (button) => {
-    return (<ToggleButton value={button.value}><img src={button.picture} /></ToggleButton>)
+    return (<ToggleButton key={button.value} value={button.value}><img src={button.picture} /></ToggleButton>)
 }
 
 class PromotionSelect extends React.Component{
