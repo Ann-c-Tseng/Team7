@@ -74,6 +74,7 @@ class ChessPage extends React.Component{
                 this.setState({
                     game: new Chess(), 
                     user: data.color,
+                    topUser: data.opponent,
                     opponent: this.getOpponentColor(data.color),
                 })
                 if (data.color === "b"){
