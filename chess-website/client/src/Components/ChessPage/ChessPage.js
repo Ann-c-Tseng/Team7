@@ -5,6 +5,7 @@ import Timer from "./Components/Timer/Timer.js";
 import UserCard from "./Components/UserCard/UserCard.js";
 import ChessGame from "./Components/ChessGame/ChessGame.js";
 import PromotionSelect from './Components/PromotionSelect/PromotionSelect.js';
+import ResultPopup from './Components/ResultPopup/ResultPopup.js';
 import { Chess } from "chess.js";
 import Box from "@mui/material/Box";
 import './ChessPage.css';
@@ -354,6 +355,8 @@ class ChessPage extends React.Component{
 
     render(){
         return (
+            <>
+            <ResultPopup />
             <Box className="ChessPage">
                 <Box className="GameUserContainer">
                     {
@@ -416,6 +419,7 @@ class ChessPage extends React.Component{
                     }
                 </Box>
             </Box>
+            </>
         )
     }
 }
