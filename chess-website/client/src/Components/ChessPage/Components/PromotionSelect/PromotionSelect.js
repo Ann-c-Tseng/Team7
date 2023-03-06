@@ -1,5 +1,5 @@
 import React from 'react';
-import {IconButton, ButtonGroup} from "@mui/material";
+import {ToggleButton, ToggleButtonGroup, Box} from "@mui/material";
 
 import blackQueen from "./pieces/black-queen.svg";
 import blackRook from "./pieces/black-rook.svg";
@@ -11,27 +11,51 @@ import whiteRook from "./pieces/white-rook.svg";
 import whiteBishop from "./pieces/white-bishop.svg";
 import whiteKnight from "./pieces/white-knight.svg";
 
+//ToggleButtonGroup doesn't accept fragments, so provide an array of the buttons instead:
+
+const whitePieces = [{picture: whiteQueen, value: 'q'}, {picture: whiteRook, value: 'r'}, {picture: whiteBishop, value: 'b'}, {picture: whiteKnight, value: 'n'}];
+const blackPieces = [{picture: blackQueen, value: 'q'}, {picture: blackRook, value: 'r'}, {picture: blackBishop, value: 'b'}, {picture: blackKnight, value: 'n'}];
+
+
+
+const buttonMaker = (button) => {
+    return (<ToggleButton value={button.value}><img src={button.picture} /></ToggleButton>)
+}
+
 class PromotionSelect extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            selected: 'q'
+        }
+        this.setActive = this.setActive.bind(this);
+    }
+    setActive(event, newSelection){
+        event.preventDefault();
+        if (newSelection === null){
+            return;
+        }
+
+        this.setState({
+            selected: newSelection
+        });
+
+        this.props.changeHandler(newSelection);
+    }
 
     render(){
         return (
-            <ButtonGroup orientation="vertical">
-                {
-                    this.props.user === "w" ? 
-                    <>
-                        <IconButton><img src={blackQueen} /></IconButton>
-                        <IconButton><img src={blackRook} /></IconButton>
-                        <IconButton><img src={blackBishop} /></IconButton>
-                        <IconButton><img src={blackKnight} /></IconButton>
-                    </> :
-                    <>
-                        <IconButton><img src={whiteQueen} /></IconButton>
-                        <IconButton><img src={whiteRook} /></IconButton>
-                        <IconButton><img src={whiteBishop} /></IconButton>
-                        <IconButton><img src={whiteKnight} /></IconButton>
-                    </>
-                }
-            </ButtonGroup>
+            <Box>
+                <p className="Text">Promote to:</p>
+                <ToggleButtonGroup 
+                    className="Buttons" 
+                    orientation="vertical" 
+                    exclusive
+                    value={this.state.selected}
+                    onChange={this.setActive}>
+                        { this.props.user === "w" ? whitePieces.map(buttonMaker) : blackPieces.map(buttonMaker) }
+                </ToggleButtonGroup>
+            </Box>
         )
     }
 }

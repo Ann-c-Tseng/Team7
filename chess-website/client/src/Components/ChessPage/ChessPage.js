@@ -20,6 +20,8 @@ class ChessPage extends React.Component{
         this.userMove = this.userMove.bind(this);
         this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
         this.timerFinishCallback = this.timerFinishCallback.bind(this);
+        
+        this.changePromotionSelection = this.changePromotionSelection.bind(this);
 
         const whiteTimer = new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
         const blackTimer = new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
@@ -33,7 +35,8 @@ class ChessPage extends React.Component{
             moves: [],
 
             turn: "w",
-            promoting: false,
+            promoting: true,
+            promotionChoice: 'q',
             user: userColor,
             opponent: null,
 
@@ -62,6 +65,7 @@ class ChessPage extends React.Component{
             this.socket = socket;
             this.socket.on('initialize', (data) => {
                 this.setState({
+                    game: new Chess(), 
                     user: data.color,
                     opponent: this.getOpponentColor(data.color),
                 })
@@ -99,13 +103,12 @@ class ChessPage extends React.Component{
         }, 4000)
     }
 
-    userMove(fromSquare, toSquare, piece){
-        console.log(promotion);
+    userMove(fromSquare, toSquare){
 
         if (this.state.gameOver || !this.usersTurn()){
             return false;
         }
-        this.attemptMove(fromSquare, toSquare, promotion);
+        this.attemptMove(fromSquare, toSquare, this.state.promotionChoice);
     }
     opponentMove(fromSquare, toSquare, promotion){
         if (this.state.gameOver || !this.opponentsTurn()){
@@ -281,6 +284,11 @@ class ChessPage extends React.Component{
             orientation: this.getOpponentColor(this.state.orientation),
         });
     }
+    changePromotionSelection(choice){
+        this.setState({
+            promotionChoice: choice
+        })
+    }
 
     render(){
         return (
@@ -295,6 +303,7 @@ class ChessPage extends React.Component{
                                 time={this.state.topTimer.time}
                                 enabled={this.state.topTimer.enabled}
                             />
+                            { this.state.promoting ? <PromotionSelect changeHandler={this.changePromotionSelection} user={this.state.user}/> : null}
                             <TimerView 
                                 className="BottomTimer"
                                 color={this.state.bottomTimer.color}
@@ -310,7 +319,7 @@ class ChessPage extends React.Component{
                             />
                         </Box>
                         <GameInfo moves={this.state.moves} className="Info"/>
-                        { this.state.promoting ? <PromotionSelect userColor={this.state.user}/> : null}
+                        
                     </Box>
                     <UserCard className="UserCard" username="Myself"/>
                 </Box>
