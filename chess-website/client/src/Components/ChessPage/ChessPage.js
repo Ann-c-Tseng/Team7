@@ -88,6 +88,10 @@ class ChessPage extends React.Component{
                 }
             });
 
+            this.socket.on('disconnect', (reason) => {
+                console.log("Disconnected: " + reason)
+            });
+
             this.socket.on('opponentMove', (move) => {
                 console.log("Received opponent move");
                 this.opponentMove(move.from, move.to, move.promotion);
@@ -292,8 +296,6 @@ class ChessPage extends React.Component{
     }
 
     flipBoard(){
-        console.log(this.state.topUser);
-        console.log(this.state.bottomUser);
         this.setState({
             topTimer: this.state.bottomTimer,
             bottomTimer: this.state.topTimer,

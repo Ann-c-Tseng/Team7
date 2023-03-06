@@ -5,6 +5,8 @@ async function loader(){
     gameManager.Chess = Chess;
 }
 
+const connectedUsers = require("../utils/connectedUsers");
+
 const gameManager = {
     games: [],
     
