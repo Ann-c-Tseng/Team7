@@ -50,3 +50,19 @@ p > span:nth-child(4){
 .MoveText{
     width:250px;
 }
+
+.drawRequest{
+    background-color:rgb(218, 218, 218);
+    border-radius: 5px;
+    text-align: center;
+}
+
+/*TODO: popup animation doesn't seem to work*/
+.popup{
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.popup.active{
+    opacity: 1;
+}

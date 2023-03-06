@@ -42,6 +42,7 @@ class ChessPage extends React.Component{
             promotionChoice: 'q',
             user: userColor,
             opponent: null,
+            drawRequest: false,
 
             timers: [blackTimer, whiteTimer],
             topTimer: null,
@@ -75,6 +76,7 @@ class ChessPage extends React.Component{
                     game: new Chess(), 
                     user: data.color,
                     topUser: data.opponent,
+                    drawRequest: false,
                     opponent: this.getOpponentColor(data.color),
                 })
                 if (data.color === "b"){
@@ -93,9 +95,15 @@ class ChessPage extends React.Component{
             });
             this.socket.on('requestDraw', () => {
                 console.log("Opponent requested a draw");
+                this.setState({
+                    drawRequest: true
+                });
             })
             this.socket.on('drawConfirm', () => {
                 this.gameOver("Draw", "Agreement");
+                this.setState({
+                    drawRequest: false
+                });
             })
             this.socket.on('resign', () => {
                 console.log("Opponent resigned");
@@ -174,7 +182,10 @@ class ChessPage extends React.Component{
     }
 
     successfulMove(moveResult){
-        
+        this.setState({
+            drawRequest: false
+        })
+
         //Only send move to server if it's this user's move
         if (moveResult.color === this.state.user){
             this.socket.emit('move', {
@@ -384,9 +395,10 @@ class ChessPage extends React.Component{
                         <GameInfo 
                             moves={this.state.moves}
                             className="Info"
-                            flipBoard={this.flipBoard}
-                            requestDraw={this.requestDraw}
-                            resign={this.resign}
+                            flipBoardHandler={this.flipBoard}
+                            requestDrawHandler={this.requestDraw}
+                            resignHandler={this.resign}
+                            drawRequestPopup={this.state.drawRequest}
                             />
                         
                     </Box>

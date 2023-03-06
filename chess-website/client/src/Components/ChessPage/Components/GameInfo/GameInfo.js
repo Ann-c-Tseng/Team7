@@ -36,11 +36,18 @@ class GameInfo extends React.Component{
                         }
                     </Box>
                 </Box>
+                
                 <Box className="GameActionButtons">
+                {
+                    this.props.drawRequestPopup && 
+                    <Box className="drawRequest popup active">
+                        <p>Opponent requested draw</p>
+                    </Box>
+                }
                     <ButtonGroup>
-                        <IconButton size="large" title="Flip Board" onClick={this.props.flipBoard}><RepeatRounded /></IconButton>
-                        <IconButton size="large" title="Request Draw" onClick={this.props.requestDraw}><HandshakeIcon /></IconButton>
-                        <IconButton size="large" title="Resign" onClick={this.props.resign}><FlagIcon /></IconButton>
+                        <IconButton size="large" title="Flip Board" onClick={this.props.flipBoardHandler}><RepeatRounded /></IconButton>
+                        <IconButton size="large" title="Request Draw" onClick={this.props.requestDrawHandler}><HandshakeIcon /></IconButton>
+                        <IconButton size="large" title="Resign" onClick={this.props.resignHandler}><FlagIcon /></IconButton>
                     </ButtonGroup>
                 </Box>
             </Box>
