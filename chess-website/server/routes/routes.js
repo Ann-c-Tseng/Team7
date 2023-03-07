@@ -78,6 +78,7 @@ router.post('/history', async (request, response) => {
 
 router.post('/leaderboard', async (request, response) => {
     const users = await signUpTemplateCopy.find().exec();
+    console.log(users);
     response.json(users);
 })
 

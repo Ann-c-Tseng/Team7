@@ -1,6 +1,7 @@
 import React from 'react';
 
 function Users({ UserData }) {
+    console.log(UserData);
     return (
         <div id="profile">
             {Item(UserData)}
@@ -9,18 +10,14 @@ function Users({ UserData }) {
 }
 
 function Item(data) {
-    const userProfilePic = require('../../Images/tentativeProfile.png');
     return (
         <>
             {
                 data.map((user, index) => (
                     <div className="flex" key={index}>
                         <div className="item">
-                            <img src={userProfilePic} alt="" />
-
                             <div className="info">
                                 <h3 className='name text-dark'>{user.username}</h3>
-                                <span>Clan #1</span>
                             </div>
                         </div>
                         <div className="item">

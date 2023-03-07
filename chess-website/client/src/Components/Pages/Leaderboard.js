@@ -5,56 +5,46 @@ import Users from '../Users/Users';
 
 function Leaderboard() {
 
-  const [period, setPeriod] = useState(0);
-  const [users, setUsers] = useState();
+  let [users, setUsers] = useState();
+
+  // useEffect(async () => {
+  //   async function fetchUsers() {
+  //     try {
+  //       axios.post('http://localhost:4000/leaderboard').then(response => {
+  //         console.log(response);
+  //         if (response) {
+  //           setUsers(response.data);
+  //         }
+  //       })
+  //     } catch (error) {
+  //       console.error(error.response.data);
+  //     }
+  //   }
+  //   fetchUsers();
+  // }, []);
 
   useEffect(() => {
     axios.post('http://localhost:4000/leaderboard').then(response => {
-      if (response) {
-        setUsers(response.data);
-      }
+        if (response) {
+            setUsers(response.data);
+        }
     })
-  }, []);
+});
 
-  const handleClick = (e) => {
-    setPeriod(e.target.dataset.id);
-  }
+  // users.sort((a, b) => {
+  //   if (a.elo === b.elo) {
+  //     return b.elo - a.elo;
+  //   } else {
+  //     return b.elo - a.elo;
+  //   }
+  // })
 
   return (
     <div className="board">
       <h1 className="leaderboard">Leaderboard</h1>
-
-      <div className="duration">
-        <button onClick={handleClick} data-id='7'>7 Days</button>
-        <button onClick={handleClick} data-id='30'>30 Days</button>
-        <button onClick={handleClick} data-id='0'>All Time</button>
-      </div>
-
-      <Users UserData={between(users, period)}></Users>
-
+      <Users UserData={users}></Users>
     </div>
   )
-}
-
-function between(data, between) {
-  const today = new Date();
-  const previous = new Date();
-  let previousDate = previous.getDate() - between
-  previous.setDate(previousDate);
-
-  let filter = data.filter(val => {
-    let userDate = new Date(val.dt);
-    if (between == 0) return val;
-    return previous <= userDate && today >= userDate;
-  })
-
-  return filter.sort((a, b) => {
-    if (a.elo === b.elo) {
-      return b.elo - a.elo;
-    } else {
-      return b.elo - a.elo;
-    }
-  });
 }
 
 const UserData = [
