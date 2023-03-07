@@ -1,3 +1,5 @@
+
+
 //node got fussy when trying to require chess.js normally. This is a mess
 async function loader(){
     const Chess = await import('chess.js')
@@ -51,8 +53,10 @@ const gameManager = {
         }
     },
 
-    handleGameOver(){
+    handleGameOver(game){
         //send to DB
+        // game.state.p
+
     }
 
 }
