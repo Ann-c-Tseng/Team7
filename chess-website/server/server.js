@@ -15,9 +15,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const routes = require('./routes/routes')
 const cors = require('cors')
-
 const matchmaking = require("./chess/matchmaking");
-const gameManager = require("./chess/gameManager");
 
 dotenv.config()
 
@@ -27,22 +25,7 @@ app.use(express.json())
 app.use(cors())
 app.use('/', routes)
 
-io.on('connection', (socket) => {
-    //Connection means they would like to play a game of chess.
-    console.log("A user connected!");
-
-    //Disconnecting before a match is made should cause no penalty
-    socket.on('disconnect', () => {
-        console.log("A user disconnected!");
-    })
-
-
-    const game = matchmaking.addToMatchmaking(socket)
-    if (game !== null){
-        console.log("a match made!");
-        gameManager.addNewGame(game);
-    }
-})
+io.on('connection', matchmaking.newConnection)
 
 httpServer.listen(4000, () => console.log("server is up and running"))
 

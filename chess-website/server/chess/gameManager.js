@@ -5,6 +5,8 @@ async function loader(){
     gameManager.Chess = Chess;
 }
 
+const connectedUsers = require("../utils/connectedUsers");
+
 const gameManager = {
     games: [],
     
@@ -17,11 +19,19 @@ const gameManager = {
         this.games.push(game);
         
         //Each socket needs a reference to their own game
-        game.white.game = game.state;
-        game.black.game = game.state;
+        game.white.game = game;
+        game.black.game = game;
 
-        game.white.emit('initialize', {color: "w"});
-        game.black.emit('initialize', {color: "b"});
+        game.white.drawRequest = false;
+        game.black.drawRequest = false;
+
+        game.white.emit('initialize', {color: "w", opponent: {
+            username: game.black.user.username,
+        }});
+
+        game.black.emit('initialize', {color: "b", opponent: {
+            username: game.white.user.username,
+        }});
 
         this.setHandlers(game.white, game.black);
         this.setHandlers(game.black, game.white);
@@ -36,17 +46,36 @@ const gameManager = {
                 opponentSocket.emit('opponentMove', move);
             }
             catch(err){
+                console.log(err)
                 console.log("Invalid move was sent to the server");
                 socket.emit('invalid', {message: "Invalid move"});
             }
             
         })
+        socket.on('requestDraw', () => {
+            if (opponentSocket.drawRequest){
+                socket.emit('drawConfirm');
+                opponentSocket.emit('drawConfirm');
+                this.handleGameOver();
+                
+            }
+            else{
+                opponentSocket.emit('requestDraw');
+                socket.drawRequest = true;
+            }
+            
+        })
+        socket.on('resign', () => {
+            opponentSocket.emit('resign');
+            this.handleGameOver();
+        })
     },
 
-    //Do stuff upon game overs
     handleMove(game, move){
-        game.move(move);
-        if (game.isCheckmate()){
+        game.state.move(move);
+        game.white.drawRequest = false;
+        game.black.drawRequest = false;
+        if (game.state.isCheckmate()){
             this.handleGameOver();
         }
     },

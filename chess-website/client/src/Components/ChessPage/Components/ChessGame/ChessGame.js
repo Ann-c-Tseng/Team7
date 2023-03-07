@@ -1,8 +1,7 @@
 import React from 'react';
+
 import { Chessboard } from "react-chessboard";
 
-
-//A view and controller component (MVC)
 class ChessGame extends React.Component{
 
     getOrientationString(col){
@@ -27,7 +26,6 @@ class ChessGame extends React.Component{
                 customPremoveLightSquareStyle={}
                 customDropSquareStyle={} (Square being hovered over with dragged piece)
                 */
-                
             />
         );
     }
