@@ -9,7 +9,9 @@ async function loader(){
 }
 
 const connectedUsers = require("../utils/connectedUsers");
-
+const whiteMoveList = [];
+const blackMoveList = [];
+let counter = 0;
 const gameManager = {
     games: [],
     
@@ -72,20 +74,31 @@ const gameManager = {
             opponentSocket.emit('resign');
             this.handleGameOver();
         })
+        socket.on('gameOver', () => {
+            this.handleGameOver();
+        })
     },
 
     handleMove(game, move){
         game.state.move(move);
+        console.log(move);
+        if (counter % 2 === 0) {
+            whiteMoveList.push(move);
+        }
+        else {
+            blackMoveList.push(move);
+        }
         game.white.drawRequest = false;
         game.black.drawRequest = false;
         if (game.state.isCheckmate()){
-            this.handleGameOver();
+            this.handleGameOver(game);
         }
     },
 
     handleGameOver(game){
         //send to DB
-        // game.state.p
+        console.log("white moves: " + this.whiteMoveList);
+        console.log("black moves: " + this.blackMoveList);
 
     }
 

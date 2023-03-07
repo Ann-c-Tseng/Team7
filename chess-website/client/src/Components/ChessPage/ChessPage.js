@@ -29,8 +29,8 @@ class ChessPage extends React.Component{
         this.resign = this.resign.bind(this);
         this.notificationAccept = this.notificationAccept.bind(this);
 
-        const whiteTimer = new Timer("w", props.time || 6000, this.timerUpdateCallback, this.timerFinishCallback);
-        const blackTimer = new Timer("b", props.time || 6000, this.timerUpdateCallback, this.timerFinishCallback);
+        const whiteTimer = new Timer("w", props.time || 60000, this.timerUpdateCallback, this.timerFinishCallback);
+        const blackTimer = new Timer("b", props.time || 60000, this.timerUpdateCallback, this.timerFinishCallback);
         
         let userColor = props.userColor || "w";
 
@@ -273,7 +273,9 @@ class ChessPage extends React.Component{
         this.disableTimer("b");
         this.setState({ gameOver: true });
         console.log("Game over. " + result + " by " + reason);
+        this.socket.emit('gameOver');
         this.setNotification("Game over!", result + " by " + reason)
+        
     }
 
     //Pass these to the timer objects, so that when they update,

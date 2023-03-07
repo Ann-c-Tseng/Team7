@@ -1,11 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const signUpTemplateCopy = require('../models/SignUpModels')
-<<<<<<< HEAD
-const gameModel = require('../models/Games')
-=======
 const findUser = require("../dbActions/findUser");
->>>>>>> origin/main
 const bcrypt = require('bcrypt')
 
 router.post('/signup', async (request, response, next) => {
