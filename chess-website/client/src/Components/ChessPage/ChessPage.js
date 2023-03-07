@@ -273,28 +273,7 @@ class ChessPage extends React.Component{
         this.disableTimer("b");
         this.setState({ gameOver: true });
         console.log("Game over. " + result + " by " + reason);
-<<<<<<< HEAD
-        // console.log(this.state.moves);
-        alert("Game over. " + result + " by " + reason);
-
-        // game = {
-        //     moveStringWhite: ,
-        //     moveStringBlack: ,
-        //     numMoves: ,
-        //     black: ,
-        //     white: ,
-        //     winner: ,
-        //     date: ,
-        //     duration:
-        // }
-        // axios.post('http://localhost:4000/game', game)
-        //     .then(response => {
-        //         window.location = '/'; //Redirect to login after main page
-        //     })
-
-=======
         this.setNotification("Game over!", result + " by " + reason)
->>>>>>> origin/main
     }
 
     //Pass these to the timer objects, so that when they update,
@@ -411,9 +390,6 @@ class ChessPage extends React.Component{
             
             <Box className="ChessPage">
                 <Box className="GameUserContainer">
-<<<<<<< HEAD
-                    <UserCard className="UserCard" username="Opponent" />
-=======
                     {
                         this.state.topUser ?
                         <UserCard className="UserCard"
@@ -427,7 +403,6 @@ class ChessPage extends React.Component{
                         />
                     }
                     
->>>>>>> origin/main
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
                             <TimerView
@@ -436,12 +411,8 @@ class ChessPage extends React.Component{
                                 time={this.state.topTimer.time}
                                 enabled={this.state.topTimer.enabled}
                             />
-<<<<<<< HEAD
-                            <TimerView
-=======
                             { this.state.promoting ? <PromotionSelect changeHandler={this.changePromotionSelection} user={this.state.user}/> : null}
                             <TimerView 
->>>>>>> origin/main
                                 className="BottomTimer"
                                 color={this.state.bottomTimer.color}
                                 time={this.state.bottomTimer.time}
@@ -460,14 +431,6 @@ class ChessPage extends React.Component{
                                 boardOrientation={this.state.orientation}
                             />
                         </Box>
-<<<<<<< HEAD
-                        <GameInfo moves={this.state.moves} className="Info" />
-                    </Box>
-
-                    <UserCard className="UserCard" username="Myself" />
-                </Box>
-
-=======
                         <GameInfo 
                             moves={this.state.moves}
                             className="Info"
@@ -491,7 +454,6 @@ class ChessPage extends React.Component{
                         />
                     }
                 </Box>
->>>>>>> origin/main
             </Box>
             </>
         )
