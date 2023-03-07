@@ -1,0 +1,38 @@
+.table-container {
+  background-color: #62b6cb;
+  padding: 20px; 
+  border-radius: 5px;
+}
+
+.table-container table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table-container th {
+  background-color: #1b4965;
+  color: white;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 50px;
+  padding-left: 10px;
+  text-align: left;
+}
+
+.table-container tr {
+  background-color: #62b6cb;
+}
+
+.table-container tr:not(:last-child) {
+  border-bottom: 1px solid #bee9e8;
+}
+
+.table-container td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 50px;
+  padding-left: 10px;
+  text-align: left;
+}
+  
