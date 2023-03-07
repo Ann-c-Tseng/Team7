@@ -28,8 +28,8 @@ class ChessPage extends React.Component{
         this.resign = this.resign.bind(this);
         this.notificationAccept = this.notificationAccept.bind(this);
 
-        const whiteTimer = new Timer("w", props.time || 6000, this.timerUpdateCallback, this.timerFinishCallback);
-        const blackTimer = new Timer("b", props.time || 6000, this.timerUpdateCallback, this.timerFinishCallback);
+        const whiteTimer = new Timer("w", props.time || 60000, this.timerUpdateCallback, this.timerFinishCallback);
+        const blackTimer = new Timer("b", props.time || 60000, this.timerUpdateCallback, this.timerFinishCallback);
         
         let userColor = props.userColor || "w";
 
