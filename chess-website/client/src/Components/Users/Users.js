@@ -9,21 +9,22 @@ function Users({ UserData }) {
 }
 
 function Item(data) {
+    const userProfilePic = require('../../Images/tentativeProfile.png');
     return (
         <>
             {
-                data.map((value, index) => (
+                data.map((user, index) => (
                     <div className="flex" key={index}>
                         <div className="item">
-                            <img src={value.img} alt="" />
+                            <img src={userProfilePic} alt="" />
 
                             <div className="info">
-                                <h3 className='name text-dark'>{value.name}</h3>
-                                <span>{value.clan}</span>
+                                <h3 className='name text-dark'>{user.username}</h3>
+                                <span>Clan #1</span>
                             </div>
                         </div>
                         <div className="item">
-                            <span>{value.wins}</span>
+                            <span>{user.elo}</span>
                         </div>
                     </div>
                     )   

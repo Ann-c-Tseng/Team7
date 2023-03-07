@@ -72,9 +72,13 @@ router.post('/login', (request, response) => {
 
 router.post('/history', async (request, response) => {
     let user = request.body.username;
-    console.log(user);
     const games = await gameModel.find({$or: [{black: user}, {white: user}]}).exec();
     response.json(games);
+})
+
+router.post('/leaderboard', async (request, response) => {
+    const users = await signUpTemplateCopy.find().exec();
+    response.json(users);
 })
 
 module.exports = router;
