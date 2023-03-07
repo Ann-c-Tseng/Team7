@@ -1,26 +1,77 @@
+.rules-container {
+    background-color: #62b6cb;
+    max-width: 900px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
 .rules {
-    width: 80%;
-    max-width: 75ch;
     margin: 2rem auto;
-    color: #1f2222;
+    color: #000000;
     text-align: left;
 }
 
-.rules>h1 {
+.rules h1 {
     text-align: center;
 }
 
-.rules>h2 {
+.rules h2 {
     font-size: 1.5rem;
+    text-align: left;
     margin: 1em 0 0.5em;
 }
 
-.rules>h3 {
+.rules h3 {
     font-size: 1.25rem;
+    text-align: left;
     margin: 1em 0 0.5em;
 }
 
-.rules>h4 {
+.rules h4 {
     font-size: 1.0rem;
+    text-align: left;
     margin: 1em 0 0.5em;
+}
+
+.board {
+    float: right;
+    padding: 5px;
+}
+
+.piece-table {
+    float: left;
+    width: 400px;
+}
+
+.piece-table table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.piece-table th {
+    background-color: #1b4965;
+    color: white;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    padding-left: 10px;
+    text-align: left;
+}
+  
+.piece-table tr {
+    background-color: #62b6cb;
+}
+  
+.piece-table tr:not(:last-child) {
+    border-bottom: 1px solid #bee9e8;
+}
+  
+.piece-table td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    padding-left: 10px;
+    text-align: left;
 }

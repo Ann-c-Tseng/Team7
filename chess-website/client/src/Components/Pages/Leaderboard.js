@@ -25,9 +25,7 @@ function Leaderboard() {
   return (
     <div>
       <h1 className='title'>Leaderboard</h1>
-      <div className='table-container'>
-        <Table data={users}/>
-      </div>
+      <Table data={users}/>
     </div>
   )
 }
