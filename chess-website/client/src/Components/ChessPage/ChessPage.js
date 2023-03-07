@@ -26,9 +26,10 @@ class ChessPage extends React.Component{
         this.flipBoard = this.flipBoard.bind(this);
         this.requestDraw = this.requestDraw.bind(this);
         this.resign = this.resign.bind(this);
+        this.notificationAccept = this.notificationAccept.bind(this);
 
-        const whiteTimer = new Timer("w", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
-        const blackTimer = new Timer("b", props.time || 600000, this.timerUpdateCallback, this.timerFinishCallback);
+        const whiteTimer = new Timer("w", props.time || 6000, this.timerUpdateCallback, this.timerFinishCallback);
+        const blackTimer = new Timer("b", props.time || 6000, this.timerUpdateCallback, this.timerFinishCallback);
         
         let userColor = props.userColor || "w";
 
@@ -53,6 +54,12 @@ class ChessPage extends React.Component{
             bottomUser: props.user,
 
             orientation: props.userColor || "w", //orientation should be separate from user, though they start with the same value
+
+            notification: {
+                active: false,
+                title: "Default notification title",
+                details: "Default details",
+            }
         }
 
         this.state.opponent = this.getOpponentColor(this.state.user);
@@ -263,6 +270,7 @@ class ChessPage extends React.Component{
         this.disableTimer("b");
         this.setState({gameOver: true});
         console.log("Game over. " + result + " by " + reason);
+        this.setNotification("Game over!", result + " by " + reason)
     }
     
     //Pass these to the timer objects, so that when they update,
@@ -351,12 +359,32 @@ class ChessPage extends React.Component{
         this.socket.emit('resign');
         //TODO add a confirm
         console.log("Resigned");
+        let winner = (this.state.user === "w" ? "Black" : "White");
+        this.gameOver(winner + " has won", "Resignation");
+    }
+
+    setNotification(title, details){
+        this.setState({
+            notification: {
+                active: true,
+                title: title,
+                details: details,
+            }
+        });
+    }
+
+    notificationAccept(){
+        this.setState({
+            notification: {
+                active: false,
+            }
+        });
     }
 
     render(){
         return (
             <>
-            <ResultPopup />
+            
             <Box className="ChessPage">
                 <Box className="GameUserContainer">
                     {
@@ -389,6 +417,11 @@ class ChessPage extends React.Component{
                             />
                         </aside>
                         <Box className="Game">
+                            <ResultPopup
+                                active={this.state.notificationActive}
+                                notification={this.state.notification}
+                                acceptHandler={this.notificationAccept}
+                            />
                             <ChessGame
                                 moveHandler={this.userMove}
                                 gameState={this.state.game.fen()}

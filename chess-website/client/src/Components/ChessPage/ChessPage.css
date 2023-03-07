@@ -10,6 +10,7 @@
     align-items: center;
 }
 .Game{
+    position:relative;
     background-color: #7f5838;
     padding: 5px;
     border-radius: 5px;
