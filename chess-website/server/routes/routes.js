@@ -98,6 +98,7 @@ router.post('/profile', async (request, response, next) => {
 
         //Send back to user
         const body = {
+            elo: userData.elo,
             id: userData._id,
             fullName: userData.fullName,
             username: userData.username,

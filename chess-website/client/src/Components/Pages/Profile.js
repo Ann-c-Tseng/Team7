@@ -53,6 +53,7 @@ const Profile = () => {
         .then((response) =>{
             setUserData(response.data);
             setLoading(false);
+            console.log(response.data);
         })
     }, []);
 
@@ -66,7 +67,7 @@ const Profile = () => {
                 {/* <img style={ProfilePicStyle} src={userProfilePic} alt="User profile"/> */}
                 <img style={ProfilePicStyle} src={userProfile} alt="User profile"/>
                 <h3>{username}</h3>
-                <h4 style={h4Style}>ELO: 100</h4>
+                <h4 style={h4Style}>ELO: {userData.elo}</h4>
                 <h4 style={h4Style}> User ID: {userData.id}</h4>
                 <h4 style={h4Style}> Email: {useremail}</h4>
                 <h4 style={h4Style}> Longest Win Streak: 0 out of 0 games </h4>
