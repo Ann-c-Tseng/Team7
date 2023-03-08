@@ -52,7 +52,7 @@ const Table = (props) => {
 }
 
 const History = () => {
-    let [rows, setRows] = useState();
+    let [rows, setRows] = useState([]);
     const user = useSelector((state) => state.auth.user.username)
 
     useEffect(() => {
@@ -63,12 +63,18 @@ const History = () => {
         })
     }, [user]);
 
-    return (
-        <div>
-            <h1>Your Game History</h1>
-            <Table data={rows} username={user} />
-        </div>
-    )
+    if (rows.length !== 0) {
+        return (
+            <div>
+                <h1>Your Game History</h1>
+                <Table data={rows} username={user} />
+            </div>
+        )
+    } else {
+        return (
+            <h1>Play a game to see it here!</h1>
+        )
+    }
 }
 
 export default History;
