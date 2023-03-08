@@ -10,10 +10,10 @@ import SignupForm from "../Forms/SignupForms";
 import ChessPage from "../ChessPage/ChessPage";
 import PageNotFound from "../Pages/PageNotFound";
 import Profile from "../Pages/Profile";
-import Matchmaking from "../Matchmaking/Matchmaking";
 import History from "../Pages/History";
 import Leaderboard from "../Pages/Leaderboard";
 import Rules from "../Pages/Rules";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 class App extends Component {
   render() {
@@ -23,6 +23,7 @@ class App extends Component {
       transform: 'translate(-41%, -110%)'
     };
 
+    //Split between protected routes and non-protected routes?
     return(
       <div className="App">
       {<Navigation />}                     
@@ -33,12 +34,11 @@ class App extends Component {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
-                <Route path="/chess" element={<ChessPage userColor = {"b"}/>} />
-                <Route path="/matchmaking" element={<Matchmaking/>} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/history" element={<History />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route path="/rules" element={<Rules />} />
+                <Route path="/chess" element={<ProtectedRoute component={<ChessPage/>} />} />
+                <Route path="/profile" element={<ProtectedRoute component={<Profile/>} />} />
+                <Route path="/history" element={<ProtectedRoute component={<History/>} />} />
+                <Route path="/leaderboard" element={<ProtectedRoute component={<Leaderboard/>} />} />
+                <Route path="/rules" element={<ProtectedRoute component={<Rules/>} />} />
                 <Route path="*" element={<PageNotFound />} />
               </Route>
         </Routes>

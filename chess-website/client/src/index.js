@@ -4,14 +4,19 @@ import './index.css';
 import App from './Components/App/App.js';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Routes} from "react-router-dom";
+import {Provider} from "react-redux";
+import {store, persistor} from "./Store/store";
+import {PersistGate} from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Routes>
-    <React.StrictMode>
-      <App/>
-    </React.StrictMode>
-  </Routes>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Routes>
+          <App/>
+        </Routes>
+      </PersistGate>
+    </Provider>
 )
 
 // If you want to start measuring performance in your app, pass a function

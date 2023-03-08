@@ -1,8 +1,13 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {useSelector, useDispatch} from "react-redux";
 
 const Profile = () => {
     const userProfilePic = require('../../Images/tentativeProfile.png');
+    const username = useSelector((state) => state.auth.user.username);
+    const dispatch = useDispatch();
+
+
 
     const overallDivStyle = {
         width: '40vw',
@@ -38,17 +43,18 @@ const Profile = () => {
         fontWeight: 'bold',
         color: 'white',
     }
-  
+
     return (
         <>
             <div style={overallDivStyle}>
                 <img style={ProfilePicStyle} src={userProfilePic} alt="User profile"/>
-                <h3> Username: PorcupineKnight</h3>
+                <h3>{username}</h3>
                 <h4 style={h4Style}>ELO: 1601</h4>
                 <h4 style={h4Style}> User ID: aBrIABLECKSHaUC</h4>
                 <h4 style={h4Style}> Longest Win Streak: 4 out of 5 games </h4>
                 <h4 style={h4Style}> Total wins: 4 games </h4>
                 <button style={gameHistoryButton}>View Game History</button>
+                <button style={gameHistoryButton} onClick={() => dispatch({type: "auth/logout"})}>Logout</button>
             </div>
         </>
     );
