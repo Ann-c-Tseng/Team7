@@ -9,12 +9,8 @@ async function loader(){
 }
 
 const connectedUsers = require("../utils/connectedUsers");
-let whiteMoveList = [];
-let blackMoveList = [];
-let counter = 0;
 const gameManager = {
     games: [],
-    
     addNewGame(playerSockets) {
         const game = {
             state: new this.Chess.Chess(),
@@ -85,13 +81,14 @@ const gameManager = {
         game.white.drawRequest = false;
         game.black.drawRequest = false;
         if (game.state.isCheckmate()){
+            console.log("pgn in handleMove: "+game.state.pgn());
             this.handleGameOver(game);
         }
     },
 
     async handleGameOver(game){
         //send to DB
-        // console.log(game.state.loadPgn());
+        console.log(game.state.pgn());
         let randomString = "a;lksefw234";
         const gameDB = new gameModel({
             moveStringWhite: "TestingwhiteMove",
