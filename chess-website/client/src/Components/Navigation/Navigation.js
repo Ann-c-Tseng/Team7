@@ -9,6 +9,7 @@ class Navigation extends React.Component {
       <div>
         <nav>
           <ul>
+            <li><Link to="/spectate"><button>Spectate Games</button></Link></li>
             {this.props.isAuthenticated ? 
             <>
               <li><Link to="/chess"><button>Play Chess!</button></Link></li>

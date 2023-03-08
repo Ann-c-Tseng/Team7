@@ -426,6 +426,7 @@ class ChessPage extends React.Component{
                         <UserCard className="UserCard"
                             username={this.state.topUser.username}
                             elo={this.state.topUser.elo}
+                            avatarEnabled={true}
                         />
                         :
                         <UserCard className="UserCard"
@@ -477,6 +478,7 @@ class ChessPage extends React.Component{
                         <UserCard className="UserCard"
                             username={this.state.bottomUser.username}
                             elo={this.state.bottomUser.elo}
+                            avatarEnabled={true}
                         />
                         :
                         <UserCard className="UserCard"

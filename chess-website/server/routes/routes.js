@@ -6,6 +6,8 @@ const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 const validator = require("validator");
 
+const gameManager = require("../chess/gameManager");
+
 router.post('/signup', async (request, response, next) => {
     const saltPassword = await bcrypt.genSalt(10) //encrypt password before sending to DB
     const securePassword = await bcrypt.hash(request.body.password, saltPassword)
@@ -143,6 +145,13 @@ router.post('/history', async (request, response) => {
 router.post('/leaderboard', async (request, response) => {
     const users = await signUpTemplateCopy.find({elo: {$gt: 0}}).exec();
     response.json(users);
+})
+router.post('/spectate', async (request, response) => {
+    response.json({
+        success: true,
+        message: "Retrieved games",
+        games: gameManager.getActiveGames(),
+    });
 })
 
 module.exports = router;

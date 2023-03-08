@@ -1,0 +1,24 @@
+.SpectateGameCardList{
+    width:80%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+}
+.CardButton{
+    padding:5px;
+    display:flex;
+    justify-content: center;
+    flex-direction:column;
+}
+
+.SpectateGameCard{
+    justify-content: center;
+    display:flex;
+    padding:5px;
+    margin:5px;
+}
+.PlayerInfo{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}

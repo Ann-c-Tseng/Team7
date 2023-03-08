@@ -9,12 +9,26 @@ const Timer = require("./Timer");
 const uuid = require("uuid");
 
 const connectedUsers = require("../utils/connectedUsers");
-const matchTime = 6000 // 10 minute matches 
+const matchTime = 600000 // 10 minute matches 
 
 
 const gameManager = {
     games: new Map(),
     
+    getActiveGames(){
+        const activeGames = [];
+        
+        for (entry of this.games.entries()){
+            const game = entry[1]
+            activeGames.push({
+                id: entry[0],
+                position: game.state.fen(),
+            });
+        }
+        return activeGames;
+    },
+
+
     addNewGame(playerSockets) {
         const game = {
             uuid: uuid.v4(),
@@ -23,7 +37,7 @@ const gameManager = {
             spectators: [],
             ...playerSockets
         }
-        this.games.set(game.id, game);
+        this.games.set(game.uuid, game);
         
         //Associate game info with each socket
         game.white.game = game;
@@ -136,10 +150,8 @@ const gameManager = {
     handleTimers(game, colorMoved){
         if (game.move === 1 && colorMoved === 'w'){
             //Do nothing
-            console.log("First move");
         }
         else if (game.move === 1 && colorMoved === 'b'){
-            console.log("Begin timers!");
             game.white.timer.toggle();
         }
         else{
