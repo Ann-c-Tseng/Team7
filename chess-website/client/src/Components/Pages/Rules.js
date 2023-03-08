@@ -4,12 +4,12 @@ import { Chessboard } from "react-chessboard";
 import './Rules.css'
 import './Table.css'
 
-import king from '../../Images/king.svg'
-import queen from '../../Images/queen.svg'
-import bishop from '../../Images/bishop.svg'
-import rook from '../../Images/rook.svg'
-import knight from '../../Images/knight.svg'
-import pawn from '../../Images/pawn.svg'
+import whiteKing from '../../Images/white-king.svg'
+import whiteQueen from '../../Images/white-queen.svg'
+import whiteBishop from '../../Images/white-bishop.svg'
+import whiteRook from '../../Images/white-rook.svg'
+import whiteKnight from '../../Images/white-knight.svg'
+import whitePawn from '../../Images/white-pawn.svg'
 
 export default function Rules() {
   return (
@@ -40,27 +40,27 @@ export default function Rules() {
             <tbody>
               <tr>
                 <td>King</td>
-                <td><img src={king} alt=''/></td>
+                <td><img src={whiteKing} alt=''/></td>
               </tr>
               <tr>
                 <td>Queen</td>
-                <td><img src={queen} alt=''/></td>
+                <td><img src={whiteQueen} alt=''/></td>
               </tr>
               <tr>
                 <td>Bishop</td>
-                <td><img src={bishop} alt=''/></td>
+                <td><img src={whiteBishop} alt=''/></td>
               </tr>
               <tr>
                 <td>Rook</td>
-                <td><img src={rook} alt=''/></td>
+                <td><img src={whiteRook} alt=''/></td>
               </tr>
               <tr>
                 <td>Knight</td>
-                <td><img src={knight} alt=''/></td>
+                <td><img src={whiteKnight} alt=''/></td>
               </tr>
               <tr>
                 <td>Pawn</td>
-                <td><img src={pawn} alt=''/></td>
+                <td><img src={whitePawn} alt=''/></td>
               </tr>
             </tbody>
           </table>
