@@ -1,8 +1,12 @@
-.rules {
+.background-div {
+    background-color: #312e2b;
+    width: 100vw;
+}
+
+.Rules {
     width: 80%;
     max-width: 75ch;
     margin: 2rem auto;
-    color: #1f2222;
     text-align: left;
 }
 

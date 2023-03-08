@@ -32,6 +32,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import './Forms.css';
 
 class LoginForm extends Component {
     constructor() {
@@ -78,7 +79,7 @@ class LoginForm extends Component {
 
     render() { 
         return (
-            <div>
+            <div className='style'>
                 <div className='container'>
                     <div className='form-div'>
                         <form onSubmit={this.onSubmit}>

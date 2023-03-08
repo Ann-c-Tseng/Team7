@@ -19,13 +19,14 @@ class App extends Component {
   render() {
     const ChessMasterTitleStyle = {
       color: '#320c74',
-      backgroundColor: '#FFF0F5',
+      backgroundcolor: 'black',
+      transform: 'translate(-41%, -110%)'
     };
 
     return(
       <div className="App">
       {<Navigation />}                     
-      <h1 style={ChessMasterTitleStyle}><Link to="/" title='Home'>Chess Master</Link></h1>
+      <h3 style={ChessMasterTitleStyle}><Link to="/"><button>Chess Master</button></Link></h3>
 
         <Routes>
               <Route>
