@@ -1,19 +1,8 @@
 import * as React from 'react';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableRow from '@mui/material/TableRow';
-// import Paper from '@mui/material/Paper';
 import { Chessboard } from "react-chessboard";
 
 import './Rules.css'
 import './Table.css'
-
-const rows = [
-  { key: 'Piece', king: 'King', queen: 'Queen', bishop: 'Bishop', rook: 'Rook', knight: 'Knight', pawn: 'Pawn' },
-  { key: 'Number of Pieces', king: 1, queen: 1, bishop: 2, rook: 2, knight: 2, pawn: 8 },
-  { key: 'Symbols', king: 'img', queen: 'img', bishop: 'img', rook: 'img', knight: 'img', pawn: 'img' }];
 
 export default function Rules() {
   return (
@@ -55,48 +44,46 @@ export default function Rules() {
         is in each player's near-right corner. Horizontal rows are called
         ranks, and vertical columns are called files.
       </p>
-      <div className='board'>
-        <Chessboard
-          boardWidth={450}
-          boardHeight={450}
-          arePiecesDraggable={false}
-        />
-      </div>
-      <div className='piece-table'>
-        <table>
-          <thead>
-            <tr>
-              <th>Piece</th>
-              <th>Symbol</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>King</td>
-              <td>img</td>
-            </tr>
-            <tr>
-              <td>Queen</td>
-              <td>img</td>
-            </tr>
-            <tr>
-              <td>Bishop</td>
-              <td>img</td>
-            </tr>
-            <tr>
-              <td>Rook</td>
-              <td>img</td>
-            </tr>
-            <tr>
-              <td>Knight</td>
-              <td>img</td>
-            </tr>
-            <tr>
-              <td>Pawn</td>
-              <td>img</td>
-            </tr>
-          </tbody>
-        </table>
+      <div className='container'>
+        <div className='piece-table'>
+          <table className='table'>
+            <thead>
+              <tr>
+                <th>Piece</th>
+                <th>Symbol</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>King</td>
+                <td>img</td>
+              </tr>
+              <tr>
+                <td>Queen</td>
+                <td>img</td>
+              </tr>
+              <tr>
+                <td>Bishop</td>
+                <td>img</td>
+              </tr>
+              <tr>
+                <td>Rook</td>
+                <td>img</td>
+              </tr>
+              <tr>
+                <td>Knight</td>
+                <td>img</td>
+              </tr>
+              <tr>
+                <td>Pawn</td>
+                <td>img</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className='board'>
+          <Chessboard arePiecesDraggable={false}/>
+        </div>
       </div>
       <p>
         At the beginning of the game, the pieces are arranged as shown in the
@@ -295,28 +282,3 @@ export default function Rules() {
     </div>
   )
 }
-
-/*
-<TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="Pieces">
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.key}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row" align="center">
-                    {row.key}
-                  </TableCell>
-                  <TableCell align="right">{row.king}</TableCell>
-                  <TableCell align="right">{row.queen}</TableCell>
-                  <TableCell align="right">{row.bishop}</TableCell>
-                  <TableCell align="right">{row.rook}</TableCell>
-                  <TableCell align="right">{row.knight}</TableCell>
-                  <TableCell align="right">{row.pawn}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-*/

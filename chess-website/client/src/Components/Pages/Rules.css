@@ -4,7 +4,7 @@
     text-align: center;
     padding: 20px;
     border-radius: 5px;
-  }
+}
 
 .rules {
     margin: 2rem auto;
@@ -34,14 +34,21 @@
     margin: 1em 0 0.5em;
 }
 
-.board {
-    float: right;
-    padding: 5px;
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }
 
-.piece-table {
-    float: left;
-    width: 400px;
+.board {
+    flex: 1;
+    max-width: 50%;
+    margin-left: 20px;
+}
+
+.table {
+    flex: 1;
+    max-width: 50%;
 }
 
 .piece-table table {
