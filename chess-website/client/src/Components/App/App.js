@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Route, Routes} from "react-router-dom";
-import {Link} from "react-router-dom";
 import './App.css';
 
 import Navigation from "../Navigation/Navigation";
@@ -17,17 +16,10 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 class App extends Component {
   render() {
-    const ChessMasterTitleStyle = {
-      color: '#320c74',
-      backgroundColor: '#FFF0F5',
-    };
-
-    //Split between protected routes and non-protected routes?
     return(
       <div className="App">
       {<Navigation />}                     
-      <h1 style={ChessMasterTitleStyle}><Link to="/" title='Home'>Chess Master</Link></h1>
-
+      
         <Routes>
               <Route>
                 <Route path="/" element={<HomePage />} />
@@ -48,3 +40,6 @@ class App extends Component {
 }
 
 export default App;
+
+// <h1 style={titleStyle}><Link to="/" title='Home'>Chess Master</Link></h1>
+

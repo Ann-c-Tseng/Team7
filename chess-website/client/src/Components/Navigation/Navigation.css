@@ -1,42 +1,40 @@
-/* navigation.css */
-
-nav ul {
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 200px;
+    background-color: #313131;
     display: flex;
-    justify-content: flex-end;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    top: 10px;
-    right: 10%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-nav li {
-    margin-left: 1rem;
-}
-
-nav button {
-    background: none;
+.nav-home {
+    font-size: 1.8em;
+    width: 200px;
+    color: #fefefed7;
+    background-color: #313131;
+    border-radius: 0;
+    padding: 10px;
     border: none;
-    cursor: pointer;
-    width: fit-content;
-    min-width: 80px;
-    height: 35px;
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 20px -20px;
-    background-color: #ffffff;
-    transition: all 0.2s ease-in-out 0ms;
-    user-select: none;
-    font-weight: bold;
+}
+
+.nav-button {
+    font-size: 1.2em;
+    width: 200px;
+    color: #fefefed7;
+    background-color: #313131;
+    border-radius: 0;
+    padding: 15px;
+    border: none;
 }
 
 button:hover {
-    background-color: #320c74;
-    color: white;
-    box-shadow: 0px 0px 20px -18px;
+    background-color: #202020;
 }
 
-button:active {
-    transform: scale(0.95);
+.link {
+    text-decoration: none;
 }
