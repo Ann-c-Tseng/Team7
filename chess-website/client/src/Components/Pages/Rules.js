@@ -247,7 +247,8 @@ export default function Rules() {
             <li>The king takes the vacant spot next to the queen.</li>
             <li>Pawns are placed one square in front of all of the other pieces.</li>
           </ul>
-        </p>
+        </ul>
+      </p>
         <h2>Gameplay</h2>
         <p>
           The player controlling the white pieces is named "White"; the player
@@ -426,7 +427,6 @@ export default function Rules() {
         </p>
         <p>Source: https://en.wikipedia.org/wiki/Rules_of_chess</p>
       </div>
-    </div>
     </div>
   )
 }
