@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
 
 const game = new mongoose.Schema({
-    moveStringWhite: {
+    moveString: {
         type: String,
         required: true,
-    },
-    moveStringBlack: {
-        type: String,
-        required: true
     },
     numMoves: {
         type: Number,

@@ -28,4 +28,3 @@ app.use('/', routes)
 io.on('connection', matchmaking.newConnection)
 
 httpServer.listen(4000, () => console.log("server is up and running"))
-

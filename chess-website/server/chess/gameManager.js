@@ -8,43 +8,77 @@ async function loader(){
     gameManager.Chess = Chess;
 }
 
+const Timer = require("./Timer");
+const uuid = require("uuid");
+
 const connectedUsers = require("../utils/connectedUsers");
+const matchTime = 6000 // 10 minute matches 
+
+
 const gameManager = {
-    games: [],
+    games: new Map(),
+    
     addNewGame(playerSockets) {
         const game = {
+            uuid: uuid.v4(),
             state: new this.Chess.Chess(),
+            blackUser: "",
+            whiteUser: "",
+            move: 1,
             spectators: [],
             ...playerSockets
         }
-        this.games.push(game);
+        this.games.set(game.id, game);
         
-        //Each socket needs a reference to their own game
+        //Associate game info with each socket
         game.white.game = game;
-        game.black.game = game;
-
         game.white.drawRequest = false;
+        game.white.color = 'w';
+
+        game.black.game = game;
         game.black.drawRequest = false;
+        game.black.color = 'b';
+        
+        this.setTimers(game);
+        this.initializePlayers(game);
+    },
 
-        game.white.emit('initialize', {color: "w", opponent: {
-            username: game.black.user.username,
-        }});
+    initializePlayers(game){
+        game.white.emit('initialize', {
+            color: "w",
+            time: game.white.timer.time,
+            opponent: {
+                username: game.black.user.username,
+            },
+        });
 
-        game.black.emit('initialize', {color: "b", opponent: {
-            username: game.white.user.username,
-        }});
+        game.black.emit('initialize', {
+            color: "b",
+            time: game.black.timer.time,
+            opponent: {
+                username: game.white.user.username,
+            },
+        });
 
         this.setHandlers(game.white, game.black);
         this.setHandlers(game.black, game.white);
     },
 
     setHandlers(socket, opponentSocket){
-        //A game has been made at this point. If the user leaves after the first moves are made then
-        //they should be penalized.
         socket.on('move', (move) => {
             try{
-                this.handleMove(socket.game, move);
-                opponentSocket.emit('opponentMove', move);
+                this.handleMove(socket.game, move, socket.color);
+                opponentSocket.emit('opponentMove', {
+                    move,
+                    timeSent: Date.now(),
+                    timeLeft: opponentSocket.timer.time,
+                    oppTimeLeft: socket.timer.time
+                });
+                socket.emit('updateTimer', {
+                    timeSent: Date.now(),
+                    timeLeft: socket.timer.time,
+                    oppTimeLeft: opponentSocket.timer.time
+                })
             }
             catch(err){
                 console.log(err)
@@ -52,7 +86,7 @@ const gameManager = {
                 socket.emit('invalid', {message: "Invalid move"});
             }
             
-        })
+        });
         socket.on('requestDraw', () => {
             if (opponentSocket.drawRequest){
                 socket.emit('drawConfirm');
@@ -65,51 +99,108 @@ const gameManager = {
                 socket.drawRequest = true;
             }
             
-        })
+        });
         socket.on('resign', () => {
             opponentSocket.emit('resign');
             this.handleGameOver();
-        })
-        socket.on('gameOver', () => {
-            this.handleGameOver();
-        })
+        });
     },
 
-    handleMove(game, move){
+    setTimers(game){
+        const timerCallback = (color) => {
+            this.finishedTimer(color, game);
+        }
+
+        game.black.timer = new Timer('b', matchTime, timerCallback);
+        game.white.timer = new Timer('w', matchTime, timerCallback);
+    },
+
+    handleMove(game, move, color){
+        if ((color === "w" && !game.white.timer.timeLeft()) ||
+            (color === "b" && !game.black.timer.timeLeft())){
+            throw new Error("User tried making move with no time left");
+        }
+
         game.state.move(move);
-        console.log(move);
+
+        this.handleTimers(game, color);
         game.white.drawRequest = false;
         game.black.drawRequest = false;
+
+
+
         if (game.state.isCheckmate()){
-            console.log("pgn in handleMove: "+game.state.pgn());
-            this.handleGameOver(game);
+            this.handleGameOver();
+        }
+        if (color === 'b'){
+            game.move++;
         }
     },
 
-    async handleGameOver(game){
+    handleTimers(game, colorMoved){
+        if (game.move === 1 && colorMoved === 'w'){
+            //Do nothing
+            console.log("First move");
+        }
+        else if (game.move === 1 && colorMoved === 'b'){
+            console.log("Begin timers!");
+            game.white.timer.toggle();
+        }
+        else{
+            game.white.timer.toggle();
+            game.black.timer.toggle();
+        }
+    },
+
+    finishedTimer(color, game){
+        console.log(color + " ran out of time");
+        const winner = color === "w" ? "Black" : "White";
+        const result = winner + " has won";
+        this.handleGameOver(game, result, "Timeout");
+
+    },
+
+    async handleGameOver(game, result, reason){
+        game.white.emit('gameOver', {result, reason});
+        game.black.emit('gameOver', {result, reason});
+        //Notify players + spectators
         //send to DB
-        console.log(game.state.pgn());
-        let randomString = "a;lksefw234";
-        const gameDB = new gameModel({
-            moveStringWhite: "TestingwhiteMove",
-            moveStringBlack: "TestingblackMove",
-            numMoves: 15,
-            black: "blackPlayer", 
-            white: "whitePlayer",
-            winner: "Black or white",
-            // date: 
-            duration: "5 min"
-        })
+        
+        totalMoveString = game.state.pgn();
+        numMove = game.move;
+        // whiteUser = game.whiteUser.user.username;
+        // blackUser = game.black.user.username;
+        console.log("Move string: " + game.state.pgn());
+        console.log("number of game move: " + game.move);
+        console.log("blackUser: " + game.black.user.username + "\nwhiteUser: " + game.white.user.username);
+        console.log(result.split(" ")[0])
+        // const gameDB = new gameModel({
+        //     _id = game.uuid,
+        //     moveString: totalMoveString,
+        //     numMoves: numMove,
+        //     black: blackUser, 
+        //     white: whiteUser,
+        //     winner: "Black or white",
+        //     // date: 
+        //     duration: "5 min"
+        // })
 
-        try {
-            let result = await gameDB.save();
-            console.log("game data successfully stored");
-        }
-        catch(error){
-            console.log(error);
-        }
+        // try {
+        //     let result = await gameDB.save();
+        //     console.log("game data successfully stored");
+        // }
+        // catch(error){
+        //     console.log(error);
+        // }
+
+        this.disconnectAll(game);
+        this.games.delete(game.uuid);
+    },
+
+    disconnectAll(game){
+        game.white.disconnect();
+        game.black.disconnect();
     }
-
 }
 
 loader();
