@@ -20,7 +20,12 @@ const signUpTemplate = new mongoose.Schema({
     date:{
         type:Date,
         default:Date.now
-    }
+    },
+    elo:{
+        type:Number,
+        default:1000,
+        required:true
+    },
 }, {versionKey: false})
 
 module.exports = mongoose.model('userCreationTable', signUpTemplate)

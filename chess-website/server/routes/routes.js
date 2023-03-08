@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const signUpTemplateCopy = require('../models/SignUpModels')
+const gameModel = require('../models/Games')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 
@@ -80,7 +81,47 @@ router.post('/login', async (request, response, next) => {
     catch(error){
         console.log(error);
     }
-    
 });
+
+router.post('/profile', async (request, response, next) => {
+    let InputEmail = request.body.email;
+
+    try{
+        const userData = await findUser(InputEmail);
+        
+        //Check email
+        if(!userData) {
+            console.log("invalid email");
+            response.json(false);
+            return next();
+        }
+
+        //Send back to user
+        const body = {
+            id: userData._id,
+            fullName: userData.fullName,
+            username: userData.username,
+            email: userData.email,
+            success: true,
+            message: "Successfully received profile data.",
+        }
+
+        response.json(body);
+    }
+    catch(error){
+        console.log(error);
+    }
+});
+
+router.post('/history', async (request, response) => {
+    let user = request.body.username;
+    const games = await gameModel.find({$or: [{black: user}, {white: user}]}).exec();
+    response.json(games);
+})
+
+router.post('/leaderboard', async (request, response) => {
+    const users = await signUpTemplateCopy.find({elo: {$gt: 0}}).exec();
+    response.json(users);
+})
 
 module.exports = router;

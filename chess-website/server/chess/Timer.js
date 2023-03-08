@@ -1,11 +1,10 @@
 class Timer{
 
-    constructor(color, updateCallback, finishedCallback){
+    constructor(color, time, finishedCallback){
         this.color = color;
-        this.time = undefined;
+        this.time = time;
         this.enabled = false;
         this.intervalId = null;
-        this.updateCallback = updateCallback;
         this.finishedCallback = finishedCallback;
     }
 
@@ -22,7 +21,6 @@ class Timer{
             this.time -= diff;
             start = now;
 
-            this.updateCallback();
             if (!this.timeLeft()){
                 this.finish();
             }
@@ -30,22 +28,29 @@ class Timer{
         }, 100);
     }
 
+    disable(){
+        clearInterval(this.intervalId);
+        this.enabled = false;
+    }
+
+    toggle(){
+        if (this.enabled){
+            this.disable();
+        }
+        else{
+            this.enable();
+        }
+    }
+    
     timeLeft(){
         return this.time > 0;
     }
 
     finish(){
         this.finishedCallback(this.color);
-        this.time = 0;
         this.disable();
-    }
-
-
-    disable(){
-        clearInterval(this.intervalId);
-        this.enabled = false;
-        this.updateCallback();
+        this.time = 0;
     }
 }
 
-export default Timer;
+module.exports = Timer;
