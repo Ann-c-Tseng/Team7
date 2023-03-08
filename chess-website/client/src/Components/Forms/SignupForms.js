@@ -55,8 +55,14 @@ class SignupForm extends Component {
 
         axios.post('http://localhost:4000/signup', registered)
         .then(response => {
-            this.props.login(response.data.username, response.data.email);
-            window.location = '/profile'; //Redirect to login after signing up
+            console.log(response);
+            if (response.data.success){
+                this.props.login(response.data.username, response.data.email);
+                window.location = '/profile'; //Redirect to login after signing up
+            }
+            else{
+                alert("This email is already in use.");
+            }
         })
     }
 
