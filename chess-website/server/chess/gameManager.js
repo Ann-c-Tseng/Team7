@@ -110,6 +110,11 @@ const gameManager = {
     },
 
     handleMove(game, move, color){
+        if ((color === "w" && !game.white.timer.timeLeft()) ||
+            (color === "b" && !game.black.timer.timeLeft())){
+            throw new Error("User tried making move with no time left");
+        }
+
         game.state.move(move);
 
         this.handleTimers(game, color);
@@ -143,10 +148,15 @@ const gameManager = {
 
     finishedTimer(color, game){
         console.log(color + " ran out of time");
+        const winner = color === "w" ? "Black" : "White";
+        const result = winner + " has won";
+        this.handleGameOver(game, result, "Timeout");
 
     },
 
     handleGameOver(game, result, reason){
+        game.white.emit('gameOver', {result, reason});
+        game.black.emit('gameOver', {result, reason});
         //Notify players + spectators
         //send to DB
     }

@@ -136,6 +136,10 @@ class ChessPage extends React.Component{
             this.socket.on('updateTimer', (data) => {
                 this.syncTimers(data.timeLeft, data.oppTimeLeft, data.timeSent);
             });
+            this.socket.on('gameOver', (data) => {
+                this.setState({gameOver: true});
+                this.gameOver(data.result, data.reason);
+            })
             
             this.socket.on('invalid', (data) => {
                 console.log(data.message);   
@@ -281,7 +285,6 @@ class ChessPage extends React.Component{
     gameOver(result, reason){
         this.disableTimer("w");
         this.disableTimer("b");
-        this.setState({gameOver: true});
         console.log("Game over. " + result + " by " + reason);
         this.setNotification("Game over!", result + " by " + reason)
     }
@@ -292,9 +295,11 @@ class ChessPage extends React.Component{
         this.setState({timers: this.state.timers});
     }
     timerFinishCallback(color){
-        let winner = this.getOpponentColor(this.state.game.turn());
-        winner = (winner === "w" ? "White" : "Black");
-        this.gameOver(winner + " has won", "Timeout");
+        
+        //Might still want to do something here, for extra visual effects or something
+        //let winner = this.getOpponentColor(this.state.game.turn());
+        //winner = (winner === "w" ? "White" : "Black");
+        //this.gameOver(winner + " has won", "Timeout");
     }
 
     //Color is of the user who just made a move
@@ -473,7 +478,7 @@ class ChessPage extends React.Component{
                         :
                         <UserCard className="UserCard"
                             username="Waiting on opponent..."
-                            elo={1000}
+                            elo={null}
                         />
                     }
                 </Box>
