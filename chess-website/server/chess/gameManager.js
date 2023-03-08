@@ -6,22 +6,24 @@ async function loader(){
 }
 
 const Timer = require("./Timer");
+const uuid = require("uuid");
 
 const connectedUsers = require("../utils/connectedUsers");
 const matchTime = 6000 // 10 minute matches 
 
 
 const gameManager = {
-    games: [],
+    games: new Map(),
     
     addNewGame(playerSockets) {
         const game = {
+            uuid: uuid.v4(),
             state: new this.Chess.Chess(),
             move: 1,
             spectators: [],
             ...playerSockets
         }
-        this.games.push(game);
+        this.games.set(game.id, game);
         
         //Associate game info with each socket
         game.white.game = game;
@@ -159,6 +161,14 @@ const gameManager = {
         game.black.emit('gameOver', {result, reason});
         //Notify players + spectators
         //send to DB
+
+        this.disconnectAll(game);
+        this.games.delete(game.uuid);
+    },
+
+    disconnectAll(game){
+        game.white.disconnect();
+        game.black.disconnect();
     }
 }
 

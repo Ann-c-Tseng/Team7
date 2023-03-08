@@ -333,8 +333,8 @@ class ChessPage extends React.Component{
     syncTimers(userTime, oppTime, timeSent){
 
         const latency = Date.now() - timeSent;
-        const userTimer = this.getTimer(this.state.userColor);
-        const oppTimer = this.getTimer(this.getOpponentColor(this.state.userColor));
+        const userTimer = this.getTimer(this.state.user);
+        const oppTimer = this.getTimer(this.getOpponentColor(this.state.user));
         
         userTimer.time = userTime - latency;
         oppTimer.time = oppTime - latency;
@@ -415,7 +415,6 @@ class ChessPage extends React.Component{
     render(){
         return (
             <>
-            
             <Box className="ChessPage">
                 <Box className="GameUserContainer">
                     {
