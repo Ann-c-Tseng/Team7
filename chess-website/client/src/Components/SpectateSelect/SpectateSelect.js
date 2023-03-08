@@ -42,14 +42,14 @@ class SpectateSelect extends React.Component{
                 return (
                     <Card className="SpectateGameCard" key={game.id}>
                         <CardActionArea className="CardButton">
-                            <Box className="PlayerInfo">
+                            <Box className="SpectateGameInfo">
                                 <TimerView color="b" time={600000}/>
                                 <UserCard
                                     username="Test"
                                     avatarEnabled={true}
                                     
                                 />
-                            </Box>
+                            
                             <Box className="Game">
                                 <Chessboard 
                                     id={game.id}
@@ -61,7 +61,6 @@ class SpectateSelect extends React.Component{
                                     areArrowsAllowed={false}
                                 />
                             </Box>
-                            <Box className="PlayerInfo">
                             <UserCard
                                 username="Test"
                                 avatarEnabled={true}
