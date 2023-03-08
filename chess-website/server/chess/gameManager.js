@@ -1,4 +1,4 @@
-const gamesModel = require('../models/Games');
+const gameModel = require('../models/Games');
 
 
 //node got fussy when trying to require chess.js normally. This is a mess
@@ -9,8 +9,8 @@ async function loader(){
 }
 
 const connectedUsers = require("../utils/connectedUsers");
-const whiteMoveList = [];
-const blackMoveList = [];
+let whiteMoveList = [];
+let blackMoveList = [];
 let counter = 0;
 const gameManager = {
     games: [],
@@ -82,12 +82,6 @@ const gameManager = {
     handleMove(game, move){
         game.state.move(move);
         console.log(move);
-        if (counter % 2 === 0) {
-            whiteMoveList.push(move);
-        }
-        else {
-            blackMoveList.push(move);
-        }
         game.white.drawRequest = false;
         game.black.drawRequest = false;
         if (game.state.isCheckmate()){
@@ -95,11 +89,28 @@ const gameManager = {
         }
     },
 
-    handleGameOver(game){
+    async handleGameOver(game){
         //send to DB
-        console.log("white moves: " + this.whiteMoveList);
-        console.log("black moves: " + this.blackMoveList);
+        // console.log(game.state.loadPgn());
+        let randomString = "a;lksefw234";
+        const gameDB = new gameModel({
+            moveStringWhite: "TestingwhiteMove",
+            moveStringBlack: "TestingblackMove",
+            numMoves: 15,
+            black: "blackPlayer", 
+            white: "whitePlayer",
+            winner: "Black or white",
+            // date: 
+            duration: "5 min"
+        })
 
+        try {
+            let result = await gameDB.save();
+            console.log("game data successfully stored");
+        }
+        catch(error){
+            console.log(error);
+        }
     }
 
 }
