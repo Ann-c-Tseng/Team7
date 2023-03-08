@@ -4,6 +4,13 @@ import { Chessboard } from "react-chessboard";
 import './Rules.css'
 import './Table.css'
 
+import king from '../../Images/king.svg'
+import queen from '../../Images/queen.svg'
+import bishop from '../../Images/bishop.svg'
+import rook from '../../Images/rook.svg'
+import knight from '../../Images/knight.svg'
+import pawn from '../../Images/pawn.svg'
+
 export default function Rules() {
   return (
     <div className='rules-container'>
@@ -46,7 +53,7 @@ export default function Rules() {
       </p>
       <div className='container'>
         <div className='piece-table'>
-          <table className='table'>
+          <table>
             <thead>
               <tr>
                 <th>Piece</th>
@@ -56,27 +63,27 @@ export default function Rules() {
             <tbody>
               <tr>
                 <td>King</td>
-                <td>img</td>
+                <td><img src={king} alt=''/></td>
               </tr>
               <tr>
                 <td>Queen</td>
-                <td>img</td>
+                <td><img src={queen} alt=''/></td>
               </tr>
               <tr>
                 <td>Bishop</td>
-                <td>img</td>
+                <td><img src={bishop} alt=''/></td>
               </tr>
               <tr>
                 <td>Rook</td>
-                <td>img</td>
+                <td><img src={rook} alt=''/></td>
               </tr>
               <tr>
                 <td>Knight</td>
-                <td>img</td>
+                <td><img src={knight} alt=''/></td>
               </tr>
               <tr>
                 <td>Pawn</td>
-                <td>img</td>
+                <td><img src={pawn} alt=''/></td>
               </tr>
             </tbody>
           </table>

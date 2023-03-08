@@ -1,5 +1,5 @@
 .rules-container {
-    background-color: #62b6cb;
+    background-color: #424242;
     max-width: 900px;
     text-align: center;
     padding: 20px;
@@ -8,7 +8,7 @@
 
 .rules {
     margin: 2rem auto;
-    color: #000000;
+    color: #ffffff;
     text-align: left;
 }
 
@@ -38,6 +38,7 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    justify-content: center;
 }
 
 .board {
@@ -46,39 +47,38 @@
     margin-left: 20px;
 }
 
-.table {
+.piece-table table {
     flex: 1;
     max-width: 50%;
-}
-
-.piece-table table {
+    background-color: #424242;
     border-collapse: collapse;
     width: 100%;
 }
-
+  
 .piece-table th {
-    background-color: #1b4965;
-    color: white;
+    background-color: #313131;
+    color: #e0e0e0;
     font-weight: bold;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-right: 20px;
-    padding-left: 10px;
+    padding-right: 30px;
+    padding-left: 30px;
     text-align: left;
 }
   
 .piece-table tr {
-    background-color: #62b6cb;
+    background-color: #424242;
 }
   
 .piece-table tr:not(:last-child) {
-    border-bottom: 1px solid #bee9e8;
+    border-bottom: 1px solid #e0e0e0;
 }
   
 .piece-table td {
+    color: #e0e0e0;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-right: 20px;
-    padding-left: 10px;
+    padding-right: 30px;
+    padding-left: 30px;
     text-align: left;
 }
