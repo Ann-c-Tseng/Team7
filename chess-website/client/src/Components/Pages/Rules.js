@@ -1,43 +1,21 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { Chessboard } from "react-chessboard";
 
-const rows = [
-  { key: 'Piece', king: 'King', queen: 'Queen', bishop: 'Bishop', rook: 'Rook', knight: 'Knight', pawn: 'Pawn' },
-  { key: 'Number of Pieces', king: 1, queen: 1, bishop: 2, rook: 2, knight: 2, pawn: 8 },
-  { key: 'Symbols', king: 'img', queen: 'img', bishop: 'img', rook: 'img', knight: 'img', pawn: 'img' }];
+import './Rules.css'
+import './Table.css'
+
+import king from '../../Images/king.svg'
+import queen from '../../Images/queen.svg'
+import bishop from '../../Images/bishop.svg'
+import rook from '../../Images/rook.svg'
+import knight from '../../Images/knight.svg'
+import pawn from '../../Images/pawn.svg'
 
 export default function Rules() {
   return (
-    <div className='Rules'>
+    <div className='rules-container'>
+    <div className='rules'>
       <h1>Rules of Chess</h1>
-      <p>
-        The rules of chess (also known as the laws of chess) govern the play
-        of the game of chess. Chess is a two-player abstract strategy board
-        game. Each player controls sixteen pieces of six types on a chessboard.
-        Each type of piece moves in a distinct way. The object of the game
-        is to checkmate (threaten with inescapable capture) the opponent's
-        king. A game can end in various ways besides checkmate: a player can
-        resign, and there are several ways a game can end in a draw.
-        While the exact origins of chess are unclear, modern rules first
-        took form during the Middle Ages. The rules continued to be slightly
-        modified until the early 19th century, when they reached essentially
-        their current form. The rules also varied somewhat from region to
-        region. Today, the standard rules are set by FIDE (Fédération
-        Internationale des Échecs), the international governing body for
-        chess. Slight modifications are made by some national organizations
-        for their own purposes. There are variations of the rules for fast
-        chess, correspondence chess, online chess, and Chess960.
-        Besides the basic moves of the pieces, rules also govern the equipment
-        used, time control, conduct and ethics of players, accommodations for
-        physically challenged players, and recording of moves using chess
-        notation. Procedures for resolving irregularities that can occur
-        during a game are provided as well.
-      </p>
       <h2>Initial Setup</h2>
       <p>
         Chess is played on a chessboard, a square board divided into a grid
@@ -50,31 +28,47 @@ export default function Rules() {
         is in each player's near-right corner. Horizontal rows are called
         ranks, and vertical columns are called files.
       </p>
-      <p>
-        Each player controls sixteen pieces:
-      </p>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="Pieces">
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.key}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row" align="center">
-                  {row.key}
-                </TableCell>
-                <TableCell align="right">{row.king}</TableCell>
-                <TableCell align="right">{row.queen}</TableCell>
-                <TableCell align="right">{row.bishop}</TableCell>
-                <TableCell align="right">{row.rook}</TableCell>
-                <TableCell align="right">{row.knight}</TableCell>
-                <TableCell align="right">{row.pawn}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <div className='container'>
+        <div className='piece-table'>
+          <table>
+            <thead>
+              <tr>
+                <th>Piece</th>
+                <th>Symbol</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>King</td>
+                <td><img src={king} alt=''/></td>
+              </tr>
+              <tr>
+                <td>Queen</td>
+                <td><img src={queen} alt=''/></td>
+              </tr>
+              <tr>
+                <td>Bishop</td>
+                <td><img src={bishop} alt=''/></td>
+              </tr>
+              <tr>
+                <td>Rook</td>
+                <td><img src={rook} alt=''/></td>
+              </tr>
+              <tr>
+                <td>Knight</td>
+                <td><img src={knight} alt=''/></td>
+              </tr>
+              <tr>
+                <td>Pawn</td>
+                <td><img src={pawn} alt=''/></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className='board'>
+          <Chessboard arePiecesDraggable={false}/>
+        </div>
+      </div>
       <p>
         At the beginning of the game, the pieces are arranged as shown in the
         diagram: for each side one king, one queen, two rooks, two bishops,
@@ -268,6 +262,7 @@ export default function Rules() {
         agree to a draw.
       </p>
       <p>Source: https://en.wikipedia.org/wiki/Rules_of_chess</p>
+    </div>
     </div>
   )
 }

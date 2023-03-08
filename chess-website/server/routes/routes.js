@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const signUpTemplateCopy = require('../models/SignUpModels')
+const gameModel = require('../models/Games')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 
@@ -97,6 +98,7 @@ router.post('/profile', async (request, response, next) => {
 
         //Send back to user
         const body = {
+            elo: userData.elo,
             id: userData._id,
             fullName: userData.fullName,
             username: userData.username,
@@ -114,9 +116,13 @@ router.post('/profile', async (request, response, next) => {
 
 router.post('/history', async (request, response) => {
     let user = request.body.username;
-    console.log(user);
     const games = await gameModel.find({$or: [{black: user}, {white: user}]}).exec();
     response.json(games);
+})
+
+router.post('/leaderboard', async (request, response) => {
+    const users = await signUpTemplateCopy.find({elo: {$gt: 0}}).exec();
+    response.json(users);
 })
 
 module.exports = router;
