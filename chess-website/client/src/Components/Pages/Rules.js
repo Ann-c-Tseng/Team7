@@ -16,29 +16,6 @@ export default function Rules() {
     <div className='rules-container'>
     <div className='rules'>
       <h1>Rules of Chess</h1>
-      <p>
-        The rules of chess (also known as the laws of chess) govern the play
-        of the game of chess. Chess is a two-player abstract strategy board
-        game. Each player controls sixteen pieces of six types on a chessboard.
-        Each type of piece moves in a distinct way. The object of the game
-        is to checkmate (threaten with inescapable capture) the opponent's
-        king. A game can end in various ways besides checkmate: a player can
-        resign, and there are several ways a game can end in a draw.
-        While the exact origins of chess are unclear, modern rules first
-        took form during the Middle Ages. The rules continued to be slightly
-        modified until the early 19th century, when they reached essentially
-        their current form. The rules also varied somewhat from region to
-        region. Today, the standard rules are set by FIDE (Fédération
-        Internationale des Échecs), the international governing body for
-        chess. Slight modifications are made by some national organizations
-        for their own purposes. There are variations of the rules for fast
-        chess, correspondence chess, online chess, and Chess960.
-        Besides the basic moves of the pieces, rules also govern the equipment
-        used, time control, conduct and ethics of players, accommodations for
-        physically challenged players, and recording of moves using chess
-        notation. Procedures for resolving irregularities that can occur
-        during a game are provided as well.
-      </p>
       <h2>Initial Setup</h2>
       <p>
         Chess is played on a chessboard, a square board divided into a grid
