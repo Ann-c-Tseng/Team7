@@ -106,6 +106,10 @@ class ChessPage extends React.Component{
                 }
             });
 
+            this.socket.on('alreadyConnected', () => {
+                this.setNotification("Already connected!", "Please use your other tab.");
+            })
+
             this.socket.on('disconnect', (reason) => {
                 console.log("Disconnected: " + reason)
             });
