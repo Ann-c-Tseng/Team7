@@ -1,3 +1,6 @@
+const gameModel = require('../models/Games');
+
+
 //node got fussy when trying to require chess.js normally. This is a mess
 async function loader(){
     const Chess = await import('chess.js')
@@ -35,6 +38,8 @@ const gameManager = {
             state: new this.Chess.Chess(),
             move: 1,
             gameOver: false,
+            startTime: 0,
+            endTime: 0,
             spectators: [],
             ...playerSockets
         }
@@ -48,7 +53,7 @@ const gameManager = {
         game.black.game = game;
         game.black.drawRequest = false;
         game.black.color = 'b';
-
+        
         this.setTimers(game);
         this.initializePlayers(game);
     },
@@ -139,7 +144,6 @@ const gameManager = {
         game.state.move(move);
 
         this.handleTimers(game, color);
-
         game.white.drawRequest = false;
         game.black.drawRequest = false;
 
@@ -148,12 +152,13 @@ const gameManager = {
         }
     },
 
-    
     handleTimers(game, colorMoved){
         if (game.move === 1 && colorMoved === 'w'){
             //Do nothing
         }
         else if (game.move === 1 && colorMoved === 'b'){
+            console.log("Begin timers!");
+            game.startTime = Date.now();
             game.white.timer.toggle();
         }
         else{
@@ -203,12 +208,43 @@ const gameManager = {
         return false;
     },
 
-    handleGameOver(game, result, reason){
+    async handleGameOver(game, result, reason){
         game.gameOver = true;
+        game.endTime = Date.now();
         game?.white.emit('gameOver', {result, reason});
         game?.black.emit('gameOver', {result, reason});
         //Notify players + spectators
         //send to DB
+        
+        totalMoveString = game.state.pgn();
+        numMove = game.move;
+        whiteUser = game.white.user.username;
+        blackUser = game.black.user.username;
+        winner = result.split(" ")[0]
+        console.log("Move string: " + game.state.pgn());
+        console.log("number of game move: " + game.move);
+        console.log("blackUser: " + game.black.user.username + "\nwhiteUser: " + game.white.user.username);
+
+        duration = `${((game.endTime - game.startTime) / 60000).toFixed(3)} minutes`;
+        console.log(`Game Duration: ${duration}`);
+        winner = result.split(" ")[0] === 'White' ? game.white.user.username : game.black.user.username
+        console.log(`winner: ${winner}`);
+        const gameDB = new gameModel({
+            moveString: totalMoveString,
+            numMoves: numMove,
+            black: blackUser, 
+            white: whiteUser,
+            winner: winner,
+            duration: duration
+        })
+
+        try {
+            let result = await gameDB.save();
+            console.log("game data successfully stored");
+        }
+        catch(error){
+            console.log(error);
+        }
 
         this.disconnectAll(game);
         this.games.delete(game.uuid);
