@@ -1,14 +1,6 @@
 a {
     text-decoration: none;
     }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
     
     .card {
     font-family: 'Manrope', sans-serif;
@@ -29,12 +21,12 @@ a {
     margin: 0;
     }
     .title a{
-    color: white;
+    color: #000;
     }
     .subtitle a,.forget-pass{
     text-align: center;
     font-weight: bold;
-    color: white;
+    color: #320c74;
     }
     .subtitle{
     text-align: center;
