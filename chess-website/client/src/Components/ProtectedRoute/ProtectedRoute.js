@@ -12,7 +12,7 @@ class ProtectedRoute extends React.Component{
         }
         else{
             //Also let the user know they need to login. (add a notification)
-            alert("Please log in to access user profile and game information");
+            alert("Redirecting to login page... sign-in to access the application");
             return <Navigate to="/login"/>
         }
     }
