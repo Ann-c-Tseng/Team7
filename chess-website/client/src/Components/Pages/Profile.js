@@ -1,13 +1,17 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import {useSelector, useDispatch} from "react-redux";
 
 const Profile = () => {
-    const userProfilePic = require('../../Images/tentativeProfile.png');
+    const [isLoading, setLoading] = useState(true);
+    const [userData, setUserData] = useState();
+
+    // const userProfilePic = require('../../Images/tentativeProfile.png');
+    const userProfile = useSelector((state) => state.auth.user.avatar);
     const username = useSelector((state) => state.auth.user.username);
+    const useremail = useSelector((state) => state.auth.user.email);
     const dispatch = useDispatch();
-
-
 
     const overallDivStyle = {
         width: '40vw',
@@ -44,15 +48,29 @@ const Profile = () => {
         color: 'white',
     }
 
+    useEffect(() => {
+        axios.post('http://localhost:4000/profile', {email:useremail})
+        .then((response) =>{
+            setUserData(response.data);
+            setLoading(false);
+        })
+    }, []);
+
+    if (isLoading) {
+        return <div className="App">Loading...</div>;
+    }    
+
     return (
         <>
             <div style={overallDivStyle}>
-                <img style={ProfilePicStyle} src={userProfilePic} alt="User profile"/>
+                {/* <img style={ProfilePicStyle} src={userProfilePic} alt="User profile"/> */}
+                <img style={ProfilePicStyle} src={userProfile} alt="User profile"/>
                 <h3>{username}</h3>
-                <h4 style={h4Style}>ELO: 1601</h4>
-                <h4 style={h4Style}> User ID: aBrIABLECKSHaUC</h4>
-                <h4 style={h4Style}> Longest Win Streak: 4 out of 5 games </h4>
-                <h4 style={h4Style}> Total wins: 4 games </h4>
+                <h4 style={h4Style}>ELO: 100</h4>
+                <h4 style={h4Style}> User ID: {userData.id}</h4>
+                <h4 style={h4Style}> Email: {useremail}</h4>
+                <h4 style={h4Style}> Longest Win Streak: 0 out of 0 games </h4>
+                <h4 style={h4Style}> Total wins: 0 games </h4>
                 <button style={gameHistoryButton}>View Game History</button>
                 <button style={gameHistoryButton} onClick={() => dispatch({type: "auth/logout"})}>Logout</button>
             </div>
