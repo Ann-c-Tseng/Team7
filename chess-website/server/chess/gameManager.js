@@ -34,6 +34,7 @@ const gameManager = {
             uuid: uuid.v4(),
             state: new this.Chess.Chess(),
             move: 1,
+            gameOver: false,
             spectators: [],
             ...playerSockets
         }
@@ -75,6 +76,9 @@ const gameManager = {
 
     setHandlers(socket, opponentSocket){
 
+        socket.on('disconnect', () => {
+            this.handlePlayerDisconnect(socket.game, socket.color);
+        });
         socket.on('move', (move) => {
             try{
                 this.handleMove(socket.game, move, socket.color);
@@ -111,8 +115,9 @@ const gameManager = {
             
         });
         socket.on('resign', () => {
-            opponentSocket.emit('resign');
-            this.handleGameOver();
+            const winner = socket.color === "w" ? "Black" : "White";
+            const result = winner + " has won";
+            this.handleGameOver(socket.game, result, "Resignation");
         });
     },
 
@@ -138,10 +143,7 @@ const gameManager = {
         game.white.drawRequest = false;
         game.black.drawRequest = false;
 
-        if (game.state.isCheckmate()){
-            this.handleGameOver(game);
-        }
-        if (color === 'b'){
+        if (!this.checkGameOver(game, color) && color === 'b'){
             game.move++;
         }
     },
@@ -161,24 +163,67 @@ const gameManager = {
     },
 
     finishedTimer(color, game){
-        console.log(color + " ran out of time");
         const winner = color === "w" ? "Black" : "White";
         const result = winner + " has won";
         this.handleGameOver(game, result, "Timeout");
 
     },
 
+    handlePlayerDisconnect(game, color){
+        if (!game.gameOver){
+            const winner = color === "w" ? "Black" : "White";
+            const result = winner + " has won";
+            this.handleGameOver(game, result, "Disconnect");
+        }
+    },
+
+    checkGameOver(game, color){
+        if (game.state.isCheckmate()){
+            const winner = color === "w" ? "White" : "Black";
+            const result = winner + " has won";
+            this.handleGameOver(game, result, "Checkmate");
+            return true;
+        }
+        else if (game.state.isStalemate()){
+            this.handleGameOver(game, "Draw", "Stalemate");
+            return true;
+        }
+        else if (game.state.isThreefoldRepetition()){
+            this.handleGameOver(game, "Draw", "Threefold Repetition");
+            return true;
+        }
+        else if (game.state.isInsufficientMaterial()){
+            this.handleGameOver(game, "Draw", "Insufficient Material");
+            return true;
+        }
+        else if (game.state.isDraw()){
+            this.handleGameOver(game, "Draw", "50-move rule");
+            return true;
+        }
+        return false;
+    },
+
     handleGameOver(game, result, reason){
-        game.white.emit('gameOver', {result, reason});
-        game.black.emit('gameOver', {result, reason});
+        game.gameOver = true;
+        game?.white.emit('gameOver', {result, reason});
+        game?.black.emit('gameOver', {result, reason});
         //Notify players + spectators
         //send to DB
 
         this.disconnectAll(game);
         this.games.delete(game.uuid);
+        
     },
 
     disconnectAll(game){
+        if (!game.white){
+            console.log(game.white);
+        }
+        if (!game.black){
+            console.log(game.black);
+        }
+        
+        
         game.white.disconnect();
         game.black.disconnect();
     }

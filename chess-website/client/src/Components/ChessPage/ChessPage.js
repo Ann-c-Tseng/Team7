@@ -125,11 +125,6 @@ class ChessPage extends React.Component{
                     drawRequest: false
                 });
             });
-            this.socket.on('resign', () => {
-                console.log("Opponent resigned");
-                let winner = (this.state.user === "w" ? "White" : "Black");
-                this.gameOver(winner + " has won", "Resignation");
-            })
 
             this.socket.on('opponentMove', (data) => {
                 console.log("Received opponent move");
@@ -155,6 +150,13 @@ class ChessPage extends React.Component{
         //For singleplayer testing
         //this.startRandomMoveComp();
     }
+
+    componentWillUnmount(){
+        if (!this.socket.disconnected){
+            this?.socket.disconnect();
+        }
+    }
+
 
     //TEMPORARY FOR RANDOM MOVE COMPUTER (move to server?)
     startRandomMoveComp(){

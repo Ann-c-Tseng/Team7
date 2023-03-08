@@ -51,7 +51,6 @@ const newConnection = async (socket) => {
     socket.user = user;
     connectedUsers.set(user.email, socket);
 
-    //Disconnecting before a match is made should cause no penalty
     socket.on('disconnect', () => {
         matchmaking.removeFromMatchmaking(socket);
         console.log(socket.user.username + " has disconnected!");
