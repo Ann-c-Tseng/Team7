@@ -9,6 +9,10 @@ import Box from '@mui/material/Box';
 const Navigation = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
+  const spectateButton = [
+    <Link to="/spectate" className="link"><button className="nav-button">Spectate Games</button></Link>
+  ]
+
   const defaultButtons = [
     <Link to="/" className="link"><button className="nav-home">Chess Master</button></Link>,
     <Link to="/login" className="link"><button className="nav-button">Log In</button></Link>,
@@ -33,6 +37,7 @@ const Navigation = () => {
           variant="text"
         >
           {authenticatedButtons}
+          {spectateButton}
         </ButtonGroup>
       </Box>
     )
@@ -45,6 +50,7 @@ const Navigation = () => {
           variant="text"
         >
           {defaultButtons}
+          {spectateButton}
         </ButtonGroup>
       </Box>
     )

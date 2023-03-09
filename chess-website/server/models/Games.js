@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 
 const game = new mongoose.Schema({
-    moveString: {
+    pgn: {
         type: String,
         required: true,
     },
-    numMoves: {
+    fen: {
+        type: String,
+        required: true,
+    },
+    moves: {
         type: Number,
         required: true,
     },
@@ -18,6 +22,10 @@ const game = new mongoose.Schema({
         required: true,
     },
     winner: {
+        type: String,
+        required: true,
+    },
+    reason: {
         type: String,
         required: true,
     },

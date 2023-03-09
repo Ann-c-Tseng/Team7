@@ -1,0 +1,25 @@
+.SpectateGameCardList{
+    
+    width:80%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+}
+.SpectateGameCard{
+    display:flex;
+    padding:5px;
+    margin:5px;
+}
+.SpectateGameInfo{
+    background-color: #d6d4cc;
+    padding:5px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+.PlayerInfo{
+    background-color: rgb(206, 206, 206);
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}

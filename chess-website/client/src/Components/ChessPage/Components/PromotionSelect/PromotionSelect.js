@@ -1,15 +1,15 @@
 import React from 'react';
 import {ToggleButton, ToggleButtonGroup, Box} from "@mui/material";
 
-import blackQueen from "./pieces/black-queen.svg";
-import blackRook from "./pieces/black-rook.svg";
-import blackBishop from "./pieces/black-bishop.svg";
-import blackKnight from "./pieces/black-knight.svg";
+import blackQueen from "../../../../Images/black-queen.svg";
+import blackRook from "../../../../Images/black-rook.svg";
+import blackBishop from "../../../../Images/black-bishop.svg";
+import blackKnight from "../../../../Images/black-knight.svg";
 
-import whiteQueen from "./pieces/white-queen.svg";
-import whiteRook from "./pieces/white-rook.svg";
-import whiteBishop from "./pieces/white-bishop.svg";
-import whiteKnight from "./pieces/white-knight.svg";
+import whiteQueen from "../../../../Images/white-queen.svg";
+import whiteRook from "../../../../Images/white-rook.svg";
+import whiteBishop from "../../../../Images/white-bishop.svg";
+import whiteKnight from "../../../../Images/white-knight.svg";
 
 //ToggleButtonGroup doesn't accept fragments, so provide an array of the buttons instead:
 

@@ -4,12 +4,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import {connect} from "react-redux";
 import {login} from '../../Store/Slices/authSlice';
+import {isEmail} from "validator";
+import "./Forms.css";
 
 class LoginForm extends Component {
     constructor() {
         super()
         this.state = {
             email:'',
+            validEmail: false,
             password:''
         }
         this.changeEmail = this.changeEmail.bind(this)
@@ -18,8 +21,10 @@ class LoginForm extends Component {
     }
 
     changeEmail(event){
+        const email = event.target.value;
         this.setState({
-            email:event.target.value
+            email,
+            validEmail: isEmail(email),
         })
     }
 
@@ -31,15 +36,19 @@ class LoginForm extends Component {
 
     onSubmit(event){
         event.preventDefault()
+        if (!this.state.validEmail){
+            alert("Invalid email!");
+            return;
+        }
+
         axios.post('http://localhost:4000/login', {email: this.state.email, password: this.state.password})
         .then((response) => {
-            if (response.data?.success === true){
+            if (response.data.success === true){
                 this.props.login(response.data.username, response.data.email);
                 window.location = '/profile';
             }
             else{
-                console.log("login failure");
-                alert("Your email or password is incorrect")
+                alert("Your E-mail or password is incorrect")
             }
         })
     }
@@ -57,6 +66,7 @@ class LoginForm extends Component {
                             value={this.state.email}
                             className='form-control form-group'
                             />
+                            <p className="badField">{!this.state.validEmail ? "Must be valid email" : " "}</p>
 
                             <input type='password'
                             placeholder='Password'

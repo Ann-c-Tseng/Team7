@@ -4,14 +4,19 @@ const signUpTemplate = new mongoose.Schema({
     fullName: {
         type:String, 
         require: true,
+        minLength: 3,
+        maxLength: 30,
     },
     username:{
         type:String,
-        required:true
+        required:true,
+        minLength: 3,
+        maxLength: 30,
     },
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true,
     },
     password:{
         type:String,

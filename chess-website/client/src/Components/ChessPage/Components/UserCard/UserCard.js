@@ -9,7 +9,14 @@ class UserCard extends React.Component{
             <Box className="UserCard">
                 {this.props.username ? 
                 <Typography variant="h6" className="Username">{this.props.username} {this.props.elo ? "(" + this.props.elo + ")" : null}</Typography> : null}
-                <Avatar sx={{width: 50, height: 50}} variant="square" className="ProfilePicture" alt={this.props.username + "'s profile picture"} src={this.props.profilePicture} />
+                {this.props.avatarEnabled ?
+                    <Avatar
+                        sx={{width: 50, height: 50}}
+                        variant="square"
+                        className="ProfilePicture"
+                        alt={this.props.username + "'s profile picture"}
+                        src={this.props.profilePicture}
+                    /> : null}
             </Box>
         )
     }

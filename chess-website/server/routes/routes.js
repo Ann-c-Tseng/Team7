@@ -4,6 +4,9 @@ const signUpTemplateCopy = require('../models/SignUpModels')
 const gameModel = require('../models/Games')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
+const validator = require("validator");
+
+const gameManager = require("../chess/gameManager");
 
 router.post('/signup', async (request, response, next) => {
     const saltPassword = await bcrypt.genSalt(10) //encrypt password before sending to DB
@@ -13,7 +16,7 @@ router.post('/signup', async (request, response, next) => {
 
     if (userData){
         response.json({
-            message: "User with email already exists.",
+            message: "Account already exists",
             success: false
         });
         return next();
@@ -28,6 +31,14 @@ router.post('/signup', async (request, response, next) => {
     })
 
     try{
+
+        if (!validator.isAlphanumeric(request.body.fullName) || 
+        !validator.isAlphanumeric(request.body.username) ||
+        !validator.isEmail(request.body.email) ||
+        request.body.password.length < 8){
+            throw new Error("Data validation failed!");
+        }
+
         let result = await signedUpUser.save();
 
         response.json({
@@ -36,33 +47,39 @@ router.post('/signup', async (request, response, next) => {
             message: "Successfully signed up",
             success: true
         });
-        return next();
+        
     }
     catch(error){
+        response.json({
+            message: "Data validation failed.",
+            success: false
+        });
         console.log(error);
+        return next();
     }
+    return next();
 })
 
 router.post('/login', async (request, response, next) => {
-    let InputEmail = request.body.email;
-    let InputPassword = request.body.password;
+    let inputEmail = request.body.email;
+    let inputPassword = request.body.password;
 
     try{
-        const userData = await findUser(InputEmail);
+        if (!validator.isEmail(inputEmail)){
+            throw new Error("Invalid email");
+        }
+
+        const userData = await findUser(inputEmail);
         
         //Check email
         if(!userData) {
-            console.log("invalid email");
-            response.json(false);
-            return next();
+            throw new Error("Invalid email");
         }
 
         //Check password
-        const passwordMatch = await bcrypt.compare(InputPassword, userData.password)
+        const passwordMatch = await bcrypt.compare(inputPassword, userData.password)
         if (!passwordMatch) {
-            console.log("invalid password");
-            response.json(false);
-            return next();
+            throw new Error("Invalid password");
         }
 
         //TODO: Session tokens to more reliably check authentication
@@ -79,8 +96,14 @@ router.post('/login', async (request, response, next) => {
         response.json(body);
     }
     catch(error){
+        response.json({
+            message: "Failed to log in",
+            success: false
+        });
         console.log(error);
+        return next();
     }
+    return next();
 });
 
 router.post('/profile', async (request, response, next) => {
@@ -123,6 +146,13 @@ router.post('/history', async (request, response) => {
 router.post('/leaderboard', async (request, response) => {
     const users = await signUpTemplateCopy.find({elo: {$gt: 0}}).exec();
     response.json(users);
+})
+router.post('/spectate', async (request, response) => {
+    response.json({
+        success: true,
+        message: "Retrieved games",
+        games: gameManager.getActiveGames(),
+    });
 })
 
 module.exports = router;

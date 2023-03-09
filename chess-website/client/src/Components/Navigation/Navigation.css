@@ -30,7 +30,7 @@
     padding: 15px;
     border: none;
 }
-
+/*box-shadow: 0px 0px 20px -18px;*/
 button:hover {
     background-color: #202020;
 }

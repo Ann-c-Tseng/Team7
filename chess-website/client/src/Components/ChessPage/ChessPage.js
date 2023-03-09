@@ -8,7 +8,6 @@ import PromotionSelect from './Components/PromotionSelect/PromotionSelect.js';
 import ResultPopup from './Components/ResultPopup/ResultPopup.js';
 import { Chess } from "chess.js";
 import Box from "@mui/material/Box";
-import axios from 'axios';
 import './ChessPage.css';
 import {connect} from "react-redux";
 import io from "socket.io-client";
@@ -107,6 +106,10 @@ class ChessPage extends React.Component{
                 }
             });
 
+            this.socket.on('alreadyConnected', () => {
+                this.setNotification("Already connected!", "Please use your other tab.");
+            })
+            
             this.socket.on('disconnect', (reason) => {
                 console.log("Disconnected: " + reason)
             });
@@ -122,11 +125,6 @@ class ChessPage extends React.Component{
                     drawRequest: false
                 });
             });
-            this.socket.on('resign', () => {
-                console.log("Opponent resigned");
-                let winner = (this.state.user === "w" ? "White" : "Black");
-                this.gameOver(winner + " has won", "Resignation");
-            })
 
             this.socket.on('opponentMove', (data) => {
                 console.log("Received opponent move");
@@ -136,6 +134,13 @@ class ChessPage extends React.Component{
             });
             this.socket.on('updateTimer', (data) => {
                 this.syncTimers(data.timeLeft, data.oppTimeLeft, data.timeSent);
+            });
+
+            this.socket.on('notify', (data) => {
+                this.setNotification(data.title, data.message);
+                if (data.title === "Game Aborted"){
+                    this.setState({gameOver: true});
+                }
             });
             this.socket.on('gameOver', (data) => {
                 this.setState({gameOver: true});
@@ -148,6 +153,12 @@ class ChessPage extends React.Component{
         }
         catch(err){
             console.err("Connection error");
+        }
+    }
+
+    componentWillUnmount(){
+        if (!this.socket.disconnected){
+            this?.socket.disconnect();
         }
     }
 
@@ -169,14 +180,14 @@ class ChessPage extends React.Component{
         const move = {
             from: fromSquare,
             to: toSquare,
-            promotion: promotion //Always promote to queen (for now)
+            promotion: promotion 
         };
 
         let moveResult;
-        try {
+        try{
             moveResult = this.state.game.move(move);
-
-        } catch (e) {
+            
+        } catch(e){
             //Throws error if invalid move attempt
             //Notify the player?
         }
@@ -186,7 +197,7 @@ class ChessPage extends React.Component{
             this.successfulMove(moveResult);
             return true;
         }
-        else {
+        else{
             //Failed move
             return false;
         }
@@ -214,75 +225,71 @@ class ChessPage extends React.Component{
         this.checkGameOver();
     }
 
-    opponentsTurn() {
+    opponentsTurn(){
         return this.state.turn === this.state.opponent;
     }
-    usersTurn() {
+    usersTurn(){
         return this.state.turn === this.state.user;
     }
-    switchTurn() {
-        this.setState({ turn: this.getOpponentColor(this.state.turn) });
+    switchTurn(){
+        this.setState({turn: this.getOpponentColor(this.state.turn)});
     }
-
+    
     //If white, create new object and push it in with move info,
     //if black, just place move info
-    addMove(move, color) {
-        if (color === "w") {
-            this.setState({
-                moves: [...this.state.moves, {
-                    number: this.state.moveNum + 1,
-                    white: move,
-                    black: ""
-                }]
-            });
-            this.setState({ moveNum: this.state.moveNum + 1 });
+    addMove(move, color){
+        if (color === "w"){
+            this.setState({moves: [...this.state.moves, {
+                number: this.state.moveNum+1,
+                white: move,
+                black: ""
+            }]});
+            this.setState({moveNum: this.state.moveNum+1});
         }
-        else {
-            if (this.state.moveNum === 0) {
+        else{
+            if (this.state.moveNum === 0){
                 console.warn("Black attempted to move first: " + move);
                 return;
             }
             const lastMove = this.state.moveNum;
-            this.state.moves[lastMove - 1].black = move;
-            this.setState({ moves: this.state.moves });
+            this.state.moves[lastMove-1].black = move;
+            this.setState({moves: this.state.moves});
         }
     }
 
     //Checks if the game is over. Calls gameOver with the reason if it is.
-    checkGameOver() {
-        if (this.state.game.isCheckmate()) {
+    checkGameOver(){
+        if (this.state.game.isCheckmate()){
             let winner = this.getOpponentColor(this.state.game.turn());
             winner = (winner === "w" ? "White" : "Black");
             this.gameOver(winner + " has won", "Checkmate");
         }
-        else if (this.state.game.isStalemate()) {
+        else if (this.state.game.isStalemate()){
             this.gameOver("Draw", "Stalemate");
         }
-        else if (this.state.game.isThreefoldRepetition()) {
+        else if (this.state.game.isThreefoldRepetition()){
             this.gameOver("Draw", "Threefold Repetition");
         }
-        else if (this.state.game.isInsufficientMaterial()) {
+        else if (this.state.game.isInsufficientMaterial()){
             this.gameOver("Draw", "Insufficient Material");
         }
-        else if (this.state.game.isDraw()) {
+        else if (this.state.game.isDraw()){
             this.gameOver("Draw", "50-move rule");
         }
-
-    }
-
-    gameOver(result, reason) {
-        this.disableTimer("w");
-        this.disableTimer("b");
-        console.log("Game over. " + result + " by " + reason);
-        this.socket.emit('gameOver');
-        this.setNotification("Game over!", result + " by " + reason)
         
     }
 
+    gameOver(result, reason){
+        this.disableTimer("w");
+        this.disableTimer("b");
+        console.log("Game over. " + result + " by " + reason);
+        this.setNotification("Game over!", result + " by " + reason)
+    }
+    
     //Pass these to the timer objects, so that when they update,
     //they call these functions to update this game's state.
-    timerUpdateCallback() {
-        this.setState({ timers: this.state.timers });
+    timerUpdateCallback(){
+        this.setState({timers: this.state.timers});
     }
     timerFinishCallback(color){
         
@@ -311,11 +318,11 @@ class ChessPage extends React.Component{
         this.enableTimer(this.getOpponentColor(color));
     }
 
-    enableTimer(color) {
+    enableTimer(color){
         let timer = this.getTimer(color);
         timer.enable();
     }
-    disableTimer(color) {
+    disableTimer(color){
         let timer = this.getTimer(color);
         timer.disable();
     }
@@ -343,11 +350,11 @@ class ChessPage extends React.Component{
         }
     }
 
-    getOpponentColor(color) {
+    getOpponentColor(color){
         return color === "w" ? "b" : "w";
     }
 
-    flipBoard() {
+    flipBoard(){
         this.setState({
             topTimer: this.state.bottomTimer,
             bottomTimer: this.state.topTimer,
@@ -402,7 +409,7 @@ class ChessPage extends React.Component{
         });
     }
 
-    render() {
+    render(){
         return (
             <>
             <Box className="ChessPage">
@@ -412,6 +419,7 @@ class ChessPage extends React.Component{
                         <UserCard className="UserCard"
                             username={this.state.topUser.username}
                             elo={this.state.topUser.elo}
+                            avatarEnabled={true}
                         />
                         :
                         <UserCard className="UserCard"
@@ -422,7 +430,7 @@ class ChessPage extends React.Component{
                     
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
-                            <TimerView
+                            <TimerView 
                                 className="TopTimer"
                                 color={this.state.topTimer.color}
                                 time={this.state.topTimer.time}
@@ -463,6 +471,7 @@ class ChessPage extends React.Component{
                         <UserCard className="UserCard"
                             username={this.state.bottomUser.username}
                             elo={this.state.bottomUser.elo}
+                            avatarEnabled={true}
                         />
                         :
                         <UserCard className="UserCard"

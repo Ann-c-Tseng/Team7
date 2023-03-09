@@ -12,23 +12,38 @@ const Timer = require("./Timer");
 const uuid = require("uuid");
 
 const connectedUsers = require("../utils/connectedUsers");
-const matchTime = 6000 // 10 minute matches 
+const matchTime = 600000 // 10 minute matches 
 
 
 const gameManager = {
     games: new Map(),
     
+    getActiveGames(){
+        const activeGames = [];
+        
+        for (entry of this.games.entries()){
+            const game = entry[1]
+            activeGames.push({
+                id: entry[0],
+                position: game.state.fen(),
+            });
+        }
+        return activeGames;
+    },
+
+
     addNewGame(playerSockets) {
         const game = {
             uuid: uuid.v4(),
             state: new this.Chess.Chess(),
             move: 1,
+            gameOver: false,
             startTime: 0,
             endTime: 0,
             spectators: [],
             ...playerSockets
         }
-        this.games.set(game.id, game);
+        this.games.set(game.uuid, game);
         
         //Associate game info with each socket
         game.white.game = game;
@@ -65,9 +80,13 @@ const gameManager = {
     },
 
     setHandlers(socket, opponentSocket){
+
+        socket.on('disconnect', () => {
+            this.handlePlayerDisconnect(socket.game, socket.color);
+        });
         socket.on('move', (move) => {
             try{
-                this.handleMove(socket.game, move, socket.color);
+                this.tryMove(socket.game, move, socket.color);
                 opponentSocket.emit('opponentMove', {
                     move,
                     timeSent: Date.now(),
@@ -78,7 +97,8 @@ const gameManager = {
                     timeSent: Date.now(),
                     timeLeft: socket.timer.time,
                     oppTimeLeft: opponentSocket.timer.time
-                })
+                });
+                this.endMove(socket.game, socket.color);
             }
             catch(err){
                 console.log(err)
@@ -91,7 +111,7 @@ const gameManager = {
             if (opponentSocket.drawRequest){
                 socket.emit('drawConfirm');
                 opponentSocket.emit('drawConfirm');
-                this.handleGameOver();
+                this.handleGameOver(socket.game, "Draw", "Agreement");
                 
             }
             else{
@@ -101,8 +121,9 @@ const gameManager = {
             
         });
         socket.on('resign', () => {
-            opponentSocket.emit('resign');
-            this.handleGameOver();
+            const winner = socket.color === "w" ? "Black" : "White";
+            const result = winner + " has won";
+            this.handleGameOver(socket.game, result, "Resignation");
         });
     },
 
@@ -115,27 +136,21 @@ const gameManager = {
         game.white.timer = new Timer('w', matchTime, timerCallback);
     },
 
-    handleMove(game, move, color){
+    tryMove(game, move, color){
         if ((color === "w" && !game.white.timer.timeLeft()) ||
             (color === "b" && !game.black.timer.timeLeft())){
             throw new Error("User tried making move with no time left");
         }
 
         game.state.move(move);
+    },
 
+    endMove(game, color){
         this.handleTimers(game, color);
         game.white.drawRequest = false;
         game.black.drawRequest = false;
 
-
-
-        if (game.state.isCheckmate()){
-            console.log(color + " ran out of time");
-            const winner = color === "w" ? "Black" : "White";
-            const result = winner + " has won";
-            this.handleGameOver(game, result, "Timeout");
-        }
-        if (color === 'b'){
+        if (!this.checkGameOver(game, color) && color === 'b'){
             game.move++;
         }
     },
@@ -143,7 +158,6 @@ const gameManager = {
     handleTimers(game, colorMoved){
         if (game.move === 1 && colorMoved === 'w'){
             //Do nothing
-            console.log("First move");
         }
         else if (game.move === 1 && colorMoved === 'b'){
             console.log("Begin timers!");
@@ -157,55 +171,112 @@ const gameManager = {
     },
 
     finishedTimer(color, game){
-        console.log(color + " ran out of time");
         const winner = color === "w" ? "Black" : "White";
         const result = winner + " has won";
         this.handleGameOver(game, result, "Timeout");
 
     },
 
+    handlePlayerDisconnect(game, color){
+        if (!game.gameOver){
+            const winner = color === "w" ? "Black" : "White";
+            const result = winner + " has won";
+            this.handleGameOver(game, result, "Disconnect");
+        }
+    },
+
+    checkGameOver(game, color){
+        if (game.state.isCheckmate()){
+            const winner = color === "w" ? "White" : "Black";
+            const result = winner + " has won";
+            this.handleGameOver(game, result, "Checkmate");
+            return true;
+        }
+        else if (game.state.isStalemate()){
+            this.handleGameOver(game, "Draw", "Stalemate");
+            return true;
+        }
+        else if (game.state.isThreefoldRepetition()){
+            this.handleGameOver(game, "Draw", "Threefold Repetition");
+            return true;
+        }
+        else if (game.state.isInsufficientMaterial()){
+            this.handleGameOver(game, "Draw", "Insufficient Material");
+            return true;
+        }
+        else if (game.state.isDraw()){
+            this.handleGameOver(game, "Draw", "50-move rule");
+            return true;
+        }
+        return false;
+    },
+
     async handleGameOver(game, result, reason){
+        game.gameOver = true;
         game.endTime = Date.now();
-        game.white.emit('gameOver', {result, reason});
-        game.black.emit('gameOver', {result, reason});
-        //Notify players + spectators
-        //send to DB
-        
-        totalMoveString = game.state.pgn();
-        numMove = game.move;
-        whiteUser = game.white.user.username;
-        blackUser = game.black.user.username;
-        winner = result.split(" ")[0]
-        console.log("Move string: " + game.state.pgn());
-        console.log("number of game move: " + game.move);
-        console.log("blackUser: " + game.black.user.username + "\nwhiteUser: " + game.white.user.username);
 
-        duration = `${((game.endTime - game.startTime) / 60000).toFixed(3)} minutes`;
-        console.log(`Game Duration: ${duration}`);
-        winner = result.split(" ")[0] === 'White' ? game.white.user.username : game.black.user.username
-        console.log(`winner: ${winner}`);
-        const gameDB = new gameModel({
-            moveString: totalMoveString,
-            numMoves: numMove,
-            black: blackUser, 
-            white: whiteUser,
-            winner: winner,
-            duration: duration
-        })
-
-        try {
-            let result = await gameDB.save();
-            console.log("game data successfully stored");
+        if (game.move < 2){
+            game?.white.emit('notify', {title: "Game Aborted", message: "Game ended prematurely"});
+            game?.black.emit('notify', {title: "Game Aborted", message: "Game ended prematurely"});
         }
-        catch(error){
-            console.log(error);
+        else{
+            game?.white.emit('gameOver', {result, reason});
+            game?.black.emit('gameOver', {result, reason});
         }
 
+        this.storeGameInDB(game, result, reason);
         this.disconnectAll(game);
         this.games.delete(game.uuid);
     },
 
+    async storeGameInDB(game, result, reason){
+        //Don't store games with only 1 move.
+        if (game.move < 2){
+            return;
+        }
+
+        const whiteUser = game.white.user.username;
+        const blackUser = game.black.user.username;
+
+        const duration = `${((game.endTime - game.startTime) / 60000).toFixed(3)} minutes`;
+        let winner;
+        if (result === "Draw"){
+            winner = "Draw";
+        }
+        else{
+            winner = result.split(" ")[0] === 'White' ? whiteUser : blackUser;
+        }
+        
+
+        const gameDB = new gameModel({
+            pgn: game.state.pgn(),
+            fen: game.state.fen(),
+            moves: game.move,
+            black: blackUser, 
+            white: whiteUser,
+            winner: winner,
+            reason: reason,
+            duration: duration
+        });
+
+        try {
+            let result = await gameDB.save();
+            console.log("Game data successfully stored");
+        }
+        catch(error){
+            console.log(error);
+        }
+    },
+
     disconnectAll(game){
+        if (!game.white){
+            console.log(game.white);
+        }
+        if (!game.black){
+            console.log(game.black);
+        }
+        
+        
         game.white.disconnect();
         game.black.disconnect();
     }

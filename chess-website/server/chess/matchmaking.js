@@ -44,13 +44,13 @@ const newConnection = async (socket) => {
     }
     // else if (connectedUsers.has(user.email)){
     //     console.log("User tried to connect twice");
+    //     socket.emit("alreadyConnected");
     //     socket.disconnect("Only one active connection per account allowed.");
     //     return;
     // }
     socket.user = user;
     connectedUsers.set(user.email, socket);
 
-    //Disconnecting before a match is made should cause no penalty
     socket.on('disconnect', () => {
         matchmaking.removeFromMatchmaking(socket);
         console.log(socket.user.username + " has disconnected!");
