@@ -138,6 +138,9 @@ class ChessPage extends React.Component{
 
             this.socket.on('notify', (data) => {
                 this.setNotification(data.title, data.message);
+                if (data.title === "Game Aborted"){
+                    this.setState({gameOver: true});
+                }
             });
             this.socket.on('gameOver', (data) => {
                 this.setState({gameOver: true});
