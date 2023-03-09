@@ -110,7 +110,7 @@ const gameManager = {
             if (opponentSocket.drawRequest){
                 socket.emit('drawConfirm');
                 opponentSocket.emit('drawConfirm');
-                this.handleGameOver();
+                this.handleGameOver(socket.game, "Draw", "Agreement");
                 
             }
             else{
@@ -211,44 +211,58 @@ const gameManager = {
     async handleGameOver(game, result, reason){
         game.gameOver = true;
         game.endTime = Date.now();
-        game?.white.emit('gameOver', {result, reason});
-        game?.black.emit('gameOver', {result, reason});
-        //Notify players + spectators
-        //send to DB
-        
-        totalMoveString = game.state.pgn();
-        numMove = game.move;
-        whiteUser = game.white.user.username;
-        blackUser = game.black.user.username;
-        winner = result.split(" ")[0]
-        console.log("Move string: " + game.state.pgn());
-        console.log("number of game move: " + game.move);
-        console.log("blackUser: " + game.black.user.username + "\nwhiteUser: " + game.white.user.username);
 
-        duration = `${((game.endTime - game.startTime) / 60000).toFixed(3)} minutes`;
-        console.log(`Game Duration: ${duration}`);
-        winner = result.split(" ")[0] === 'White' ? game.white.user.username : game.black.user.username
-        console.log(`winner: ${winner}`);
+        if (game.move < 2){
+            game?.white.emit('notify', {title: "Game Aborted", message: "Game ended prematurely"});
+            game?.black.emit('notify', {title: "Game Aborted", message: "Game ended prematurely"});
+        }
+        else{
+            game?.white.emit('gameOver', {result, reason});
+            game?.black.emit('gameOver', {result, reason});
+        }
+
+        this.storeGameInDB(game, result, reason);
+        this.disconnectAll(game);
+        this.games.delete(game.uuid);
+    },
+
+    async storeGameInDB(game, result, reason){
+        //Don't store games with only 1 move.
+        if (game.move < 2){
+            return;
+        }
+
+        const whiteUser = game.white.user.username;
+        const blackUser = game.black.user.username;
+
+        const duration = `${((game.endTime - game.startTime) / 60000).toFixed(3)} minutes`;
+        let winner;
+        if (result === "Draw"){
+            winner = "Draw";
+        }
+        else{
+            winner = result.split(" ")[0] === 'White' ? whiteUser : blackUser;
+        }
+        
+
         const gameDB = new gameModel({
-            moveString: totalMoveString,
-            numMoves: numMove,
+            pgn: game.state.pgn(),
+            fen: game.state.fen(),
+            moves: game.move,
             black: blackUser, 
             white: whiteUser,
             winner: winner,
+            reason: reason,
             duration: duration
-        })
+        });
 
         try {
             let result = await gameDB.save();
-            console.log("game data successfully stored");
+            console.log("Game data successfully stored");
         }
         catch(error){
             console.log(error);
         }
-
-        this.disconnectAll(game);
-        this.games.delete(game.uuid);
-        
     },
 
     disconnectAll(game){

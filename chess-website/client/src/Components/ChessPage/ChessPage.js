@@ -8,7 +8,6 @@ import PromotionSelect from './Components/PromotionSelect/PromotionSelect.js';
 import ResultPopup from './Components/ResultPopup/ResultPopup.js';
 import { Chess } from "chess.js";
 import Box from "@mui/material/Box";
-import axios from 'axios';
 import './ChessPage.css';
 import {connect} from "react-redux";
 import io from "socket.io-client";
@@ -110,7 +109,7 @@ class ChessPage extends React.Component{
             this.socket.on('alreadyConnected', () => {
                 this.setNotification("Already connected!", "Please use your other tab.");
             })
-
+            
             this.socket.on('disconnect', (reason) => {
                 console.log("Disconnected: " + reason)
             });
@@ -135,6 +134,10 @@ class ChessPage extends React.Component{
             });
             this.socket.on('updateTimer', (data) => {
                 this.syncTimers(data.timeLeft, data.oppTimeLeft, data.timeSent);
+            });
+
+            this.socket.on('notify', (data) => {
+                this.setNotification(data.title, data.message);
             });
             this.socket.on('gameOver', (data) => {
                 this.setState({gameOver: true});
@@ -162,11 +165,11 @@ class ChessPage extends React.Component{
     //TEMPORARY FOR RANDOM MOVE COMPUTER (move to server?)
     startRandomMoveComp(){
         setInterval(() => {
-            if (!this.opponentsTurn() || this.state.game.isGameOver()) {
+            if (!this.opponentsTurn() || this.state.game.isGameOver()){
                 return;
             }
 
-            let moves = this.state.game.moves({ verbose: true });
+            let moves = this.state.game.moves({verbose: true});
             let move = moves[Math.floor(Math.random() * moves.length)];
             this.opponentMove(move.from, move.to);
         }, 4000)
@@ -194,10 +197,10 @@ class ChessPage extends React.Component{
         };
 
         let moveResult;
-        try {
+        try{
             moveResult = this.state.game.move(move);
-
-        } catch (e) {
+            
+        } catch(e){
             //Throws error if invalid move attempt
             //Notify the player?
         }
@@ -207,7 +210,7 @@ class ChessPage extends React.Component{
             this.successfulMove(moveResult);
             return true;
         }
-        else {
+        else{
             //Failed move
             return false;
         }
@@ -235,75 +238,71 @@ class ChessPage extends React.Component{
         this.checkGameOver();
     }
 
-    opponentsTurn() {
+    opponentsTurn(){
         return this.state.turn === this.state.opponent;
     }
-    usersTurn() {
+    usersTurn(){
         return this.state.turn === this.state.user;
     }
-    switchTurn() {
-        this.setState({ turn: this.getOpponentColor(this.state.turn) });
+    switchTurn(){
+        this.setState({turn: this.getOpponentColor(this.state.turn)});
     }
-
+    
     //If white, create new object and push it in with move info,
     //if black, just place move info
-    addMove(move, color) {
-        if (color === "w") {
-            this.setState({
-                moves: [...this.state.moves, {
-                    number: this.state.moveNum + 1,
-                    white: move,
-                    black: ""
-                }]
-            });
-            this.setState({ moveNum: this.state.moveNum + 1 });
+    addMove(move, color){
+        if (color === "w"){
+            this.setState({moves: [...this.state.moves, {
+                number: this.state.moveNum+1,
+                white: move,
+                black: ""
+            }]});
+            this.setState({moveNum: this.state.moveNum+1});
         }
-        else {
-            if (this.state.moveNum === 0) {
+        else{
+            if (this.state.moveNum === 0){
                 console.warn("Black attempted to move first: " + move);
                 return;
             }
             const lastMove = this.state.moveNum;
-            this.state.moves[lastMove - 1].black = move;
-            this.setState({ moves: this.state.moves });
+            this.state.moves[lastMove-1].black = move;
+            this.setState({moves: this.state.moves});
         }
     }
 
     //Checks if the game is over. Calls gameOver with the reason if it is.
-    checkGameOver() {
-        if (this.state.game.isCheckmate()) {
+    checkGameOver(){
+        if (this.state.game.isCheckmate()){
             let winner = this.getOpponentColor(this.state.game.turn());
             winner = (winner === "w" ? "White" : "Black");
             this.gameOver(winner + " has won", "Checkmate");
         }
-        else if (this.state.game.isStalemate()) {
+        else if (this.state.game.isStalemate()){
             this.gameOver("Draw", "Stalemate");
         }
-        else if (this.state.game.isThreefoldRepetition()) {
+        else if (this.state.game.isThreefoldRepetition()){
             this.gameOver("Draw", "Threefold Repetition");
         }
-        else if (this.state.game.isInsufficientMaterial()) {
+        else if (this.state.game.isInsufficientMaterial()){
             this.gameOver("Draw", "Insufficient Material");
         }
-        else if (this.state.game.isDraw()) {
+        else if (this.state.game.isDraw()){
             this.gameOver("Draw", "50-move rule");
         }
-
-    }
-
-    gameOver(result, reason) {
-        this.disableTimer("w");
-        this.disableTimer("b");
-        console.log("Game over. " + result + " by " + reason);
-        this.socket.emit('gameOver');
-        this.setNotification("Game over!", result + " by " + reason)
         
     }
 
+    gameOver(result, reason){
+        this.disableTimer("w");
+        this.disableTimer("b");
+        console.log("Game over. " + result + " by " + reason);
+        this.setNotification("Game over!", result + " by " + reason)
+    }
+    
     //Pass these to the timer objects, so that when they update,
     //they call these functions to update this game's state.
-    timerUpdateCallback() {
-        this.setState({ timers: this.state.timers });
+    timerUpdateCallback(){
+        this.setState({timers: this.state.timers});
     }
     timerFinishCallback(color){
         
@@ -332,11 +331,11 @@ class ChessPage extends React.Component{
         this.enableTimer(this.getOpponentColor(color));
     }
 
-    enableTimer(color) {
+    enableTimer(color){
         let timer = this.getTimer(color);
         timer.enable();
     }
-    disableTimer(color) {
+    disableTimer(color){
         let timer = this.getTimer(color);
         timer.disable();
     }
@@ -364,11 +363,11 @@ class ChessPage extends React.Component{
         }
     }
 
-    getOpponentColor(color) {
+    getOpponentColor(color){
         return color === "w" ? "b" : "w";
     }
 
-    flipBoard() {
+    flipBoard(){
         this.setState({
             topTimer: this.state.bottomTimer,
             bottomTimer: this.state.topTimer,
@@ -423,7 +422,7 @@ class ChessPage extends React.Component{
         });
     }
 
-    render() {
+    render(){
         return (
             <>
             <Box className="ChessPage">
@@ -444,7 +443,7 @@ class ChessPage extends React.Component{
                     
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
-                            <TimerView
+                            <TimerView 
                                 className="TopTimer"
                                 color={this.state.topTimer.color}
                                 time={this.state.topTimer.time}
