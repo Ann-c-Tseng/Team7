@@ -9,14 +9,17 @@ import Box from '@mui/material/Box';
 const Navigation = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const spectateButton = [
-    <Link to="/spectate" className="link"><button className="nav-button">Spectate Games</button></Link>
+  const alwaysAvailable = [
+    <Link to="/spectate" className="link"><button className="nav-button">Spectate Games</button></Link>,
+    <Link to="/leaderboard" className="link"><button className="nav-button">Leaderboard</button></Link>,
+    <Link to="/rules" className="link"><button className="nav-button">Rules</button></Link>,
   ]
 
-  const defaultButtons = [
+  const unAuthenticatedButtons = [
     <Link to="/" className="link"><button className="nav-home">Chess Master</button></Link>,
     <Link to="/login" className="link"><button className="nav-button">Log In</button></Link>,
-    <Link to="/signup" className="link"><button className="nav-button">Sign Up</button></Link>
+    <Link to="/signup" className="link"><button className="nav-button">Sign Up</button></Link>,
+
   ]
 
   const authenticatedButtons = [
@@ -24,8 +27,6 @@ const Navigation = () => {
     <Link to="/chess" className="link"><button className="nav-button">Play Chess!</button></Link>,
     <Link to="/profile" className="link"><button className="nav-button">Profile</button></Link>,
     <Link to="/history" className="link"><button className="nav-button">History</button></Link>,
-    <Link to="/leaderboard" className="link"><button className="nav-button">Leaderboard</button></Link>,
-    <Link to="/rules" className="link"><button className="nav-button">Rules</button></Link>
   ]
 
   if (isAuthenticated) {
@@ -37,7 +38,7 @@ const Navigation = () => {
           variant="text"
         >
           {authenticatedButtons}
-          {spectateButton}
+          {alwaysAvailable}
         </ButtonGroup>
       </Box>
     )
@@ -49,8 +50,8 @@ const Navigation = () => {
           aria-label="vertical outlined button group"
           variant="text"
         >
-          {defaultButtons}
-          {spectateButton}
+          {unAuthenticatedButtons}
+          {alwaysAvailable}
         </ButtonGroup>
       </Box>
     )
