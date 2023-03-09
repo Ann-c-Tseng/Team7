@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from "axios";
-import { Box } from '@mui/system';
-import {Card, CardActionArea, CardContent} from "@mui/material";
-import { Chessboard } from "react-chessboard";
+import {Box} from '@mui/system';
+import {Card, CardActionArea, CardContent, Typography} from "@mui/material";
+import {Navigate} from 'react-router-dom';
+import {Chessboard} from "react-chessboard";
 import UserCard from "../ChessPage/Components/UserCard/UserCard";
 import TimerView from "../ChessPage/Components/Timer/TimerView";
 import "./SpectateSelect.css";
@@ -13,12 +14,24 @@ class SpectateSelect extends React.Component{
 
         this.state = {
             games: [],
+            redirect: false,
+            redirectTo: null,
         };
 
     }
 
     componentDidMount(){
         this.refresh();
+    }
+
+    //onClick only accepts functions, so create a new function with the id baked in
+    buttonFunctionMaker(id){
+        return () => {
+            this.setState({
+                redirect: true,
+                redirectTo: id,
+            })
+        };
     }
 
     refresh(){
@@ -36,42 +49,50 @@ class SpectateSelect extends React.Component{
     }
 
     render(){
+        if (this.state.redirect){
+            return <Navigate to={"/spectate/" + this.state.redirectTo}/>
+        }
+
         return (
-            <Box className="SpectateGameCardList">
-            {this.state.games.map(game => {
-                return (
-                    <Card className="SpectateGameCard" key={game.id}>
-                        <CardActionArea className="CardButton">
-                            <Box className="SpectateGameInfo">
-                                <TimerView color="b" time={600000}/>
+            <>
+                <Typography variant="h2">Spectate a game</Typography>
+                <Box className="SpectateGameCardList">
+                {this.state.games.map(game => {
+                    return (
+                        <Card className="SpectateGameCard" key={game.id}>
+                            <CardActionArea className="CardButton" onClick={this.buttonFunctionMaker(game.id)}>
+                                <Box className="SpectateGameInfo">
+                                    <TimerView color="b" time={game.black.time}/>
+                                    <UserCard
+                                        username={game.black.user.username}
+                                        avatarEnabled={true}
+                                        elo={game.black.user.elo}
+                                    />
+                                
+                                <Box className="Game">
+                                    <Chessboard 
+                                        id={game.id}
+                                        position={game.position}
+                                        showBoardNotation={false}
+                                        boardWidth={260}
+                                        boardHeight={260}
+                                        arePiecesDraggable={false}
+                                        areArrowsAllowed={false}
+                                    />
+                                </Box>
                                 <UserCard
-                                    username="Test"
+                                    username={game.white.user.username}
                                     avatarEnabled={true}
-                                    
+                                    elo={game.white.user.elo}
                                 />
-                            
-                            <Box className="Game">
-                                <Chessboard 
-                                    id={game.id}
-                                    position={game.position}
-                                    showBoardNotation={false}
-                                    boardWidth={260}
-                                    boardHeight={260}
-                                    arePiecesDraggable={false}
-                                    areArrowsAllowed={false}
-                                />
-                            </Box>
-                            <UserCard
-                                username="Test"
-                                avatarEnabled={true}
-                            />
-                            <TimerView color="w" time={600000}/>
-                            </Box>
-                        </CardActionArea>
-                    </Card>
-                )
-            })}
-            </Box>
+                                <TimerView color="w" time={game.white.time}/>
+                                </Box>
+                            </CardActionArea>
+                        </Card>
+                    )
+                })}
+                </Box>
+            </>
         );
     }
 }

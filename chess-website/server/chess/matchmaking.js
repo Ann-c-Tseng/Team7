@@ -37,32 +37,48 @@ const matchmaking = {
 const newConnection = async (socket) => {
     //Connection means they would like to play a game of chess.
 
-    const user = await findUser(socket.handshake.query.email);
-    if (!user){
-        socket.disconnect("Could not find user account");
-        return;
+    if (socket.handshake.query.email){
+        const user = await findUser(socket.handshake.query.email);
+        if (!user){
+            socket.disconnect("Could not find user account");
+            return;
+        }
+        else if (connectedUsers.has(user.email)){
+            console.log("User tried to connect twice");
+            socket.emit("alreadyConnected");
+            socket.disconnect("Only one active connection per account allowed.");
+            return;
+        }
+        socket.user = user;
+        connectedUsers.set(user.email, socket);
+
+        socket.on('disconnect', () => {
+            matchmaking.removeFromMatchmaking(socket);
+            console.log(socket.user.username + " has disconnected!");
+            connectedUsers.delete(user.email);
+        })
+
+        const game = matchmaking.addToMatchmaking(socket)
+        if (game !== null){
+            console.log("a match made!");
+            gameManager.addNewGame(game);
+        }
     }
-    // else if (connectedUsers.has(user.email)){
-    //     console.log("User tried to connect twice");
-    //     socket.emit("alreadyConnected");
-    //     socket.disconnect("Only one active connection per account allowed.");
-    //     return;
-    // }
-    socket.user = user;
-    connectedUsers.set(user.email, socket);
-
-    socket.on('disconnect', () => {
-        matchmaking.removeFromMatchmaking(socket);
-        console.log(socket.user.username + " has disconnected!");
-        connectedUsers.delete(user.email);
-    })
-
-
-    const game = matchmaking.addToMatchmaking(socket)
-    if (game !== null){
-        console.log("a match made!");
-        gameManager.addNewGame(game);
+    else if (socket.handshake.query.spectate){
+        const uuid = socket.handshake.query.spectate;
+        const game = gameManager.getGameById(uuid);
+        if (!game){
+            socket.emit('gameNotFound');
+            socket.disconnect("Could not find game.");
+            return;
+        }
+        gameManager.addSpectator(game, socket)
     }
+    else{
+        socket.disconnect("No action specified");
+    }
+
+    
 }
 
 module.exports = {

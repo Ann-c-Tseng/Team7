@@ -46,8 +46,11 @@ class GameInfo extends React.Component{
                 }
                     <ButtonGroup>
                         <IconButton size="large" title="Flip Board" onClick={this.props.flipBoardHandler}><RepeatRounded /></IconButton>
-                        <IconButton size="large" title="Request Draw" onClick={this.props.requestDrawHandler}><HandshakeIcon /></IconButton>
-                        <IconButton size="large" title="Resign" onClick={this.props.resignHandler}><FlagIcon /></IconButton>
+                        {!(this.props.mode === "Spectator") ?
+                        <>
+                            <IconButton size="large" title="Request Draw" onClick={this.props.requestDrawHandler}><HandshakeIcon /></IconButton>
+                            <IconButton size="large" title="Resign" onClick={this.props.resignHandler}><FlagIcon /></IconButton>
+                        </> : null}
                     </ButtonGroup>
                 </Box>
             </Box>

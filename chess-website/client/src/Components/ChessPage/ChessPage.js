@@ -57,8 +57,8 @@ class ChessPage extends React.Component{
 
             notification: {
                 active: false,
-                title: "Default notification title",
-                details: "Default details",
+                title: "",
+                details: "",
             }
         }
 
@@ -120,7 +120,7 @@ class ChessPage extends React.Component{
                 });
             });
             this.socket.on('drawConfirm', () => {
-                this.gameOver("Draw", "Agreement");
+                this.gameOver("Draw", " by Agreement");
                 this.setState({
                     drawRequest: false
                 });
@@ -138,10 +138,8 @@ class ChessPage extends React.Component{
 
             this.socket.on('notify', (data) => {
                 this.setNotification(data.title, data.message);
-                if (data.title === "Game Aborted"){
-                    this.setState({gameOver: true});
-                }
             });
+
             this.socket.on('gameOver', (data) => {
                 this.setState({gameOver: true});
                 this.gameOver(data.result, data.reason);
@@ -188,8 +186,7 @@ class ChessPage extends React.Component{
             moveResult = this.state.game.move(move);
             
         } catch(e){
-            //Throws error if invalid move attempt
-            //Notify the player?
+            //console.log("invalid move");
         }
 
         this.setState({game: this.state.game});
@@ -262,19 +259,19 @@ class ChessPage extends React.Component{
         if (this.state.game.isCheckmate()){
             let winner = this.getOpponentColor(this.state.game.turn());
             winner = (winner === "w" ? "White" : "Black");
-            this.gameOver(winner + " has won", "Checkmate");
+            this.gameOver(winner + " has won", " by Checkmate");
         }
         else if (this.state.game.isStalemate()){
-            this.gameOver("Draw", "Stalemate");
+            this.gameOver("Draw", " by Stalemate");
         }
         else if (this.state.game.isThreefoldRepetition()){
-            this.gameOver("Draw", "Threefold Repetition");
+            this.gameOver("Draw", " by Threefold Repetition");
         }
         else if (this.state.game.isInsufficientMaterial()){
-            this.gameOver("Draw", "Insufficient Material");
+            this.gameOver("Draw", " by Insufficient Material");
         }
         else if (this.state.game.isDraw()){
-            this.gameOver("Draw", "50-move rule");
+            this.gameOver("Draw", " by 50-move rule");
         }
         
     }
@@ -282,8 +279,8 @@ class ChessPage extends React.Component{
     gameOver(result, reason){
         this.disableTimer("w");
         this.disableTimer("b");
-        console.log("Game over. " + result + " by " + reason);
-        this.setNotification("Game over!", result + " by " + reason)
+        console.log("Game over. " + result + reason);
+        this.setNotification("Game over!", result + reason)
     }
     
     //Pass these to the timer objects, so that when they update,
@@ -388,7 +385,7 @@ class ChessPage extends React.Component{
         //TODO add a confirm
         console.log("Resigned");
         let winner = (this.state.user === "w" ? "Black" : "White");
-        this.gameOver(winner + " has won", "Resignation");
+        this.gameOver(winner + " has won", " by Resignation");
     }
 
     setNotification(title, details){
@@ -457,6 +454,7 @@ class ChessPage extends React.Component{
                             />
                         </Box>
                         <GameInfo 
+                            mode={"Player"}
                             moves={this.state.moves}
                             className="Info"
                             flipBoardHandler={this.flipBoard}
@@ -475,7 +473,7 @@ class ChessPage extends React.Component{
                         />
                         :
                         <UserCard className="UserCard"
-                            username="Waiting on opponent..."
+                            username="Searching for opponent..."
                             elo={null}
                         />
                     }
