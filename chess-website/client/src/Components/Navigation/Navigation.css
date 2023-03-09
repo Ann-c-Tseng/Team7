@@ -65,7 +65,11 @@ button:hover {
 }
 
 .nav-collapse-button {
+    display: flex;
     justify-content: center;
-    font-size: 1.2em;
+    align-items: center;
+    font-size: 1.9em;
     color: #fefefed7;
+    position: relative;
+    top: -4px;
 }
