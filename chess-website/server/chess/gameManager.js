@@ -12,7 +12,7 @@ const Timer = require("./Timer");
 const uuid = require("uuid");
 
 const connectedUsers = require("../utils/connectedUsers");
-const matchTime = 600000 // 10 minute matches 
+const matchTime = 6000000 // 10 minute matches 
 
 
 const gameManager = {
@@ -23,12 +23,35 @@ const gameManager = {
         
         for (entry of this.games.entries()){
             const game = entry[1]
+            const whiteUser = game.white.user;
+            const blackUser = game.black.user;
             activeGames.push({
                 id: entry[0],
                 position: game.state.fen(),
+                turn: game.state.turn(),
+                //Only take specific things. Don't send the entire user to spectators.
+                //Add profile pictures later
+                white: {
+                    user: {
+                        username: whiteUser.username,
+                        elo: whiteUser.elo
+                        
+                    },
+                    time: game.white.timer.time,
+                },
+                black: {
+                    user: {
+                        username: blackUser.username,
+                        elo: blackUser.elo,
+                    },
+                    time: game.black.timer.time,
+                }
             });
         }
         return activeGames;
+    },
+    getGameById(uuid){
+        return this.games.get(uuid);
     },
 
 
@@ -78,6 +101,31 @@ const gameManager = {
         this.setHandlers(game.white, game.black);
         this.setHandlers(game.black, game.white);
     },
+    addSpectator(game, spectator){
+        game.spectators.push(spectator);
+        spectator.emit('initialize', {
+            turn: game.state.turn(),
+            fen: game.state.fen(),
+            moves: game.state.history(),
+            //Only take specific things. Don't send the entire user to spectators.
+            //Add profile pictures later
+            white: {
+                user: {
+                    username: game.white.user.username,
+                    elo: game.white.elo
+                    
+                },
+                time: game.white.timer.time,
+            },
+            black: {
+                user: {
+                    username: game.black.user.username,
+                    elo: game.black.elo,
+                },
+                time: game.black.timer.time,
+            }
+        });
+    },
 
     setHandlers(socket, opponentSocket){
 
@@ -111,11 +159,12 @@ const gameManager = {
             if (opponentSocket.drawRequest){
                 socket.emit('drawConfirm');
                 opponentSocket.emit('drawConfirm');
-                this.handleGameOver(socket.game, "Draw", "Agreement");
+                this.handleGameOver(socket.game, "Draw", " by Agreement");
                 
             }
             else{
                 opponentSocket.emit('requestDraw');
+                this.emitSpectators(socket.game, 'requestDraw', {color: socket.color});
                 socket.drawRequest = true;
             }
             
@@ -123,7 +172,7 @@ const gameManager = {
         socket.on('resign', () => {
             const winner = socket.color === "w" ? "Black" : "White";
             const result = winner + " has won";
-            this.handleGameOver(socket.game, result, "Resignation");
+            this.handleGameOver(socket.game, result, " by Resignation");
         });
     },
 
@@ -143,12 +192,19 @@ const gameManager = {
         }
 
         game.state.move(move);
-    },
-
-    endMove(game, color){
         this.handleTimers(game, color);
         game.white.drawRequest = false;
         game.black.drawRequest = false;
+
+        this.emitSpectators(game, 'move', {
+            move: move,
+            whiteTimeLeft: game.white.timer.time,
+            blackTimeLeft: game.black.timer.time,
+            timeSent: Date.now(),
+        })
+    },
+
+    endMove(game, color){
 
         if (!this.checkGameOver(game, color) && color === 'b'){
             game.move++;
@@ -160,7 +216,6 @@ const gameManager = {
             //Do nothing
         }
         else if (game.move === 1 && colorMoved === 'b'){
-            console.log("Begin timers!");
             game.startTime = Date.now();
             game.white.timer.toggle();
         }
@@ -173,7 +228,7 @@ const gameManager = {
     finishedTimer(color, game){
         const winner = color === "w" ? "Black" : "White";
         const result = winner + " has won";
-        this.handleGameOver(game, result, "Timeout");
+        this.handleGameOver(game, result, " by Timeout");
 
     },
 
@@ -181,7 +236,7 @@ const gameManager = {
         if (!game.gameOver){
             const winner = color === "w" ? "Black" : "White";
             const result = winner + " has won";
-            this.handleGameOver(game, result, "Disconnect");
+            this.handleGameOver(game, result, " by Disconnect");
         }
     },
 
@@ -189,23 +244,23 @@ const gameManager = {
         if (game.state.isCheckmate()){
             const winner = color === "w" ? "White" : "Black";
             const result = winner + " has won";
-            this.handleGameOver(game, result, "Checkmate");
+            this.handleGameOver(game, result, " by Checkmate");
             return true;
         }
         else if (game.state.isStalemate()){
-            this.handleGameOver(game, "Draw", "Stalemate");
+            this.handleGameOver(game, "Draw", " by Stalemate");
             return true;
         }
         else if (game.state.isThreefoldRepetition()){
-            this.handleGameOver(game, "Draw", "Threefold Repetition");
+            this.handleGameOver(game, "Draw", " by Threefold Repetition");
             return true;
         }
         else if (game.state.isInsufficientMaterial()){
-            this.handleGameOver(game, "Draw", "Insufficient Material");
+            this.handleGameOver(game, "Draw", " by Insufficient Material");
             return true;
         }
         else if (game.state.isDraw()){
-            this.handleGameOver(game, "Draw", "50-move rule");
+            this.handleGameOver(game, "Draw", " by 50-move rule");
             return true;
         }
         return false;
@@ -216,17 +271,25 @@ const gameManager = {
         game.endTime = Date.now();
 
         if (game.move < 2){
-            game?.white.emit('notify', {title: "Game Aborted", message: "Game ended prematurely"});
-            game?.black.emit('notify', {title: "Game Aborted", message: "Game ended prematurely"});
+            this.emitAll(game, 'gameOver', {result: "Game Aborted. ", reason: "Game ended prematurely"})
         }
         else{
-            game?.white.emit('gameOver', {result, reason});
-            game?.black.emit('gameOver', {result, reason});
+            this.emitAll(game, 'gameOver', {result, reason})
         }
 
         this.storeGameInDB(game, result, reason);
         this.disconnectAll(game);
         this.games.delete(game.uuid);
+    },
+    emitAll(game, type, packet){
+        game.white.emit(type, packet);
+        game.black.emit(type, packet);
+        this.emitSpectators(game, type, packet);
+    },
+    emitSpectators(game, type, packet){
+        for (let spectator of game.spectators){
+            spectator.emit(type, packet);
+        }
     },
 
     async storeGameInDB(game, result, reason){
@@ -269,16 +332,11 @@ const gameManager = {
     },
 
     disconnectAll(game){
-        if (!game.white){
-            console.log(game.white);
-        }
-        if (!game.black){
-            console.log(game.black);
-        }
-        
-        
         game.white.disconnect();
         game.black.disconnect();
+        for (let spectator of game.spectators){
+            spectator.disconnect();
+        }
     }
 }
 

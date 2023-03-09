@@ -17,6 +17,7 @@ class ChessGame extends React.Component{
                 position={this.props.gameState}
                 onPieceDrop={this.props.moveHandler}
                 boardOrientation={this.getOrientationString(this.props.boardOrientation)}
+                arePiecesDraggable={!(this.props.mode === "Spectator")}
                 /* Special styling options for later
                 customBoardStyle={}
                 customSquareStyles={}

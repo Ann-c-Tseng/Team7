@@ -1,0 +1,32 @@
+.ChessPage{
+    padding: 30px;
+    border-radius: 10px;
+    display:flex;
+    flex-direction:row;
+}
+.GameUserContainer{
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+}
+
+.Game{
+    position:relative;
+    background-color: #7f5838;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
+    user-select: none;
+}
+
+.GameInfo{
+    display:flex;
+    flex-direction:row;
+}
+
+.TimerSidePanel{
+    display:flex;
+    flex-direction:column;
+    justify-content: space-between;
+    padding: 10px;
+}
