@@ -53,7 +53,6 @@ const Profile = () => {
         .then((response) =>{
             setUserData(response.data);
             setLoading(false);
-            console.log(response.data);
         })
     }, []);
 
