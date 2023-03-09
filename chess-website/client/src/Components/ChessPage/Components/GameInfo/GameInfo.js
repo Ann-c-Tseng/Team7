@@ -41,17 +41,7 @@ class GameInfo extends React.Component{
                         </p></strong>
                         {
                             this.props.moves ? 
-                            this.generateMoves()
-                            /*this.props.moves.map((move) => {
-                            return (
-                                <p  className={move.number % 2 === 0 ? "DarkMove" : ""}key={move.number}>
-                                    <span>{move.number}. </span>
-                                    <span>{move.white}</span>
-                                    <span> | </span>
-                                    <span>{move.black}</span>
-                                </p>
-                            ) 
-                        })*/ : null
+                            this.generateMoves() : null
                         }
                     </Box>
                 </Box>
