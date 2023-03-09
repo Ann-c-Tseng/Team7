@@ -9,6 +9,24 @@ import "./GameInfo.css";
 
 
 class GameInfo extends React.Component{
+
+    generateMoves(){
+        const moves = this.props.moves;
+        const formattedMoves = [];
+        for (let i = 0; i < moves.length; i+=2){
+            const moveNum = Math.floor(i/2)+1;
+            formattedMoves.push(
+                <p  className={moveNum % 2 === 0 ? "DarkMove" : ""}key={moveNum}>
+                    <span>{moveNum}. </span>
+                    <span>{moves[i]}</span>
+                    <span> | </span>
+                    <span>{i+1 < moves.length ? moves[i+1] : ""}</span>
+                </p>
+            )
+        }
+        return formattedMoves;
+    }
+
     render(){
         return (
             <Box className="MainGameInfo">
@@ -23,7 +41,8 @@ class GameInfo extends React.Component{
                         </p></strong>
                         {
                             this.props.moves ? 
-                            this.props.moves.map((move) => {
+                            this.generateMoves()
+                            /*this.props.moves.map((move) => {
                             return (
                                 <p  className={move.number % 2 === 0 ? "DarkMove" : ""}key={move.number}>
                                     <span>{move.number}. </span>
@@ -32,7 +51,7 @@ class GameInfo extends React.Component{
                                     <span>{move.black}</span>
                                 </p>
                             ) 
-                        }) : null
+                        })*/ : null
                         }
                     </Box>
                 </Box>

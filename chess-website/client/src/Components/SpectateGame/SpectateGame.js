@@ -82,11 +82,6 @@ class SpectateGame extends React.Component{
         
     }
 
-    loadMoves(moves){
-
-    }
-
-
     setNotification(title, details){
         this.setState({
             notification: {

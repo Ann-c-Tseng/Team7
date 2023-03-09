@@ -234,24 +234,11 @@ class ChessPage extends React.Component{
     
     //If white, create new object and push it in with move info,
     //if black, just place move info
-    addMove(move, color){
-        if (color === "w"){
-            this.setState({moves: [...this.state.moves, {
-                number: this.state.moveNum+1,
-                white: move,
-                black: ""
-            }]});
-            this.setState({moveNum: this.state.moveNum+1});
-        }
-        else{
-            if (this.state.moveNum === 0){
-                console.warn("Black attempted to move first: " + move);
-                return;
-            }
-            const lastMove = this.state.moveNum;
-            this.state.moves[lastMove-1].black = move;
-            this.setState({moves: this.state.moves});
-        }
+    addMove(move){
+        this.state.moves.push(move);
+        this.setState({
+            moves: this.state.moves,
+        })
     }
 
     //Checks if the game is over. Calls gameOver with the reason if it is.
