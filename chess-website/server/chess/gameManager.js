@@ -317,7 +317,7 @@ const gameManager = {
             moves: game.move,
             black: blackUser, 
             white: whiteUser,
-            winner: winner,
+            winner: result.split(" ")[0],
             reason: reason.split(" ")[2],
             duration: duration
         });
