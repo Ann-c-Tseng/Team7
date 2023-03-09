@@ -34,7 +34,7 @@
 }
 /*box-shadow: 0px 0px 20px -18px;*/
 button:hover {
-    background-color: #202020;
+    background-color: #39291c;
 }
 
 .link {
@@ -45,7 +45,7 @@ button:hover {
     position: absolute;
     top: 50%;
     left: 180px; /* Update to position the button on the right edge of the nav bar */
-    background-color: #313131;
+    background-color: #39291c;
     width: 40px;
     height: 40px;
     border-radius: 20px;
@@ -57,7 +57,7 @@ button:hover {
 }
 
 .nav-collapse:hover {
-    background-color: #202020;
+    background-color: #4f3826;
     transition: all 0.3s ease;
 }
 
