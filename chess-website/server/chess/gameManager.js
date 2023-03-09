@@ -12,7 +12,7 @@ const Timer = require("./Timer");
 const uuid = require("uuid");
 
 const connectedUsers = require("../utils/connectedUsers");
-const matchTime = 6000000 // 10 minute matches 
+const matchTime = 600000 // 10 minute matches 
 
 
 const gameManager = {
@@ -318,7 +318,7 @@ const gameManager = {
             black: blackUser, 
             white: whiteUser,
             winner: winner,
-            reason: reason,
+            reason: reason.split(" ")[2],
             duration: duration
         });
 
