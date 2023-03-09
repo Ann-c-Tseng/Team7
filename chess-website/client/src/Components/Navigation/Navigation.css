@@ -38,3 +38,38 @@ button:hover {
 .link {
     text-decoration: none;
 }
+
+.nav-collapse {
+    position: absolute;
+    top: 50%;
+    left: 180px; /* Update to position the button on the right edge of the nav bar */
+    transform: translateY(-50%);
+    background-color: #313131;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1;
+}
+  
+.nav-collapse:hover {
+    background-color: #202020;
+    transition: all 0.3s ease;
+}
+  
+.nav-collapse.collapsed {
+    left: -20px;
+}
+
+.nav-collapse-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.9em;
+    color: #fefefed7;
+    position: relative;
+    top: -4px;
+}

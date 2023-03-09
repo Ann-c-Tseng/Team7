@@ -2,11 +2,12 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import {Chessboard} from "react-chessboard";
 
 import './Table.css';
 
 const Row = (props) => {
-    const { duration, white, black, result, moves, date } = props;
+    const { duration, white, black, result, moves, date, fen } = props;
     return (
         <tr>
             <td>{duration}</td>
@@ -15,6 +16,12 @@ const Row = (props) => {
             <td>{result}</td>
             <td>{moves}</td>
             <td>{date}</td>
+            <td>
+                <Chessboard
+                    arePiecesDraggable={false}
+                    boardWidth={220}
+                    position={fen}
+            /></td>
         </tr>
     )
 }
@@ -27,12 +34,13 @@ const Table = (props) => {
             <table>
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>Duration</th>
                         <th>White</th>
                         <th>Black</th>
-                        <th>Result</th>
+                        <th>Winner</th>
                         <th>Moves</th>
                         <th>Date</th>
+                        <th>Final Position</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,9 +48,10 @@ const Table = (props) => {
                         <Row duration={row.duration}
                             white={row.white}
                             black={row.black}
-                            result={row.winner === username ? 'win' : 'loss'}
-                            moves={row.numMoves}
+                            result={row.winner}
+                            moves={row.moves}
                             date={row.date}
+                            fen={row.fen}
                             key={i} />
                     )}
                 </tbody>
