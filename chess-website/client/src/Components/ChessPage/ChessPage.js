@@ -180,7 +180,7 @@ class ChessPage extends React.Component{
         const move = {
             from: fromSquare,
             to: toSquare,
-            promotion: promotion //Always promote to queen (for now)
+            promotion: promotion 
         };
 
         let moveResult;
