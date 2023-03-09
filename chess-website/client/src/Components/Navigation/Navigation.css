@@ -1,21 +1,23 @@
 .nav {
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     width: 200px;
-    background-color: #313131;
+    background-color: #4f3826;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .nav-home {
     font-size: 1.8em;
     width: 200px;
     color: #fefefed7;
-    background-color: #313131;
+    background-color: #4f3826;
     border-radius: 0;
     padding: 10px;
     border: none;
@@ -25,7 +27,7 @@
     font-size: 1.2em;
     width: 200px;
     color: #fefefed7;
-    background-color: #313131;
+    background-color: #4f3826;
     border-radius: 0;
     padding: 15px;
     border: none;
@@ -43,7 +45,6 @@ button:hover {
     position: absolute;
     top: 50%;
     left: 180px; /* Update to position the button on the right edge of the nav bar */
-    transform: translateY(-50%);
     background-color: #313131;
     width: 40px;
     height: 40px;
@@ -54,14 +55,19 @@ button:hover {
     cursor: pointer;
     z-index: 1;
 }
-  
+
 .nav-collapse:hover {
     background-color: #202020;
     transition: all 0.3s ease;
 }
-  
-.nav-collapse.collapsed {
-    left: -20px;
+
+.collapsed {
+    position:absolute;
+    left: 0;
+    transform: translateX(-100%);
+}
+.nav-collapse.collapsed{
+    transform: translateX(-50%);
 }
 
 .nav-collapse-button {

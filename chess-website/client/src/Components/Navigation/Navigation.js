@@ -44,8 +44,8 @@ const Navigation = () => {
           {isCollapsed ? "" : "<"}
         </div>
       </div>
-      {!isCollapsed && (
-        <Box className="nav">
+      {
+        <Box className={"nav" + (isCollapsed ? " collapsed" : "")}>
           <ButtonGroup
             orientation="vertical"
             aria-label="vertical outlined button group"
@@ -55,7 +55,7 @@ const Navigation = () => {
             {alwaysAvailable}
           </ButtonGroup>
         </Box>
-      )}
+      }
     </>
   );
 
