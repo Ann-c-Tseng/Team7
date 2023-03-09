@@ -154,28 +154,12 @@ class ChessPage extends React.Component{
         catch(err){
             console.err("Connection error");
         }
-        //For singleplayer testing
-        //this.startRandomMoveComp();
     }
 
     componentWillUnmount(){
         if (!this.socket.disconnected){
             this?.socket.disconnect();
         }
-    }
-
-
-    //TEMPORARY FOR RANDOM MOVE COMPUTER (move to server?)
-    startRandomMoveComp(){
-        setInterval(() => {
-            if (!this.opponentsTurn() || this.state.game.isGameOver()){
-                return;
-            }
-
-            let moves = this.state.game.moves({verbose: true});
-            let move = moves[Math.floor(Math.random() * moves.length)];
-            this.opponentMove(move.from, move.to);
-        }, 4000)
     }
 
     userMove(fromSquare, toSquare){
