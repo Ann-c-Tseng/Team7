@@ -159,11 +159,12 @@ const gameManager = {
             if (opponentSocket.drawRequest){
                 socket.emit('drawConfirm');
                 opponentSocket.emit('drawConfirm');
-                this.handleGameOver(socket.game, "Draw", "Agreement");
+                this.handleGameOver(socket.game, "Draw", " by Agreement");
                 
             }
             else{
                 opponentSocket.emit('requestDraw');
+                this.emitSpectators(socket.game, 'requestDraw', {color: socket.color});
                 socket.drawRequest = true;
             }
             
@@ -171,7 +172,7 @@ const gameManager = {
         socket.on('resign', () => {
             const winner = socket.color === "w" ? "Black" : "White";
             const result = winner + " has won";
-            this.handleGameOver(socket.game, result, "Resignation");
+            this.handleGameOver(socket.game, result, " by Resignation");
         });
     },
 
@@ -199,6 +200,7 @@ const gameManager = {
             move: move,
             whiteTimeLeft: game.white.timer.time,
             blackTimeLeft: game.black.timer.time,
+            timeSent: Date.now(),
         })
     },
 
@@ -214,7 +216,6 @@ const gameManager = {
             //Do nothing
         }
         else if (game.move === 1 && colorMoved === 'b'){
-            console.log("Begin timers!");
             game.startTime = Date.now();
             game.white.timer.toggle();
         }
@@ -227,7 +228,7 @@ const gameManager = {
     finishedTimer(color, game){
         const winner = color === "w" ? "Black" : "White";
         const result = winner + " has won";
-        this.handleGameOver(game, result, "Timeout");
+        this.handleGameOver(game, result, " by Timeout");
 
     },
 
@@ -235,7 +236,7 @@ const gameManager = {
         if (!game.gameOver){
             const winner = color === "w" ? "Black" : "White";
             const result = winner + " has won";
-            this.handleGameOver(game, result, "Disconnect");
+            this.handleGameOver(game, result, " by Disconnect");
         }
     },
 
@@ -283,6 +284,7 @@ const gameManager = {
     emitAll(game, type, packet){
         game.white.emit(type, packet);
         game.black.emit(type, packet);
+        this.emitSpectators(game, type, packet);
     },
     emitSpectators(game, type, packet){
         for (let spectator of game.spectators){
@@ -330,16 +332,11 @@ const gameManager = {
     },
 
     disconnectAll(game){
-        if (!game.white){
-            console.log(game.white);
-        }
-        if (!game.black){
-            console.log(game.black);
-        }
-        
-        
         game.white.disconnect();
         game.black.disconnect();
+        for (let spectator of game.spectators){
+            spectator.disconnect();
+        }
     }
 }
 

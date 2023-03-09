@@ -60,7 +60,7 @@ class GameInfo extends React.Component{
                 {
                     this.props.drawRequestPopup && 
                     <Box className="drawRequest popup">
-                        <p>Opponent requested draw</p>
+                        <p>{this.props.drawRequestColor ? this.props.drawRequestColor : "Opponent"} requested a draw</p>
                     </Box>
                 }
                     <ButtonGroup>

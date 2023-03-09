@@ -114,7 +114,6 @@ class ChessPage extends React.Component{
                 console.log("Disconnected: " + reason)
             });
             this.socket.on('requestDraw', () => {
-                console.log("Opponent requested a draw");
                 this.setState({
                     drawRequest: true
                 });
@@ -127,7 +126,6 @@ class ChessPage extends React.Component{
             });
 
             this.socket.on('opponentMove', (data) => {
-                console.log("Received opponent move");
                 this.opponentMove(data.move.from, data.move.to, data.move.promotion);
 
                 this.syncTimers(data.timeLeft, data.oppTimeLeft, data.timeSent);
@@ -146,7 +144,7 @@ class ChessPage extends React.Component{
             })
             
             this.socket.on('invalid', (data) => {
-                console.log(data.message);   
+                console.log(data.message);
             })
         }
         catch(err){
@@ -186,7 +184,7 @@ class ChessPage extends React.Component{
             moveResult = this.state.game.move(move);
             
         } catch(e){
-            //console.log("invalid move");
+            console.log("invalid move");
         }
 
         this.setState({game: this.state.game});
@@ -213,13 +211,17 @@ class ChessPage extends React.Component{
                 promotion: moveResult?.promotion
             });
         }
-        
 
         this.switchTurn();
-        this.addMove(moveResult.san, moveResult.color);
+        this.addMove(moveResult.san);
         this.handleTimers(moveResult.color);
 
         this.checkGameOver();
+        if (moveResult.color === 'b'){
+            this.setState({
+                moveNum: this.state.moveNum+1,
+            })
+        }
     }
 
     opponentsTurn(){
@@ -232,8 +234,7 @@ class ChessPage extends React.Component{
         this.setState({turn: this.getOpponentColor(this.state.turn)});
     }
     
-    //If white, create new object and push it in with move info,
-    //if black, just place move info
+    //Add move to "Moves" list
     addMove(move){
         this.state.moves.push(move);
         this.setState({
@@ -266,7 +267,7 @@ class ChessPage extends React.Component{
     gameOver(result, reason){
         this.disableTimer("w");
         this.disableTimer("b");
-        console.log("Game over. " + result + reason);
+
         this.setNotification("Game over!", result + reason)
     }
     
@@ -360,8 +361,6 @@ class ChessPage extends React.Component{
             return;
         }
         this.socket.emit('requestDraw');
-        //TODO add a confirm
-        console.log("Requested draw");
     }
 
     resign(){

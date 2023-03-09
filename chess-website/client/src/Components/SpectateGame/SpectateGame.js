@@ -20,6 +20,8 @@ class SpectateGame extends React.Component{
 
         this.flipBoard = this.flipBoard.bind(this);
         this.notificationAccept = this.notificationAccept.bind(this);
+        this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
+        this.timerFinishCallback = this.timerFinishCallback.bind(this);
 
         const whiteTimer = new Timer("w", this.timerUpdateCallback, this.timerFinishCallback);
         const blackTimer = new Timer("b", this.timerUpdateCallback, this.timerFinishCallback);
@@ -58,28 +60,106 @@ class SpectateGame extends React.Component{
     componentDidMount(){
         this.socket = io("http://localhost:4000", {query: {spectate: this.props.gameID}});
         this.socket.on('initialize', (data) => {
-            console.log(data);
 
             this.state.timers[0].time = data.black.time;
             this.state.timers[1].time = data.white.time;
+
+            //Some things need to be updated immediately.
+            this.state.moveNum = Math.floor(data.moves.length/2);
+            this.state.game = new Chess(data.fen);
+
             this.setState({
                 timers: this.state.timers,
-                game: new Chess(data.fen),
+                game: this.state.game,
                 topUser: data.black.user,
                 bottomUser: data.white.user,
                 moves: data.moves,
-                moveNum: data.moveNum
-                
-            })
-        })
+                moveNum: this.state.moveNum,
+            });
+
+            if (this.state.moveNum === 0){
+                //Do nothing
+            }
+            else{
+                console.log("Toggle timer");
+                this.enableTimer(this.state.game.turn());
+            }
+
+        });
         this.socket.on('move', (data) => {
-            console.log(data);
+            this.attemptMove(data.move);
+            this.syncTimers(data.whiteTimeLeft, data.blackTimeLeft, data.timeSent);
             
-        })
+        });
         this.socket.on('gameNotFound', () => {
             this.setNotification("Error", "Game not found");
+        });
+        this.socket.on('notify', (data) => {
+            this.setNotification(data.title, data.message);
+        });
+        this.socket.on('requestDraw', (data) => {
+            this.setState({
+                drawRequest: true,
+                drawRequestColor: data.color === 'w' ? "White" : "Black",
+            });
+        });
+
+        this.socket.on('gameOver', (data) => {
+            console.log("Received game over");
+            this.setState({gameOver: true});
+            this.gameOver(data.result, data.reason);
+        });
+    }
+
+    componentWillUnmount(){
+        if (!this.socket.disconnected){
+            this?.socket.disconnect();
+        }
+    }
+
+    attemptMove(move){
+
+        let moveResult;
+        try{
+            moveResult = this.state.game.move(move);
+            
+        } catch(e){
+            console.log("invalid move");
+        }
+
+        this.setState({game: this.state.game});
+        if (moveResult){
+            this.successfulMove(moveResult);
+            return true;
+        }
+        else{
+            //Failed move
+            return false;
+        }
+    }
+
+    successfulMove(moveResult){
+        this.setState({
+            drawRequest: false
         })
-        
+
+        this.addMove(moveResult.san);
+        this.handleTimers(moveResult.color);
+
+        this.checkGameOver();
+        if (moveResult.color === 'b'){
+            this.setState({
+                moveNum: this.state.moveNum+1,
+            })
+        }
+    }
+
+    //Add move to "Moves" list
+    addMove(move){
+        this.state.moves.push(move);
+        this.setState({
+            moves: this.state.moves,
+        })
     }
 
     setNotification(title, details){
@@ -113,6 +193,91 @@ class SpectateGame extends React.Component{
 
     getOpponentColor(color){
         return color === "w" ? "b" : "w";
+    }
+
+    checkGameOver(){
+        if (this.state.game.isCheckmate()){
+            let winner = this.getOpponentColor(this.state.game.turn());
+            winner = (winner === "w" ? "White" : "Black");
+            this.gameOver(winner + " has won", " by Checkmate");
+        }
+        else if (this.state.game.isStalemate()){
+            this.gameOver("Draw", " by Stalemate");
+        }
+        else if (this.state.game.isThreefoldRepetition()){
+            this.gameOver("Draw", " by Threefold Repetition");
+        }
+        else if (this.state.game.isInsufficientMaterial()){
+            this.gameOver("Draw", " by Insufficient Material");
+        }
+        else if (this.state.game.isDraw()){
+            this.gameOver("Draw", " by 50-move rule");
+        }
+        
+    }
+
+    gameOver(result, reason){
+        this.disableTimer("w");
+        this.disableTimer("b");
+        console.log("Game over. " + result + reason);
+        this.setNotification("Game over!", result + reason)
+    }
+
+    handleTimers(color){
+        //Don't start the timers on the first move of the game, for fairness.
+        if (this.state.moveNum === 0 && color === "w"){
+            //Do nothing
+        }
+        else{
+            this.toggleTimers(color);
+        }
+    }
+
+    toggleTimers(color){
+        this.disableTimer(color);
+        this.enableTimer(this.getOpponentColor(color));
+    }
+
+    syncTimers(whiteTime, blackTime, timeSent){
+
+        const latency = Date.now() - timeSent;
+        const whiteTimer = this.getTimer('w');
+        const blackTimer = this.getTimer('b');
+        
+        whiteTimer.time = whiteTime - latency;
+        blackTimer.time = blackTime - latency;
+
+        this.setState({
+            timers: this.state.timers
+        })
+    }
+
+
+    getTimer(color){
+        if (color == "w"){
+            return this.state.timers[1];
+        }
+        else if (color == "b"){
+            return this.state.timers[0];
+        }
+    }
+    enableTimer(color){
+        let timer = this.getTimer(color);
+        timer.enable();
+    }
+    disableTimer(color){
+        let timer = this.getTimer(color);
+        timer.disable();
+    }
+    timerUpdateCallback(){
+        this.setState({timers: this.state.timers});
+    }
+    timerFinishCallback(color){
+        
+        //Might still want to do something here, for extra visual effects or something
+        //let winner = this.getOpponentColor(this.state.game.turn());
+        //winner = (winner === "w" ? "White" : "Black");
+        //this.gameOver(winner + " has won", "Timeout");
     }
 
 
@@ -173,6 +338,7 @@ class SpectateGame extends React.Component{
                             className="Info"
                             flipBoardHandler={this.flipBoard}
                             drawRequestPopup={this.state.drawRequest}
+                            drawRequestColor={this.state.drawRequestColor}
                             />
                         
                     </Box>
