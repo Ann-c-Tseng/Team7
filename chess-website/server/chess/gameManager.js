@@ -86,7 +86,7 @@ const gameManager = {
         });
         socket.on('move', (move) => {
             try{
-                this.handleMove(socket.game, move, socket.color);
+                this.tryMove(socket.game, move, socket.color);
                 opponentSocket.emit('opponentMove', {
                     move,
                     timeSent: Date.now(),
@@ -97,7 +97,8 @@ const gameManager = {
                     timeSent: Date.now(),
                     timeLeft: socket.timer.time,
                     oppTimeLeft: opponentSocket.timer.time
-                })
+                });
+                this.endMove(socket.game, socket.color);
             }
             catch(err){
                 console.log(err)
@@ -135,14 +136,16 @@ const gameManager = {
         game.white.timer = new Timer('w', matchTime, timerCallback);
     },
 
-    handleMove(game, move, color){
+    tryMove(game, move, color){
         if ((color === "w" && !game.white.timer.timeLeft()) ||
             (color === "b" && !game.black.timer.timeLeft())){
             throw new Error("User tried making move with no time left");
         }
 
         game.state.move(move);
+    },
 
+    endMove(game, color){
         this.handleTimers(game, color);
         game.white.drawRequest = false;
         game.black.drawRequest = false;
