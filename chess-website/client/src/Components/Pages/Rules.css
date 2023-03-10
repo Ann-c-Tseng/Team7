@@ -1,37 +1,7 @@
 .rules-container {
-    background-color: #424242;
-    max-width: 900px;
+    max-width: 60%;
     text-align: center;
-    padding: 20px;
-    border-radius: 5px;
-}
-
-.rules {
-    margin: 2rem auto;
-    color: #ffffff;
-    text-align: left;
-}
-
-.rules h1 {
-    text-align: center;
-}
-
-.rules h2 {
-    font-size: 1.5rem;
-    text-align: left;
-    margin: 1em 0 0.5em;
-}
-
-.rules h3 {
-    font-size: 1.25rem;
-    text-align: left;
-    margin: 1em 0 0.5em;
-}
-
-.rules h4 {
-    font-size: 1.0rem;
-    text-align: left;
-    margin: 1em 0 0.5em;
+    margin: 40px;
 }
 
 .container {
@@ -39,6 +9,20 @@
     flex-direction: row;
     align-items: stretch;
     justify-content: center;
+}
+
+.BlockCol{
+    height:fit-content;
+    width:fit-content;
+    justify-content: center;
+    margin: 50px;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
+    background-color: #36322f;
+    padding: 30px;
+    border-radius:10px;
 }
 
 .board {
@@ -54,37 +38,41 @@
 }
 
 .piece-table table {
-    flex: 1;
-    max-width: 50%;
-    background-color: #424242;
-    border-collapse: collapse;
+    
     width: 100%;
 }
-  
+
 .piece-table th {
-    background-color: #313131;
+    text-align: center;
+    background-color: #2b2725;
     color: #e0e0e0;
     font-weight: bold;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-right: 30px;
-    padding-left: 30px;
+    padding-right: 50px;
+    padding-left: 10px;
     text-align: left;
 }
-  
-.piece-table tr {
-    background-color: #424242;
-}
-  
+
 .piece-table tr:not(:last-child) {
     border-bottom: 1px solid #e0e0e0;
 }
-  
+
+.piece-table td {
+    position: relative;
+    background-color: #36322f;
+    width: fit-content;
+    text-align: center;
+    padding: 20px;
+    margin: 30px;
+}
+
 .piece-table td {
     color: #e0e0e0;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-right: 30px;
-    padding-left: 30px;
+    padding-right: 50px;
+    padding-left: 10px;
     text-align: left;
+    position: relative;
 }

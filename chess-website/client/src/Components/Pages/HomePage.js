@@ -43,7 +43,7 @@ const HomePage = () => {
                         Try dragging the pieces around, just for fun!
                         <br />
                         <br />
-                        Create a profile to begin playing. Then, click "Play Chess!" to join matchmaking and be paired with someone else!
+                        To play, first create a profile. Then, click "Play Chess!" to join matchmaking and be paired with someone else!
                     </Typography>
                 </Box>
             </Box>
