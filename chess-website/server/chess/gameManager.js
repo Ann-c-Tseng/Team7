@@ -301,7 +301,7 @@ const gameManager = {
         const whiteUser = game.white.user.username;
         const blackUser = game.black.user.username;
 
-        const duration = `${((game.endTime - game.startTime) / 60000).toFixed(3)} minutes`;
+        const duration = this.millisToTime(game.endTime - game.startTime);
         let winner;
         if (result === "Draw"){
             winner = "Draw";
@@ -329,6 +329,14 @@ const gameManager = {
         catch(error){
             console.log(error);
         }
+    },
+    
+    millisToTime(millis){
+        const minutes = Math.floor(millis / 60000);
+        const seconds = Math.floor((millis % 60000) / 1000);
+
+        const secondsString = seconds < 10 ? "0" + seconds : seconds;
+        return minutes + ":" + secondsString;
     },
 
     disconnectAll(game){
