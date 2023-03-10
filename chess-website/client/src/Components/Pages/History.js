@@ -7,6 +7,25 @@ import { Typography } from '@mui/material';
 
 import './Table.css';
 import "./History.css";
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    if (!(date instanceof Date && !isNaN(date))) {
+        return 'Invalid date';
+    }
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const formattedDate = month + ' ' + day + ', ' + year + ' @ ' + hours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ' ' + ampm;
+    return formattedDate;
+} 
+
 const textColor = "#fefefedf"
 const bodyTypographyStyling = {
     color: textColor,
@@ -58,7 +77,7 @@ const Table = (props) => {
                             black={row.black}
                             result={row.winner}
                             moves={row.moves}
-                            date={row.date}
+                            date={formatDate(row.date)}
                             fen={row.fen}
                             key={i} />
                     )}

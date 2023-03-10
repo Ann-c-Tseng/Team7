@@ -54,15 +54,15 @@ const Profile = () => {
             <Box className="ProfileContent">
                 <Typography variant="h3" sx={bodyTypographyStyling}>{username}</Typography>
                 <br />
-                <Typography variant="h4" sx={bodyTypographyStyling}>ELO: {userData.elo}</Typography>
+                <Typography variant="h5" sx={bodyTypographyStyling}>ELO: {userData.elo}</Typography>
                 <br />
-                <Typography variant="h4" sx={bodyTypographyStyling}>User ID: {userData.id}</Typography>
+                <Typography variant="h5" sx={bodyTypographyStyling}>User ID: {userData.id}</Typography>
                 <br />
-                <Typography variant="h4" sx={bodyTypographyStyling}>Email: {useremail}</Typography>
+                <Typography variant="h5" sx={bodyTypographyStyling}>Email: {useremail}</Typography>
                 <br />
-                <Typography variant="h4" sx={bodyTypographyStyling}>Longest Win Streak: (not implemented) </Typography>
+                <Typography variant="h5" sx={bodyTypographyStyling}>Longest Win Streak: (not implemented) </Typography>
                 <br />
-                <Typography variant="h4" sx={bodyTypographyStyling}>Total wins: (also not implemented) </Typography>
+                <Typography variant="h5" sx={bodyTypographyStyling}>Total wins: (also not implemented) </Typography>
                 <br />
                 <Button style={logoutButtonStyle} onClick={() => dispatch({type: "auth/logout"})}>Logout</Button>
             </Box>
