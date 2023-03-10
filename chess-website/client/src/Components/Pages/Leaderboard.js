@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import {Typography} from "@mui/material";
 import axios from 'axios';
 
 import './Table.css';
+import "./Leaderboard.css";
+
+
+const textColor = "#fefefedf"
+const bodyTypographyStyling = {
+    color: textColor,
+}
 
 function Leaderboard() {
   let [users, setUsers] = useState([]);
@@ -23,8 +31,8 @@ function Leaderboard() {
   })
 
   return (
-    <div>
-      <h1 className='title'>Leaderboard</h1>
+    <div className="LeaderBoardContainer">
+      <Typography variant="h3" sx={bodyTypographyStyling}>Leaderboard</Typography>
       <Table data={users}/>
     </div>
   )
