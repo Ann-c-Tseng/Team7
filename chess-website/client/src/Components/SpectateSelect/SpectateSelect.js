@@ -39,6 +39,7 @@ class SpectateSelect extends React.Component{
             games: [],
             redirect: false,
             redirectTo: null,
+            canRefresh: true,
         };
 
     }
@@ -58,6 +59,14 @@ class SpectateSelect extends React.Component{
     }
 
     refresh(){
+        console.log("refresh");
+        if (!this.state.canRefresh){
+            console.log("Refresh is on cooldown!");
+            return;
+        }
+        this.setState({
+            canRefresh: false,
+        });
         axios.post('http://localhost:4000/spectate')
         .then((response) => {
             if (response.data.success){
@@ -68,7 +77,12 @@ class SpectateSelect extends React.Component{
             else{
                 console.log("Unsuccessful in getting games");
             }
-        })
+        });
+        setTimeout(() => {
+            this.setState({
+                canRefresh: true,
+            })
+        },3000);
     }
 
     render(){
@@ -82,6 +96,7 @@ class SpectateSelect extends React.Component{
                 <Button
                     sx={refreshButtonStyle}
                     onClick={this.refresh}
+                    disabled={!this.state.canRefresh}
                 >
                     Refresh
                 </Button>
