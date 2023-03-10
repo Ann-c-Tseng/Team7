@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
 import ChessGame from "../ChessPage/Components/ChessGame/ChessGame";
-import Footer from "../ChessPage/Components/Footer/Footer";
+import Footer from "../Footer/Footer";
 
 import "./HomePage.css";
 

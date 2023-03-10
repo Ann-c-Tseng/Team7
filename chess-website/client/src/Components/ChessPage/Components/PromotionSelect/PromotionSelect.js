@@ -22,9 +22,6 @@ const buttonMaker = (button) => {
     return (<ToggleButton
                 key={button.value}
                 value={button.value}
-                sx={{
-                    height:"100%"
-                }}
             >
                 <img src={button.picture} />
             </ToggleButton>)
@@ -54,18 +51,13 @@ class PromotionSelect extends React.Component{
     render(){
         return (
             <Box>
-                <p className="Text">Promote to:</p>
+                <p className="PromotionText">Promote to:</p>
                 <ToggleButtonGroup 
                     className="Buttons" 
                     orientation="vertical" 
                     exclusive
                     value={this.state.selected}
-                    onChange={this.setActive}
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        flexShrink: 1,
-                    }}>
+                    onChange={this.setActive}>
                         { this.props.user === "w" ? whitePieces.map(buttonMaker) : blackPieces.map(buttonMaker) }
                 </ToggleButtonGroup>
             </Box>
