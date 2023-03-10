@@ -76,7 +76,7 @@ class ChessPage extends React.Component{
         //Begin the match making!
         //Establish a socket connection with the server
         try{
-            const socket = io("http://localhost:4000", {query: {email: this.props.user.email}});
+            const socket = io("http://54.69.36.110", {query: {email: this.props.user.email}});
 
             this.socket = socket;
             this.socket.on('initialize', (data) => {

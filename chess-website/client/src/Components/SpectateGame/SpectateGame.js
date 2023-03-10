@@ -58,7 +58,7 @@ class SpectateGame extends React.Component{
     }
 
     componentDidMount(){
-        this.socket = io("http://localhost:4000", {query: {spectate: this.props.gameID}});
+        this.socket = io("http://54.69.36.110", {query: {spectate: this.props.gameID}});
         this.socket.on('initialize', (data) => {
 
             this.state.timers[0].time = data.black.time;

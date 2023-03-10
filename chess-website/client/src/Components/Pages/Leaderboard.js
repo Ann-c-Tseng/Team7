@@ -15,7 +15,7 @@ function Leaderboard() {
   let [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.post('http://localhost:4000/leaderboard').then(response => {
+    axios.post('http://54.69.36.110/leaderboard').then(response => {
       if (response) {
         setUsers(response.data);
       }

@@ -67,7 +67,7 @@ class SpectateSelect extends React.Component{
         this.setState({
             canRefresh: false,
         });
-        axios.post('http://localhost:4000/spectate')
+        axios.post('http://54.69.36.110/spectate')
         .then((response) => {
             if (response.data.success){
                 this.setState({
