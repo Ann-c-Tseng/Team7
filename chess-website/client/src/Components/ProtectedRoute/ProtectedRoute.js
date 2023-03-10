@@ -11,8 +11,6 @@ class ProtectedRoute extends React.Component{
             return this.props.component;
         }
         else{
-            //Also let the user know they need to login. (add a notification)
-            alert("Redirecting to login page... sign-in to access the application");
             return <Navigate to="/login"/>
         }
     }

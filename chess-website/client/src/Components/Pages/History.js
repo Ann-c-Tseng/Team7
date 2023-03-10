@@ -3,8 +3,15 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import {Chessboard} from "react-chessboard";
+import { Typography } from '@mui/material';
 
 import './Table.css';
+import "./History.css";
+const textColor = "#fefefedf"
+const bodyTypographyStyling = {
+    color: textColor,
+    textOverflow: "break-word"
+}
 
 const Row = (props) => {
     const { duration, white, black, result, moves, date, fen } = props;
@@ -21,7 +28,8 @@ const Row = (props) => {
                     arePiecesDraggable={false}
                     boardWidth={220}
                     position={fen}
-            /></td>
+                />
+            </td>
         </tr>
     )
 }
@@ -67,21 +75,23 @@ const History = () => {
     useEffect(() => {
         axios.post('http://localhost:4000/history', { username: user }).then(response => {
             if (response) {
-                setRows(response.data);
+                setRows(response.data.reverse());
             }
         })
     }, [user]);
 
     if (rows.length !== 0) {
         return (
-            <div>
-                <h1>Your Game History</h1>
+            <div className="HistoryContainer">
+                <Typography variant="h3" sx={bodyTypographyStyling}>Your Game History</Typography>
                 <Table data={rows} username={user} />
             </div>
         )
     } else {
         return (
-            <h1>Play a game to see it here!</h1>
+            <div className="HistoryContainer">
+                <Typography variant="h3" sx={bodyTypographyStyling}>Play a game to see it here!</Typography>
+            </div>
         )
     }
 }
