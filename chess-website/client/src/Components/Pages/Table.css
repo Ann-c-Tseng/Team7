@@ -1,7 +1,8 @@
 .table-container {
+  position: relative;
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
   background-color: #36322f;
-  width:fit-content;
+  width: fit-content;
   text-align: center;
   padding: 20px;
   border-radius: 5px;
@@ -36,4 +37,50 @@
   padding-right: 50px;
   padding-left: 10px;
   text-align: left;
+  position: relative;
+}
+
+/* Box styling */
+.table-container .hover-box {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  background-color: #fff;
+  border: 1px solid #2b2725;
+  border-radius: 5px;
+  padding: 10px;
+  display: none;
+  z-index: 999;
+  width: auto;
+  height: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Triangle on the left side */
+.table-container .hover-box::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+  border-top: 10px solid transparent;
+  border-right: 10px solid #fff;
+  border-bottom: 10px solid transparent;
+}
+
+.table-container tr:hover {
+  background-color: #0e0c0b;
+}
+
+/* Show the box on hover */
+.table-container tr:hover .hover-box {
+  display: block;
+  background-color: #2b2725;
+}
+
+/* Adjust the position of the box to center it with the highlighted row */
+.table-container tr:hover .hover-box {
+  left: calc(100% + 20px);
+  transform: translateY(-50%);
 }

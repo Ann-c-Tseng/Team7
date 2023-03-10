@@ -54,13 +54,13 @@ const Row = (props) => {
             <td>{result}</td>
             <td>{moves}</td>
             <td>{date}</td>
-            <td>
+            <div className="hover-box">
                 <Chessboard
                     arePiecesDraggable={false}
                     boardWidth={220}
                     position={fen}
                 />
-            </td>
+            </div>
         </tr>
     )
 }
@@ -78,7 +78,6 @@ const Table = (props) => {
                         <th>Winner</th>
                         <th>Moves</th>
                         <th>Date</th>
-                        <th>Final Position</th>
                     </tr>
                 </thead>
                 <tbody>
