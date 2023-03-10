@@ -24,7 +24,19 @@ function formatDate(dateString) {
     hours = hours ? hours : 12;
     const formattedDate = month + ' ' + day + ', ' + year + ' @ ' + hours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ' ' + ampm;
     return formattedDate;
-} 
+}
+
+function formatTime(timeString) {
+    const timeParts = timeString.split(' ');
+    if (timeParts.length !== 2 || timeParts[1] !== 'minutes') {
+      return 'Invalid time format';
+    }
+    const totalSeconds = Math.floor(parseFloat(timeParts[0]) * 60);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const formattedTime = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+    return formattedTime;
+}
 
 const textColor = "#fefefedf"
 const bodyTypographyStyling = {
@@ -54,7 +66,6 @@ const Row = (props) => {
 }
 
 const Table = (props) => {
-    const username = props.username;
     const { data } = props;
     return (
         <div className='table-container'>
@@ -72,7 +83,7 @@ const Table = (props) => {
                 </thead>
                 <tbody>
                     {data?.map((row, i) =>
-                        <Row duration={row.duration}
+                        <Row duration={formatTime(row.duration)}
                             white={row.white}
                             black={row.black}
                             result={row.winner}
