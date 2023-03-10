@@ -6,19 +6,21 @@ class ChessGame extends React.Component{
     constructor(props){
         super(props);
 
-        const size = Math.min(window.innerWidth * 0.4, window.innerHeight * 0.7)
+        const size = this.calculateSize()
 
         this.state = {
             width: size,
             height: size,
         }
     }
-
+    calculateSize(){
+        return Math.min(window.innerWidth * this.props.relativeWidth, window.innerHeight * this.props.relativeHeight);
+    }
 
     componentDidMount(){
         window.addEventListener("resize", () => {
 
-            const newSize = Math.min(window.innerWidth * 0.4, window.innerHeight * 0.7)
+            const newSize = this.calculateSize()
 
             this.setState({
                 width: newSize,

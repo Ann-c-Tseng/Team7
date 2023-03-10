@@ -42,7 +42,7 @@ button:hover {
 }
 
 .nav-collapse {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 180px; /* Update to position the button on the right edge of the nav bar */
     background-color: #39291c;
@@ -62,12 +62,13 @@ button:hover {
 }
 
 .collapsed {
-    position:absolute;
+    position:fixed;
     left: 0;
     transform: translateX(-100%);
 }
 .nav-collapse.collapsed{
     transform: translateX(-50%);
+    transition: all 0.3s ease;
 }
 
 .nav-collapse-button {

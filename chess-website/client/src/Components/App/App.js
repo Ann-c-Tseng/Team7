@@ -37,7 +37,6 @@ class App extends Component {
                 <Route path="*" element={<PageNotFound />} />
               </Route>
         </Routes>
-      {/* {<Footer />} */}
       </div>
     );
   }

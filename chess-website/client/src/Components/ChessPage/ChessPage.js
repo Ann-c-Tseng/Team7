@@ -434,6 +434,8 @@ class ChessPage extends React.Component{
                                 acceptHandler={this.notificationAccept}
                             />
                             <ChessGame
+                                relativeWidth={0.4}
+                                relativeHeight={0.7}
                                 moveHandler={this.userMove}
                                 gameState={this.state.game.fen()}
                                 boardOrientation={this.state.orientation}
