@@ -1,17 +1,40 @@
 import React from 'react';
 import axios from "axios";
 import {Box} from '@mui/system';
-import {Card, CardActionArea, CardContent, Typography} from "@mui/material";
+import {Button, Card, CardActionArea, CardContent, Typography} from "@mui/material";
 import {Navigate} from 'react-router-dom';
 import {Chessboard} from "react-chessboard";
 import UserCard from "../ChessPage/Components/UserCard/UserCard";
 import TimerView from "../ChessPage/Components/Timer/TimerView";
 import "./SpectateSelect.css";
 
+const textColor = "#fefefedf"
+const bodyTypographyStyling = {
+    color: textColor,
+}
+
+const refreshButtonStyle = {
+    margin:"10px",
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    width: 'fit-content',
+    minWidth: '100px',
+    height: '40px',
+    padding: '8px',
+    borderRadius: '5px',
+    boxShadow: '0px 0px 20px -20px',
+    backgroundColor: '#2b2725',
+    userSelect: 'none',
+    fontWeight: 'bold',
+    color: 'white',
+}
+
 class SpectateSelect extends React.Component{
     constructor(props){
         super(props);
 
+        this.refresh = this.refresh.bind(this);
         this.state = {
             games: [],
             redirect: false,
@@ -54,13 +77,19 @@ class SpectateSelect extends React.Component{
         }
 
         return (
-            <>
-                <Typography variant="h2">Spectate a game</Typography>
+            <Box className="SpectateSelectContainer">
+                <Typography variant="h3" sx={bodyTypographyStyling}>Spectate a game</Typography>
+                <Button
+                    sx={refreshButtonStyle}
+                    onClick={this.refresh}
+                >
+                    Refresh
+                </Button>
                 <Box className="SpectateGameCardList">
-                {this.state.games.map(game => {
+                {this.state.games.length !== 0 ? this.state.games.map(game => {
                     return (
-                        <Card className="SpectateGameCard" key={game.id}>
-                            <CardActionArea className="CardButton" onClick={this.buttonFunctionMaker(game.id)}>
+                        <Card sx={{backgroundColor:"#2b2725"}} className="SpectateGameCard" key={game.id}>
+                            <CardActionArea sx={{backgroundColor:"#2b2725"}} className="CardButton" onClick={this.buttonFunctionMaker(game.id)}>
                                 <Box className="SpectateGameInfo">
                                     <TimerView color="b" time={game.black.time}/>
                                     <UserCard
@@ -90,9 +119,10 @@ class SpectateSelect extends React.Component{
                             </CardActionArea>
                         </Card>
                     )
-                })}
+                }) : 
+                <Typography variant="body1" sx={bodyTypographyStyling}>There are currently no games being played.</Typography>}
                 </Box>
-            </>
+            </Box>
         );
     }
 }

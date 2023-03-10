@@ -26,7 +26,7 @@ const Profile = () => {
         cursor: 'pointer',
         width: 'fit-content',
         minWidth: '100px',
-        height: '50px',
+        height: '40px',
         padding: '8px',
         borderRadius: '5px',
         boxShadow: '0px 0px 20px -20px',

@@ -43,12 +43,12 @@ const newConnection = async (socket) => {
             socket.disconnect("Could not find user account");
             return;
         }
-        else if (connectedUsers.has(user.email)){
-            console.log("User tried to connect twice");
-            socket.emit("alreadyConnected");
-            socket.disconnect("Only one active connection per account allowed.");
-            return;
-        }
+        // else if (connectedUsers.has(user.email)){
+        //     console.log("User tried to connect twice");
+        //     socket.emit("alreadyConnected");
+        //     socket.disconnect("Only one active connection per account allowed.");
+        //     return;
+        // }
         socket.user = user;
         connectedUsers.set(user.email, socket);
 

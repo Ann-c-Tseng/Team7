@@ -1,9 +1,23 @@
+.SpectateSelectContainer{
+    margin:50px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .SpectateGameCardList{
-    
-    width:80%;
     display:flex;
     flex-wrap:wrap;
     justify-content: center;
+    padding: 30px;
+    margin:30px;
+    max-width:80%;
+    height: fit-content;
+    width: fit-content;
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
+    background-color: #36322f;
+
+    border-radius:10px;
 }
 .SpectateGameCard{
     display:flex;
@@ -11,11 +25,12 @@
     margin:5px;
 }
 .SpectateGameInfo{
-    background-color: #d6d4cc;
+    background-color: #332e2c;
     padding:5px;
     display:flex;
     flex-direction: column;
     align-items: center;
+    
 }
 .PlayerInfo{
     background-color: rgb(206, 206, 206);
