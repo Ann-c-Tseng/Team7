@@ -1,5 +1,5 @@
 import React from 'react';
-import {ToggleButton, ToggleButtonGroup, Box} from "@mui/material";
+import {ToggleButton, ToggleButtonGroup, Box, Typography} from "@mui/material";
 
 import blackQueen from "../../../../Images/black-queen.svg";
 import blackRook from "../../../../Images/black-rook.svg";
@@ -16,12 +16,23 @@ import whiteKnight from "../../../../Images/white-knight.svg";
 const whitePieces = [{picture: whiteQueen, value: 'q'}, {picture: whiteRook, value: 'r'}, {picture: whiteBishop, value: 'b'}, {picture: whiteKnight, value: 'n'}];
 const blackPieces = [{picture: blackQueen, value: 'q'}, {picture: blackRook, value: 'r'}, {picture: blackBishop, value: 'b'}, {picture: blackKnight, value: 'n'}];
 
+const textColor = "#fefefedf"
+const bodyTypographyStyling = {
+    color: textColor,
+    textOverflow: "break-word"
+}
 
 //TODO maybe change to SVGIcon
 const buttonMaker = (button) => {
     return (<ToggleButton
                 key={button.value}
                 value={button.value}
+                sx={{
+                    backgroundColor: "#36322f",
+                    '&.Mui-selected': {
+                        backgroundColor: '#2b2725',
+                    },
+                }}
             >
                 <img src={button.picture} />
             </ToggleButton>)
@@ -51,7 +62,12 @@ class PromotionSelect extends React.Component{
     render(){
         return (
             <Box>
-                <p className="PromotionText">Promote to:</p>
+                <Typography
+                    className="PromotionText"
+                    sx={bodyTypographyStyling}
+                >
+                    Promote to:
+                </Typography>
                 <ToggleButtonGroup 
                     className="Buttons" 
                     orientation="vertical" 
