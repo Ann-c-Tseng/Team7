@@ -1,4 +1,4 @@
-# Team7 | Chess React Web Application
+# Chess React Web Application
 Current team: Parker Gutierrez
 
 Directions for local usage: 
