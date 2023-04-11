@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const signUpTemplateCopy = require('../models/SignUpModels')
+const signUpTemplateCopy = require('../models/SignUp')
 const gameModel = require('../models/Games')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
