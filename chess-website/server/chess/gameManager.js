@@ -1,4 +1,4 @@
-const gameModel = require('../models/Games');
+const gameModel = require('../models/game');
 
 
 //node got fussy when trying to require chess.js normally. This is a mess

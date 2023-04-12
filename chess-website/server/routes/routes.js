@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const signUpTemplateCopy = require('../models/SignUp')
-const gameModel = require('../models/Games')
+const userModel = require('../models/user')
+const gameModel = require('../models/game')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 const validator = require("validator");
@@ -12,33 +12,33 @@ router.post('/signup', async (request, response, next) => {
     const saltPassword = await bcrypt.genSalt(10) //encrypt password before sending to DB
     const securePassword = await bcrypt.hash(request.body.password, saltPassword)
 
-    const userData = await findUser(request.body.email);
-
-    if (userData){
-        response.json({
-            message: "Account already exists",
-            success: false
-        });
-        return next();
-    }
-
-    //Saved into DB
-    const signedUpUser = new signUpTemplateCopy({
-        fullName:request.body.fullName,
-        username: request.body.username,
-        email: request.body.email,
-        password:securePassword,
-    })
-
     try{
-
-        if (!validator.isAlphanumeric(request.body.fullName) || 
-        !validator.isAlphanumeric(request.body.username) ||
-        !validator.isEmail(request.body.email) ||
-        request.body.password.length < 8){
+        if (
+            !validator.isAlphanumeric(request.body.fullName) || 
+            !validator.isAlphanumeric(request.body.username) ||
+            !validator.isEmail(request.body.email) ||
+            request.body.password.length < 8
+        ){
             throw new Error("Data validation failed!");
         }
 
+        const userData = await findUser(request.body.email);
+
+        if (userData){
+            response.json({
+                message: "Account already exists",
+                success: false
+            });
+            return next();
+        }
+
+        //Saved into DB
+        const signedUpUser = new userModel({
+            fullName: request.body.fullName,
+            username: request.body.username,
+            email: request.body.email,
+            password:securePassword,
+        })
         let result = await signedUpUser.save();
 
         response.json({

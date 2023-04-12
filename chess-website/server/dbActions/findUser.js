@@ -1,5 +1,5 @@
-const signUpTemplateCopy = require('../models/SignUp')
+const users = require('../models/user')
 
 module.exports = async (email) => {
-    return await signUpTemplateCopy.findOne({"email": email});
+    return await users.findOne({"email": email});
 }
