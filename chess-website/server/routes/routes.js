@@ -14,7 +14,7 @@ router.post('/signup', async (request, response, next) => {
 
     const fullName = request.body.fullName;
     const username = request.body.username;
-    let email = request.body.email;
+    let email = validator.normalizeEmail(email);
 
     //Sanitize input then store in DB.
     try{
@@ -26,7 +26,6 @@ router.post('/signup', async (request, response, next) => {
         ){
             throw new Error("Data validation failed!");
         }
-        email = validator.normalizeEmail(email);
 
         const userData = await findUser(email);
 
@@ -67,15 +66,17 @@ router.post('/signup', async (request, response, next) => {
 })
 
 router.post('/login', async (request, response, next) => {
-    let inputEmail = request.body.email;
-    let inputPassword = request.body.password;
+    let email = request.body.email;
+    const password = request.body.password;
 
+    //Sanitize, then search for user
     try{
-        if (!validator.isEmail(inputEmail)){
+        if (!validator.isEmail(email)){
             throw new Error("Invalid email");
         }
+        email = validator.normalizeEmail(email);
 
-        const userData = await findUser(inputEmail);
+        const userData = await findUser(email);
         
         //Check email
         if(!userData) {
@@ -83,7 +84,7 @@ router.post('/login', async (request, response, next) => {
         }
 
         //Check password
-        const passwordMatch = await bcrypt.compare(inputPassword, userData.password)
+        const passwordMatch = await bcrypt.compare(password, userData.password)
         if (!passwordMatch) {
             throw new Error("Invalid password");
         }
