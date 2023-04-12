@@ -12,17 +12,23 @@ router.post('/signup', async (request, response, next) => {
     const saltPassword = await bcrypt.genSalt(10) //encrypt password before sending to DB
     const securePassword = await bcrypt.hash(request.body.password, saltPassword)
 
+    const fullName = request.body.fullName;
+    const username = request.body.username;
+    let email = request.body.email;
+
+    //Sanitize input then store in DB.
     try{
         if (
-            !validator.isAlphanumeric(request.body.fullName) || 
-            !validator.isAlphanumeric(request.body.username) ||
-            !validator.isEmail(request.body.email) ||
+            !validator.isAlphanumeric(fullName) || 
+            !validator.isAlphanumeric(username) ||
+            !validator.isEmail(email) ||
             request.body.password.length < 8
         ){
             throw new Error("Data validation failed!");
         }
+        email = validator.normalizeEmail(email);
 
-        const userData = await findUser(request.body.email);
+        const userData = await findUser(email);
 
         if (userData){
             response.json({
