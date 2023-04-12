@@ -31,8 +31,8 @@ const game = new mongoose.Schema({
     },
     date: {
         type: Date,
-        default:Date.now
-        // required: true,
+        default:Date.now,
+        required: true,
     },
     duration: {
         type: String,

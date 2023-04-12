@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const signUpTemplateCopy = require('../models/SignUpModels')
-const gameModel = require('../models/Games')
+const userModel = require('../models/user')
+const gameModel = require('../models/game')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 const validator = require("validator");
@@ -12,33 +12,38 @@ router.post('/signup', async (request, response, next) => {
     const saltPassword = await bcrypt.genSalt(10) //encrypt password before sending to DB
     const securePassword = await bcrypt.hash(request.body.password, saltPassword)
 
-    const userData = await findUser(request.body.email);
+    const fullName = request.body.fullName;
+    const username = request.body.username;
+    let email = validator.normalizeEmail(email);
 
-    if (userData){
-        response.json({
-            message: "Account already exists",
-            success: false
-        });
-        return next();
-    }
-
-    //Saved into DB
-    const signedUpUser = new signUpTemplateCopy({
-        fullName:request.body.fullName,
-        username: request.body.username,
-        email: request.body.email,
-        password:securePassword,
-    })
-
+    //Sanitize input then store in DB.
     try{
-
-        if (!validator.isAlphanumeric(request.body.fullName) || 
-        !validator.isAlphanumeric(request.body.username) ||
-        !validator.isEmail(request.body.email) ||
-        request.body.password.length < 8){
+        if (
+            !validator.isAlphanumeric(fullName) || 
+            !validator.isAlphanumeric(username) ||
+            !validator.isEmail(email) ||
+            request.body.password.length < 8
+        ){
             throw new Error("Data validation failed!");
         }
 
+        const userData = await findUser(email);
+
+        if (userData){
+            response.json({
+                message: "Account already exists",
+                success: false
+            });
+            return next();
+        }
+
+        //Saved into DB
+        const signedUpUser = new userModel({
+            fullName: request.body.fullName,
+            username: request.body.username,
+            email: request.body.email,
+            password:securePassword,
+        })
         let result = await signedUpUser.save();
 
         response.json({
@@ -61,15 +66,17 @@ router.post('/signup', async (request, response, next) => {
 })
 
 router.post('/login', async (request, response, next) => {
-    let inputEmail = request.body.email;
-    let inputPassword = request.body.password;
+    let email = request.body.email;
+    const password = request.body.password;
 
+    //Sanitize, then search for user
     try{
-        if (!validator.isEmail(inputEmail)){
+        if (!validator.isEmail(email)){
             throw new Error("Invalid email");
         }
+        email = validator.normalizeEmail(email);
 
-        const userData = await findUser(inputEmail);
+        const userData = await findUser(email);
         
         //Check email
         if(!userData) {
@@ -77,7 +84,7 @@ router.post('/login', async (request, response, next) => {
         }
 
         //Check password
-        const passwordMatch = await bcrypt.compare(inputPassword, userData.password)
+        const passwordMatch = await bcrypt.compare(password, userData.password)
         if (!passwordMatch) {
             throw new Error("Invalid password");
         }
