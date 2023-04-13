@@ -14,7 +14,7 @@ router.post('/signup', async (request, response, next) => {
 
     const fullName = request.body.fullName;
     const username = request.body.username;
-    let email = validator.normalizeEmail(email);
+    let email = validator.normalizeEmail(request.body.email);
 
     //Sanitize input then store in DB.
     try{
