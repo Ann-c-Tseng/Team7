@@ -14,7 +14,7 @@ router.post('/signup', async (request, response, next) => {
 
     const fullName = request.body.fullName;
     const username = request.body.username;
-    let email = validator.normalizeEmail(email);
+    let email = validator.normalizeEmail(request.body.email);
 
     //Sanitize input then store in DB.
     try{
@@ -151,7 +151,7 @@ router.post('/history', async (request, response) => {
 })
 
 router.post('/leaderboard', async (request, response) => {
-    const users = await signUpTemplateCopy.find({elo: {$gt: 0}}).exec();
+    const users = await userModel.find({elo: {$gt: 0}}).exec();
     response.json(users);
 })
 router.post('/spectate', async (request, response) => {

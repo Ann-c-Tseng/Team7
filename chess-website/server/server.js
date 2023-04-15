@@ -16,15 +16,18 @@ const dotenv = require('dotenv')
 const routes = require('./routes/routes')
 const cors = require('cors')
 const matchmaking = require("./chess/matchmaking");
+const rateLimiters = require("./utils/rateLimiters");
 
 dotenv.config()
 
 mongoose.connect(process.env.DATABASE_ACCESS, () => console.log("Database connected"))
 
+app.use(rateLimiters.pageLimiterMiddleware);
 app.use(express.json())
 app.use(cors())
 app.use('/', routes)
 
+io.use(rateLimiters.chessPageLimiterMiddleware);
 io.on('connection', matchmaking.newConnection)
 
 httpServer.listen(4000, () => console.log("server is up and running"))

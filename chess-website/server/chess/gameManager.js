@@ -340,10 +340,10 @@ const gameManager = {
     },
 
     disconnectAll(game){
-        game.white.disconnect();
-        game.black.disconnect();
+        game.white.disconnect(true);
+        game.black.disconnect(true);
         for (let spectator of game.spectators){
-            spectator.disconnect();
+            spectator.disconnect(true);
         }
     }
 }

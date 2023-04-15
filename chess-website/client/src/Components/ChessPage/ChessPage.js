@@ -146,6 +146,9 @@ class ChessPage extends React.Component{
             this.socket.on('invalid', (data) => {
                 console.log(data.message);
             })
+            this.socket.on('blocked', (data) => {
+                console.log(data);
+            })
         }
         catch(err){
             console.err("Connection error");
