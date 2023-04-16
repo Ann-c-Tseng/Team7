@@ -78,7 +78,6 @@ router.post('/login', async (request, response, next) => {
         email = validator.normalizeEmail(email);
         
         if (await rateLimiters.isLoginLocked(request.ip, email)){
-            console.log("login is locked");
             response.status(429).json({
                 message: "Failed to log in",
                 success: false
