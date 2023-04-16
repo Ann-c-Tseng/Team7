@@ -5,6 +5,7 @@ const gameModel = require('../models/game')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 const validator = require("validator");
+const rateLimiters = require("../utils/rateLimiters");
 
 const gameManager = require("../chess/gameManager");
 
@@ -75,7 +76,14 @@ router.post('/login', async (request, response, next) => {
             throw new Error("Invalid email");
         }
         email = validator.normalizeEmail(email);
-
+        
+        if (await rateLimiters.isLoginLocked(request.ip, email)){
+            response.status(429).json({
+                message: "Failed to log in",
+                success: false
+            });
+            return;
+        }
         const userData = await findUser(email);
         
         //Check email
@@ -103,13 +111,18 @@ router.post('/login', async (request, response, next) => {
         response.json(body);
     }
     catch(error){
+        //Count on rate limiter.
+        rateLimiters.failedLoginAttempt(request.ip, email);
         response.json({
             message: "Failed to log in",
             success: false
         });
-        console.log(error);
-        return next();
+        return;
     }
+
+    //Reset consecutive fails on successful authentication
+    rateLimiters.successfulLogin(request.ip, email);
+
     return next();
 });
 
