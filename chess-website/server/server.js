@@ -22,6 +22,11 @@ dotenv.config()
 
 mongoose.connect(process.env.DATABASE_ACCESS, () => console.log("Database connected"))
 
+process.on('unhandledRejection', (reason, p) => {
+    console.error("Critical unhandled rejection:");
+    console.log(reason);
+});
+
 app.use(rateLimiters.pageLimiterMiddleware);
 app.use(express.json())
 app.use(cors())
