@@ -16,7 +16,6 @@ router.post('/signup', async (request, response, next) => {
     const fullName = request.body.fullName;
     const username = request.body.username;
     let email = validator.normalizeEmail(request.body.email);
-
     //Sanitize input then store in DB.
     try{
         if (
@@ -29,7 +28,6 @@ router.post('/signup', async (request, response, next) => {
         }
 
         const userData = await findUser(email);
-
         if (userData){
             response.json({
                 message: "Account already exists",
@@ -40,13 +38,12 @@ router.post('/signup', async (request, response, next) => {
 
         //Saved into DB
         const signedUpUser = new userModel({
-            fullName: request.body.fullName,
-            username: request.body.username,
-            email: request.body.email,
+            fullName,
+            username,
+            email,
             password:securePassword,
         })
         let result = await signedUpUser.save();
-
         response.json({
             username: request.body.username,
             email: request.body.email,
@@ -69,7 +66,6 @@ router.post('/signup', async (request, response, next) => {
 router.post('/login', async (request, response, next) => {
     let email = request.body.email;
     const password = request.body.password;
-
     //Sanitize, then search for user
     try{
         if (!validator.isEmail(email)){
