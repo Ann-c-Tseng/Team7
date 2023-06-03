@@ -96,7 +96,7 @@ class SignupForm extends Component {
             .then(response => {
                 if (response.data.success){
                     this.props.login(response.data.username, response.data.email);
-                    window.location = '/profile'; //Redirect to login after signing up
+                    window.location = '/profile'; 
                 }
                 else{
                     if (response.data.message === "Account already exists"){
