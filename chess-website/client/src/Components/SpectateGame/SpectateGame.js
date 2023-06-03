@@ -7,10 +7,8 @@ import Timer from "../ChessPage/Components/Timer/Timer";
 import ResultPopup from "../ChessPage/Components/ResultPopup/ResultPopup";
 import ChessGame from "../ChessPage/Components/ChessGame/ChessGame";
 import GameInfo from "../ChessPage/Components/GameInfo/GameInfo";
-
 import {useParams} from "react-router";
 import io from "socket.io-client";
-
 import "../ChessPage/ChessPage.css";
 
 //Should be a stripped down version of the ChessPage. Should move common code into a new class and have these extend them.
@@ -105,7 +103,6 @@ class SpectateGame extends React.Component{
         });
 
         this.socket.on('gameOver', (data) => {
-            console.log("Received game over");
             this.setState({gameOver: true});
             this.gameOver(data.result, data.reason);
         });

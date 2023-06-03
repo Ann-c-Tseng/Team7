@@ -23,29 +23,12 @@ const gameManager = {
         
         for (entry of this.games.entries()){
             const game = entry[1]
-            const whiteUser = game.white.user;
-            const blackUser = game.black.user;
+            const packet = this.getInitPacket(game);
             activeGames.push({
                 id: entry[0],
                 position: game.state.fen(),
                 turn: game.state.turn(),
-                //Only take specific things. Don't send the entire user to spectators.
-                //Add profile pictures later
-                white: {
-                    user: {
-                        username: whiteUser.username,
-                        elo: whiteUser.elo
-                        
-                    },
-                    time: game.white.timer.time,
-                },
-                black: {
-                    user: {
-                        username: blackUser.username,
-                        elo: blackUser.elo,
-                    },
-                    time: game.black.timer.time,
-                }
+                ...packet,
             });
         }
         return activeGames;
@@ -82,20 +65,15 @@ const gameManager = {
     },
 
     initializePlayers(game){
+        const packet = this.getInitPacket(game);
         game.white.emit('initialize', {
             color: "w",
-            time: game.white.timer.time,
-            opponent: {
-                username: game.black.user.username,
-            },
+            ...packet,
         });
 
         game.black.emit('initialize', {
             color: "b",
-            time: game.black.timer.time,
-            opponent: {
-                username: game.white.user.username,
-            },
+            ...packet,
         });
 
         this.setHandlers(game.white, game.black);
@@ -103,17 +81,20 @@ const gameManager = {
     },
     addSpectator(game, spectator){
         game.spectators.push(spectator);
+        const packet = this.getInitPacket(game);
         spectator.emit('initialize', {
             turn: game.state.turn(),
             fen: game.state.fen(),
             moves: game.state.history(),
-            //Only take specific things. Don't send the entire user to spectators.
-            //Add profile pictures later
+            ...packet,
+        });
+    },
+    getInitPacket(game){
+        return {
             white: {
                 user: {
                     username: game.white.user.username,
                     elo: game.white.elo
-                    
                 },
                 time: game.white.timer.time,
             },
@@ -124,7 +105,14 @@ const gameManager = {
                 },
                 time: game.black.timer.time,
             }
-        });
+        }
+    },
+    getTimeleft(game){
+        return {
+            timeSent: Date.now(),
+            whiteTimeLeft: game.white.timer.time,
+            blackTimeLeft: game.black.timer.time,
+        };
     },
 
     setHandlers(socket, opponentSocket){
@@ -135,17 +123,12 @@ const gameManager = {
         socket.on('move', (move) => {
             try{
                 this.tryMove(socket.game, move, socket.color);
+                const timeLeft = this.getTimeleft(socket.game);
                 opponentSocket.emit('opponentMove', {
                     move,
-                    timeSent: Date.now(),
-                    timeLeft: opponentSocket.timer.time,
-                    oppTimeLeft: socket.timer.time
+                    ...timeLeft,
                 });
-                socket.emit('updateTimer', {
-                    timeSent: Date.now(),
-                    timeLeft: socket.timer.time,
-                    oppTimeLeft: opponentSocket.timer.time
-                });
+                socket.emit('updateTimer', timeLeft);
                 this.endMove(socket.game, socket.color);
             }
             catch(err){
@@ -157,13 +140,10 @@ const gameManager = {
         });
         socket.on('requestDraw', () => {
             if (opponentSocket.drawRequest){
-                socket.emit('drawConfirm');
-                opponentSocket.emit('drawConfirm');
                 this.handleGameOver(socket.game, "Draw", " by Agreement");
-                
             }
             else{
-                opponentSocket.emit('requestDraw');
+                opponentSocket.emit('requestDraw', {color: socket.color});
                 this.emitSpectators(socket.game, 'requestDraw', {color: socket.color});
                 socket.drawRequest = true;
             }
@@ -198,9 +178,7 @@ const gameManager = {
 
         this.emitSpectators(game, 'move', {
             move: move,
-            whiteTimeLeft: game.white.timer.time,
-            blackTimeLeft: game.black.timer.time,
-            timeSent: Date.now(),
+            ...this.getTimeleft(game),
         })
     },
 
