@@ -77,8 +77,6 @@ const newConnection = async (socket) => {
     else{
         socket.disconnect("No action specified");
     }
-
-    
 }
 
 module.exports = {

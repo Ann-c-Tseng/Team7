@@ -1,5 +1,5 @@
 const gameModel = require('../models/game');
-
+const bindOpponents = require('./SocketFunctions/Playing');
 
 //node got fussy when trying to require chess.js normally. This is a mess
 async function loader(){
@@ -46,7 +46,7 @@ const gameManager = {
             gameOver: false,
             startTime: 0,
             endTime: 0,
-            spectators: [],
+            spectators: new Set(),
             ...playerSockets
         }
         this.games.set(game.uuid, game);
@@ -76,15 +76,22 @@ const gameManager = {
             ...packet,
         });
 
-        this.setHandlers(game.white, game.black);
-        this.setHandlers(game.black, game.white);
+        bindOpponents(game.white, game.black, this);
+        bindOpponents(game.black, game.white, this);
     },
     addSpectator(game, spectator){
-        game.spectators.push(spectator);
+        game.spectators.add(spectator);
+        console.log("Spectator connect");
+        spectator.on('disconnect', () => {
+            this.removeSpectator(game, spectator);
+        })
         const packet = this.getInitPacket(game);
         spectator.emit('initialize', {
             ...packet,
         });
+    },
+    removeSpectator(game, remove){
+        game.spectators.delete(remove);
     },
     getInitPacket(game){
         return {
@@ -113,47 +120,6 @@ const gameManager = {
             whiteTimeLeft: game.white.timer.time,
             blackTimeLeft: game.black.timer.time,
         };
-    },
-
-    setHandlers(socket, opponentSocket){
-
-        socket.on('disconnect', () => {
-            this.handlePlayerDisconnect(socket.game, socket.color);
-        });
-        socket.on('move', (move) => {
-            try{
-                this.tryMove(socket.game, move, socket.color);
-                const timeLeft = this.getTimeleft(socket.game);
-                opponentSocket.emit('opponentMove', {
-                    move,
-                    ...timeLeft,
-                });
-                socket.emit('updateTimer', timeLeft);
-                this.endMove(socket.game, socket.color);
-            }
-            catch(err){
-                console.log(err)
-                console.log("Invalid move was sent to the server");
-                socket.emit('invalid', {message: "Invalid move"});
-            }
-            
-        });
-        socket.on('requestDraw', () => {
-            if (opponentSocket.drawRequest){
-                this.handleGameOver(socket.game, "Draw", " by Agreement");
-            }
-            else{
-                opponentSocket.emit('requestDraw', {color: socket.color});
-                this.emitSpectators(socket.game, 'requestDraw', {color: socket.color});
-                socket.drawRequest = true;
-            }
-            
-        });
-        socket.on('resign', () => {
-            const winner = socket.color === "w" ? "Black" : "White";
-            const result = winner + " has won";
-            this.handleGameOver(socket.game, result, " by Resignation");
-        });
     },
 
     setTimers(game){
@@ -265,9 +231,9 @@ const gameManager = {
         this.emitSpectators(game, type, packet);
     },
     emitSpectators(game, type, packet){
-        for (let spectator of game.spectators){
+        game.spectators.forEach(spectator => {
             spectator.emit(type, packet);
-        }
+        });
     },
 
     async storeGameInDB(game, result, reason){
@@ -320,9 +286,9 @@ const gameManager = {
     disconnectAll(game){
         game.white.disconnect(true);
         game.black.disconnect(true);
-        for (let spectator of game.spectators){
+        game.spectators.forEach((spectator) => {
             spectator.disconnect(true);
-        }
+        })
     }
 }
 
