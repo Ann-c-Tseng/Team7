@@ -90,7 +90,7 @@ const History = () => {
     const user = useSelector((state) => state.auth.user.username)
 
     useEffect(() => {
-        axios.post('http://54.69.36.110/history', { username: user }).then(response => {
+        axios.post('/history', { username: user }).then(response => {
             if (response) {
                 setRows(response.data.reverse());
             }

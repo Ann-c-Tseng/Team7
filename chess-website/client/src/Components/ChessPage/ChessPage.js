@@ -82,12 +82,12 @@ class ChessPage extends React.Component{
     componentDidMount(){
         try{
             if (this.props?.spectating){
-                this.socket = io("http://localhost:4000", {query: {spectate: this.matchId}});
+                this.socket = io(undefined, {query: {spectate: this.matchId}});
                 commonSocketSignals(this.socket, this);
                 spectatorSocketSignals(this.socket, this);
             }
             else{
-                this.socket = io("http://localhost:4000", {query: {email: this.props.user.email}});
+                this.socket = io(undefined, {query: {email: this.props.user.email}});
                 commonSocketSignals(this.socket, this);
                 playerSocketSignals(this.socket, this);
             }

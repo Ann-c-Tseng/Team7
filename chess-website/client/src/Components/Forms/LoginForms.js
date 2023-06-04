@@ -43,7 +43,7 @@ class LoginForm extends Component {
             return;
         }
 
-        axios.post('http://54.69.36.110/login', {email: this.state.email, password: this.state.password})
+        axios.post('/login', {email: this.state.email, password: this.state.password})
         .then((response) => {
             if (response.data.success === true){
                 this.props.login(response.data.username, response.data.email);

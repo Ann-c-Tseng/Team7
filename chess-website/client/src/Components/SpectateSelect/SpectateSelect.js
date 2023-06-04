@@ -59,7 +59,6 @@ class SpectateSelect extends React.Component{
     }
 
     refresh(){
-        console.log("refresh");
         if (!this.state.canRefresh){
             console.log("Refresh is on cooldown!");
             return;
@@ -67,7 +66,7 @@ class SpectateSelect extends React.Component{
         this.setState({
             canRefresh: false,
         });
-        axios.post('http://54.69.36.110/spectate')
+        axios.post('/spectate')
         .then((response) => {
             if (response.data.success){
                 this.setState({

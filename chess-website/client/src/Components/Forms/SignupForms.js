@@ -92,7 +92,7 @@ class SignupForm extends Component {
                 password: this.state.password
             }
 
-            axios.post('http://54.69.36.110/signup', registered)
+            axios.post('/signup', registered)
             .then(response => {
                 if (response.data.success){
                     this.props.login(response.data.username, response.data.email);
