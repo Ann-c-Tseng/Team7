@@ -12,8 +12,10 @@ class LoginForm extends Component {
         super()
         this.state = {
             email:'',
+            password:'',
             validEmail: false,
-            password:''
+            tooManyRequests: false,
+            loginFailed: false,
         }
         this.changeEmail = this.changeEmail.bind(this)
         this.changePassword = this.changePassword.bind(this)
@@ -48,11 +50,20 @@ class LoginForm extends Component {
                 window.location = '/profile';
             }
             else{
-                alert("Your E-mail or password is incorrect")
+                this.setState({
+                    tooManyRequests: false,
+                    loginFailed: true,
+                });
+            }
+        })
+        .catch((err) => {
+            if (err.response.status === 429){
+                this.setState({
+                    tooManyRequests: true,
+                });
             }
         })
     }
-
 
     render() { 
         return (
@@ -74,6 +85,9 @@ class LoginForm extends Component {
                             value={this.state.password}
                             className='form-control form-group'
                             />
+
+                            <p className="badField">{this.state.tooManyRequests ? "Too many requests. Come back later." : " "}</p>
+                            <p className="badField">{this.state.loginFailed ? "Incorrect email or password." : " "}</p>
 
                             <input type='submit' className='btn btn-danger btn-block' value='Submit'/>
                         </form>

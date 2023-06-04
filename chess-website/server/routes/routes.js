@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const signUpTemplateCopy = require('../models/SignUpModels')
-const gameModel = require('../models/Games')
+const userModel = require('../models/user')
+const gameModel = require('../models/game')
 const findUser = require("../dbActions/findUser");
 const bcrypt = require('bcrypt')
 const validator = require("validator");
+const rateLimiters = require("../utils/rateLimiters");
 
 const gameManager = require("../chess/gameManager");
 
@@ -12,35 +13,37 @@ router.post('/signup', async (request, response, next) => {
     const saltPassword = await bcrypt.genSalt(10) //encrypt password before sending to DB
     const securePassword = await bcrypt.hash(request.body.password, saltPassword)
 
-    const userData = await findUser(request.body.email);
-
-    if (userData){
-        response.json({
-            message: "Account already exists",
-            success: false
-        });
-        return next();
-    }
-
-    //Saved into DB
-    const signedUpUser = new signUpTemplateCopy({
-        fullName:request.body.fullName,
-        username: request.body.username,
-        email: request.body.email,
-        password:securePassword,
-    })
-
+    const fullName = request.body.fullName;
+    const username = request.body.username;
+    let email = validator.normalizeEmail(request.body.email);
+    //Sanitize input then store in DB.
     try{
-
-        if (!validator.isAlphanumeric(request.body.fullName) || 
-        !validator.isAlphanumeric(request.body.username) ||
-        !validator.isEmail(request.body.email) ||
-        request.body.password.length < 8){
+        if (
+            !validator.isAlphanumeric(fullName) || 
+            !validator.isAlphanumeric(username) ||
+            !validator.isEmail(email) ||
+            request.body.password.length < 8
+        ){
             throw new Error("Data validation failed!");
         }
 
-        let result = await signedUpUser.save();
+        const userData = await findUser(email);
+        if (userData){
+            response.json({
+                message: "Account already exists",
+                success: false
+            });
+            return next();
+        }
 
+        //Saved into DB
+        const signedUpUser = new userModel({
+            fullName,
+            username,
+            email,
+            password:securePassword,
+        })
+        let result = await signedUpUser.save();
         response.json({
             username: request.body.username,
             email: request.body.email,
@@ -61,15 +64,23 @@ router.post('/signup', async (request, response, next) => {
 })
 
 router.post('/login', async (request, response, next) => {
-    let inputEmail = request.body.email;
-    let inputPassword = request.body.password;
-
+    let email = request.body.email;
+    const password = request.body.password;
+    //Sanitize, then search for user
     try{
-        if (!validator.isEmail(inputEmail)){
+        if (!validator.isEmail(email)){
             throw new Error("Invalid email");
         }
-
-        const userData = await findUser(inputEmail);
+        email = validator.normalizeEmail(email);
+        
+        if (await rateLimiters.isLoginLocked(request.ip, email)){
+            response.status(429).json({
+                message: "Failed to log in",
+                success: false
+            });
+            return;
+        }
+        const userData = await findUser(email);
         
         //Check email
         if(!userData) {
@@ -77,7 +88,7 @@ router.post('/login', async (request, response, next) => {
         }
 
         //Check password
-        const passwordMatch = await bcrypt.compare(inputPassword, userData.password)
+        const passwordMatch = await bcrypt.compare(password, userData.password)
         if (!passwordMatch) {
             throw new Error("Invalid password");
         }
@@ -96,13 +107,18 @@ router.post('/login', async (request, response, next) => {
         response.json(body);
     }
     catch(error){
+        //Count on rate limiter.
+        rateLimiters.failedLoginAttempt(request.ip, email);
         response.json({
             message: "Failed to log in",
             success: false
         });
-        console.log(error);
-        return next();
+        return;
     }
+
+    //Reset consecutive fails on successful authentication
+    rateLimiters.successfulLogin(request.ip, email);
+
     return next();
 });
 
@@ -144,7 +160,7 @@ router.post('/history', async (request, response) => {
 })
 
 router.post('/leaderboard', async (request, response) => {
-    const users = await signUpTemplateCopy.find({elo: {$gt: 0}}).exec();
+    const users = await userModel.find({elo: {$gt: 0}}).exec();
     response.json(users);
 })
 router.post('/spectate', async (request, response) => {
