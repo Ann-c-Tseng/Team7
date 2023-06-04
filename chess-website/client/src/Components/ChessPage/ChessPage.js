@@ -12,22 +12,31 @@ import './ChessPage.css';
 import {connect} from "react-redux";
 import io from "socket.io-client";
 
+import commonSocketSignals from "./SocketFunctions/Common.js";
+import spectatorSocketSignals from "./SocketFunctions/Spectating.js";
+import playerSocketSignals from "./SocketFunctions/Playing.js";
 
 
 class ChessPage extends React.Component{
     constructor(props){
         super(props);
 
+        this.flipBoard = this.flipBoard.bind(this);
+        this.notificationAccept = this.notificationAccept.bind(this);
+
+        if (props?.spectating){
+            this.matchId = window.location.pathname.split('/')[2];
+        }
+        else{
+            this.changePromotionSelection = this.changePromotionSelection.bind(this);
+            this.requestDraw = this.requestDraw.bind(this);
+            this.resign = this.resign.bind(this);
+        }
+
         this.userMove = this.userMove.bind(this);
         this.timerUpdateCallback = this.timerUpdateCallback.bind(this);
         this.timerFinishCallback = this.timerFinishCallback.bind(this);
         
-        this.changePromotionSelection = this.changePromotionSelection.bind(this);
-        this.flipBoard = this.flipBoard.bind(this);
-        this.requestDraw = this.requestDraw.bind(this);
-        this.resign = this.resign.bind(this);
-        this.notificationAccept = this.notificationAccept.bind(this);
-
         const whiteTimer = new Timer("w", this.timerUpdateCallback, this.timerFinishCallback);
         const blackTimer = new Timer("b", this.timerUpdateCallback, this.timerFinishCallback);
         
@@ -40,7 +49,6 @@ class ChessPage extends React.Component{
             moves: [],
 
             turn: "w",
-            promoting: true,
             promotionChoice: 'q',
             user: userColor,
             opponent: null,
@@ -72,83 +80,20 @@ class ChessPage extends React.Component{
     }
 
     componentDidMount(){
-
-        //Begin the match making!
-        //Establish a socket connection with the server
         try{
-            const socket = io("http://54.69.36.110", {query: {email: this.props.user.email}});
-
-            this.socket = socket;
-            this.socket.on('initialize', (data) => {
-                this.state.timers.forEach((t) => t.time = data.time);
-
-                this.setState({
-                    game: new Chess(), 
-                    user: data.color,
-                    topUser: data.opponent,
-                    drawRequest: false,
-                    opponent: this.getOpponentColor(data.color),
-                    timers: this.state.timers,
-                    gameOver: false,
-                    moveNum: 0,
-                    moves: [],
-                    turn: "w",
-                    promoting: true,
-                })
-                if (data.color === "b"){
-                    this.flipBoard();
-
-                    this.setState({
-                        topUser: data.opponent,
-                        bottomUser: this.props.user
-                    })
-
-                }
-            });
-
-            this.socket.on('alreadyConnected', () => {
-                this.setNotification("Already connected!", "Please use your other tab.");
-            })
-            
-            this.socket.on('disconnect', (reason) => {
-                console.log("Disconnected: " + reason)
-            });
-            this.socket.on('requestDraw', () => {
-                this.setState({
-                    drawRequest: true
-                });
-            });
-            this.socket.on('drawConfirm', () => {
-                this.gameOver("Draw", " by Agreement");
-                this.setState({
-                    drawRequest: false
-                });
-            });
-
-            this.socket.on('opponentMove', (data) => {
-                this.opponentMove(data.move.from, data.move.to, data.move.promotion);
-
-                this.syncTimers(data.timeLeft, data.oppTimeLeft, data.timeSent);
-            });
-            this.socket.on('updateTimer', (data) => {
-                this.syncTimers(data.timeLeft, data.oppTimeLeft, data.timeSent);
-            });
-
-            this.socket.on('notify', (data) => {
-                this.setNotification(data.title, data.message);
-            });
-
-            this.socket.on('gameOver', (data) => {
-                this.setState({gameOver: true});
-                this.gameOver(data.result, data.reason);
-            })
-            
-            this.socket.on('invalid', (data) => {
-                console.log(data.message);
-            })
+            if (this.props?.spectating){
+                this.socket = io("http://localhost:4000", {query: {spectate: this.matchId}});
+                commonSocketSignals(this.socket, this);
+                spectatorSocketSignals(this.socket, this);
+            }
+            else{
+                this.socket = io("http://localhost:4000", {query: {email: this.props.user.email}});
+                commonSocketSignals(this.socket, this);
+                playerSocketSignals(this.socket, this);
+            }
         }
         catch(err){
-            console.err("Connection error");
+            console.error("Connection error");
         }
     }
 
@@ -312,14 +257,12 @@ class ChessPage extends React.Component{
         timer.disable();
     }
 
-    syncTimers(userTime, oppTime, timeSent){
+    syncTimers(whiteTime, blackTime, timeSent){
 
         const latency = Date.now() - timeSent;
-        const userTimer = this.getTimer(this.state.user);
-        const oppTimer = this.getTimer(this.getOpponentColor(this.state.user));
         
-        userTimer.time = userTime - latency;
-        oppTimer.time = oppTime - latency;
+        this.getTimer('w').time = whiteTime - latency;
+        this.getTimer('b').time = blackTime - latency;
 
         this.setState({
             timers: this.state.timers
@@ -369,7 +312,6 @@ class ChessPage extends React.Component{
         }
         this.socket.emit('resign');
         //TODO add a confirm
-        console.log("Resigned");
         let winner = (this.state.user === "w" ? "Black" : "White");
         this.gameOver(winner + " has won", " by Resignation");
     }
@@ -410,7 +352,6 @@ class ChessPage extends React.Component{
                             elo={null}
                         />
                     }
-                    
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
                             <TimerView 
@@ -419,7 +360,7 @@ class ChessPage extends React.Component{
                                 time={this.state.topTimer.time}
                                 enabled={this.state.topTimer.enabled}
                             />
-                            { this.state.promoting ? <PromotionSelect changeHandler={this.changePromotionSelection} user={this.state.user}/> : null}
+                            { !this.props?.spectating ? <PromotionSelect changeHandler={this.changePromotionSelection} user={this.state.user}/> : null}
                             <TimerView 
                                 className="BottomTimer"
                                 color={this.state.bottomTimer.color}
@@ -438,19 +379,20 @@ class ChessPage extends React.Component{
                                 relativeHeight={0.7}
                                 moveHandler={this.userMove}
                                 gameState={this.state.game.fen()}
+                                mode={this.props.spectating ? "Spectator" : "Player"}
                                 boardOrientation={this.state.orientation}
                             />
                         </Box>
                         <GameInfo 
-                            mode={"Player"}
+                            mode={this.props.spectating ? "Spectator" : "Player"}
                             moves={this.state.moves}
                             className="Info"
                             flipBoardHandler={this.flipBoard}
                             requestDrawHandler={this.requestDraw}
                             resignHandler={this.resign}
                             drawRequestPopup={this.state.drawRequest}
-                            />
-                        
+                            drawRequestColor={this.props.spectating ? this.state.drawRequestColor : null}
+                        />
                     </Box>
                     {
                         this.state.bottomUser ?
@@ -477,6 +419,5 @@ const mapStateToProps = state => {
         user: state.auth.user
     }
 }
-
 
 export default connect(mapStateToProps)(ChessPage);
