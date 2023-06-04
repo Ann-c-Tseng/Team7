@@ -12,6 +12,8 @@ const io = new Server(httpServer, {
 });
 
 const mongoose = require('mongoose')
+mongoose.set('strictQuery', false);
+
 const dotenv = require('dotenv')
 const routes = require('./routes/routes')
 const cors = require('cors')
@@ -35,4 +37,4 @@ app.use('/', routes)
 io.use(rateLimiters.chessPageLimiterMiddleware);
 io.on('connection', matchmaking.newConnection)
 
-httpServer.listen(4000, () => console.log("server is up and running"))
+httpServer.listen(4000, () => console.log("Server running"))
