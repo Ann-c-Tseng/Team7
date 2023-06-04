@@ -82,12 +82,12 @@ class ChessPage extends React.Component{
     componentDidMount(){
         try{
             if (this.props?.spectating){
-                this.socket = io("http://localhost:4000", {query: {spectate: this.matchId}});
+                this.socket = io(undefined, {query: {spectate: this.matchId}});
                 commonSocketSignals(this.socket, this);
                 spectatorSocketSignals(this.socket, this);
             }
             else{
-                this.socket = io("http://localhost:4000", {query: {email: this.props.user.email}});
+                this.socket = io(undefined, {query: {email: this.props.user.email}});
                 commonSocketSignals(this.socket, this);
                 playerSocketSignals(this.socket, this);
             }
@@ -256,10 +256,9 @@ class ChessPage extends React.Component{
         let timer = this.getTimer(color);
         timer.disable();
     }
-
     syncTimers(whiteTime, blackTime, timeSent){
 
-        const latency = Date.now() - timeSent;
+        const latency = 0//Date.now() - timeSent;
         
         this.getTimer('w').time = whiteTime - latency;
         this.getTimer('b').time = blackTime - latency;
