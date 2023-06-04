@@ -42,7 +42,7 @@ const Profile = () => {
             setUserData(response.data);
             setLoading(false);
         })
-    }, []);
+    });
 
     if (isLoading) {
         return <Typography variant="h3" sx={bodyTypographyStyling}>Loading...</Typography>;
