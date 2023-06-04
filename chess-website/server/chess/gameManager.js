@@ -46,7 +46,7 @@ const gameManager = {
             gameOver: false,
             startTime: 0,
             endTime: 0,
-            spectators: [],
+            spectators: new Set(),
             ...playerSockets
         }
         this.games.set(game.uuid, game);
@@ -80,11 +80,18 @@ const gameManager = {
         bindOpponents(game.black, game.white, this);
     },
     addSpectator(game, spectator){
-        game.spectators.push(spectator);
+        game.spectators.add(spectator);
+        console.log("Spectator connect");
+        spectator.on('disconnect', () => {
+            this.removeSpectator(game, spectator);
+        })
         const packet = this.getInitPacket(game);
         spectator.emit('initialize', {
             ...packet,
         });
+    },
+    removeSpectator(game, remove){
+        game.spectators.delete(remove);
     },
     getInitPacket(game){
         return {
@@ -224,9 +231,9 @@ const gameManager = {
         this.emitSpectators(game, type, packet);
     },
     emitSpectators(game, type, packet){
-        for (let spectator of game.spectators){
+        game.spectators.forEach(spectator => {
             spectator.emit(type, packet);
-        }
+        });
     },
 
     async storeGameInDB(game, result, reason){
@@ -279,9 +286,9 @@ const gameManager = {
     disconnectAll(game){
         game.white.disconnect(true);
         game.black.disconnect(true);
-        for (let spectator of game.spectators){
+        game.spectators.forEach((spectator) => {
             spectator.disconnect(true);
-        }
+        })
     }
 }
 
