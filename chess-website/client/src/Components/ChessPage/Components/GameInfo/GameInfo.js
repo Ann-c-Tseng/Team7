@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Typography, Button, IconButton, ButtonGroup} from "@mui/material";
+import {Box, Typography, IconButton, ButtonGroup} from "@mui/material";
 
 import RepeatRounded from '@mui/icons-material/RepeatRounded'; //Flip board
 import HandshakeIcon from '@mui/icons-material/Handshake'; //Draw request

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from "axios";
 import {Box} from '@mui/system';
-import {Button, Card, CardActionArea, CardContent, Typography} from "@mui/material";
+import {Button, Card, CardActionArea, Typography} from "@mui/material";
 import {Navigate} from 'react-router-dom';
 import {Chessboard} from "react-chessboard";
 import UserCard from "../ChessPage/Components/UserCard/UserCard";

@@ -34,7 +34,7 @@ const buttonMaker = (button) => {
                     },
                 }}
             >
-                <img src={button.picture} />
+                <img src={button.picture} alt={button.value}/>
             </ToggleButton>)
 }
 
