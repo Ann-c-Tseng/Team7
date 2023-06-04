@@ -312,7 +312,6 @@ class ChessPage extends React.Component{
         }
         this.socket.emit('resign');
         //TODO add a confirm
-        console.log("Resigned");
         let winner = (this.state.user === "w" ? "Black" : "White");
         this.gameOver(winner + " has won", " by Resignation");
     }
@@ -353,7 +352,6 @@ class ChessPage extends React.Component{
                             elo={null}
                         />
                     }
-                    
                     <Box className="GameInfo">
                         <aside className="TimerSidePanel">
                             <TimerView 
@@ -381,11 +379,12 @@ class ChessPage extends React.Component{
                                 relativeHeight={0.7}
                                 moveHandler={this.userMove}
                                 gameState={this.state.game.fen()}
+                                mode={this.props.spectating ? "Spectator" : "Player"}
                                 boardOrientation={this.state.orientation}
                             />
                         </Box>
                         <GameInfo 
-                            mode={"Player"}
+                            mode={this.props.spectating ? "Spectator" : "Player"}
                             moves={this.state.moves}
                             className="Info"
                             flipBoardHandler={this.flipBoard}
@@ -393,8 +392,7 @@ class ChessPage extends React.Component{
                             resignHandler={this.resign}
                             drawRequestPopup={this.state.drawRequest}
                             drawRequestColor={this.props.spectating ? this.state.drawRequestColor : null}
-                            />
-                        
+                        />
                     </Box>
                     {
                         this.state.bottomUser ?

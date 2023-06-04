@@ -4,20 +4,22 @@ const attachAll = (socket, parent) => {
     socket.on('initialize', (data) => {
         parent.state.timers[0].time = data.black.time;
         parent.state.timers[1].time = data.white.time;
-        
+
+        const moveNum = Math.floor(data.moves.length/2)
+
         parent.setState({
-            game: new Chess(), 
+            game: new Chess(data.fen),
             user: data.color,
             topUser: data.black.user,
             drawRequest: false,
             opponent: parent.getOpponentColor(data.color),
             timers: parent.state.timers,
             gameOver: false,
-            moveNum: 0,
-            moves: [],
-            turn: "w",
+            moveNum,
+            moves: data.moves,
+            turn: data.turn,
             promoting: true,
-        })
+        });
         if (data.color === "b"){
             parent.flipBoard();
             parent.setState({
@@ -25,10 +27,12 @@ const attachAll = (socket, parent) => {
                 bottomUser: parent.props.user
             })
         }
+        if (moveNum !== 0){
+            parent.enableTimer(parent.state.game.turn());
+        }
     });
 
     socket.on('requestDraw', (data) => {
-        console.log(data);
         parent.setState({
             drawRequest: true,
             drawRequestColor: data.color === 'w' ? "White" : "Black",

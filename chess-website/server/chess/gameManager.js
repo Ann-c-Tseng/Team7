@@ -83,14 +83,14 @@ const gameManager = {
         game.spectators.push(spectator);
         const packet = this.getInitPacket(game);
         spectator.emit('initialize', {
-            turn: game.state.turn(),
-            fen: game.state.fen(),
-            moves: game.state.history(),
             ...packet,
         });
     },
     getInitPacket(game){
         return {
+            turn: game.state.turn(),
+            fen: game.state.fen(),
+            moves: game.state.history(),
             white: {
                 user: {
                     username: game.white.user.username,

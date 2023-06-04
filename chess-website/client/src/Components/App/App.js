@@ -20,7 +20,6 @@ class App extends Component {
     return(
       <div className="App">
       {<Navigation />}                     
-      
         <Routes>
               <Route>
                 <Route path="/" element={<HomePage />} />
@@ -42,6 +41,3 @@ class App extends Component {
 }
 
 export default App;
-
-// <h1 style={titleStyle}><Link to="/" title='Home'>Chess Master</Link></h1>
-
