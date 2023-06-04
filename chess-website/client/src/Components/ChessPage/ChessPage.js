@@ -274,10 +274,10 @@ class ChessPage extends React.Component{
     }
 
     getTimer(color){
-        if (color == "w"){
+        if (color === "w"){
             return this.state.timers[1];
         }
-        else if (color == "b"){
+        else if (color === "b"){
             return this.state.timers[0];
         }
     }
