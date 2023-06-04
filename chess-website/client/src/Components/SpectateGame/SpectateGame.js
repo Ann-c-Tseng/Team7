@@ -239,8 +239,11 @@ class SpectateGame extends React.Component{
     }
 
     syncTimers(whiteTime, blackTime, timeSent){
+        if (this.state.moveNum === 0){
+            return;
+        }
 
-        const latency = Date.now() - timeSent;
+        const latency = 0;//Date.now() - timeSent;
         const whiteTimer = this.getTimer('w');
         const blackTimer = this.getTimer('b');
         
