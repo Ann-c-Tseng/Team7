@@ -256,14 +256,9 @@ class ChessPage extends React.Component{
         let timer = this.getTimer(color);
         timer.disable();
     }
-    syncTimers(userTime, oppTime, timeSent){
-        
-        if (this.state.moveNum === 0){
-            return;
-        }
-        const latency = 0;//Date.now() - timeSent;
-        const userTimer = this.getTimer(this.state.user);
-        const oppTimer = this.getTimer(this.getOpponentColor(this.state.user));
+    syncTimers(whiteTime, blackTime, timeSent){
+
+        const latency = 0//Date.now() - timeSent;
         
         this.getTimer('w').time = whiteTime - latency;
         this.getTimer('b').time = blackTime - latency;
