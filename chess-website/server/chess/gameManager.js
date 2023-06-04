@@ -1,5 +1,5 @@
 const gameModel = require('../models/game');
-
+const bindOpponents = require('./SocketFunctions/Playing');
 
 //node got fussy when trying to require chess.js normally. This is a mess
 async function loader(){
@@ -76,8 +76,8 @@ const gameManager = {
             ...packet,
         });
 
-        this.setHandlers(game.white, game.black);
-        this.setHandlers(game.black, game.white);
+        bindOpponents(game.white, game.black, this);
+        bindOpponents(game.black, game.white, this);
     },
     addSpectator(game, spectator){
         game.spectators.push(spectator);
@@ -113,47 +113,6 @@ const gameManager = {
             whiteTimeLeft: game.white.timer.time,
             blackTimeLeft: game.black.timer.time,
         };
-    },
-
-    setHandlers(socket, opponentSocket){
-
-        socket.on('disconnect', () => {
-            this.handlePlayerDisconnect(socket.game, socket.color);
-        });
-        socket.on('move', (move) => {
-            try{
-                this.tryMove(socket.game, move, socket.color);
-                const timeLeft = this.getTimeleft(socket.game);
-                opponentSocket.emit('opponentMove', {
-                    move,
-                    ...timeLeft,
-                });
-                socket.emit('updateTimer', timeLeft);
-                this.endMove(socket.game, socket.color);
-            }
-            catch(err){
-                console.log(err)
-                console.log("Invalid move was sent to the server");
-                socket.emit('invalid', {message: "Invalid move"});
-            }
-            
-        });
-        socket.on('requestDraw', () => {
-            if (opponentSocket.drawRequest){
-                this.handleGameOver(socket.game, "Draw", " by Agreement");
-            }
-            else{
-                opponentSocket.emit('requestDraw', {color: socket.color});
-                this.emitSpectators(socket.game, 'requestDraw', {color: socket.color});
-                socket.drawRequest = true;
-            }
-            
-        });
-        socket.on('resign', () => {
-            const winner = socket.color === "w" ? "Black" : "White";
-            const result = winner + " has won";
-            this.handleGameOver(socket.game, result, " by Resignation");
-        });
     },
 
     setTimers(game){
