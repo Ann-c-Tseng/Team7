@@ -37,7 +37,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        axios.post('http://localhost:4000/profile', {email:useremail})
+        axios.post('/profile', {email:useremail})
         .then((response) =>{
             setUserData(response.data);
             setLoading(false);
