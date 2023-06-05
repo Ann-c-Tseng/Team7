@@ -35,7 +35,7 @@ class TimerView extends React.Component{
         let minutes = Math.floor(this.props.time / 60000);
         let seconds = (Math.floor(this.props.time % 60000) / 1000).toFixed(0);
 
-        if (seconds === 60){
+        if (seconds == 60){
             seconds = 0;
             minutes++;
         }
