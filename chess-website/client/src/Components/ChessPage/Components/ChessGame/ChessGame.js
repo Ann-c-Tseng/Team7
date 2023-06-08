@@ -61,26 +61,29 @@ class ChessGame extends React.Component {
    */
   render() {
     return (
-      <Chessboard
-        className="Chessboard"
-        boardWidth={this.state.width}
-        boardHeight={this.state.height}
-        position={this.props.gameState}
-        onPieceDrop={this.props.moveHandler}
-        boardOrientation={
-          this.getOrientationString(this.props.boardOrientation)
-        }
-        arePiecesDraggable={!(this.props.mode === 'Spectator')}
-        /* Special styling options for later
-        customBoardStyle={}
-        customSquareStyles={}
-        customDarkSquareStyle={}
-        customLightSquareStyle={}
-        customPremoveDarkSquareStyle={}
-        customPremoveLightSquareStyle={}
-        customDropSquareStyle={} (Square being hovered over with dragged piece)
-        */
-      />
+      <div data-testid='chessboard'>
+        <Chessboard
+          className="Chessboard"
+          boardWidth={this.state.width}
+          boardHeight={this.state.height}
+          position={this.props.gameState}
+          onPieceDrop={this.props.moveHandler}
+          boardOrientation={
+            this.getOrientationString(this.props.boardOrientation)
+          }
+          arePiecesDraggable={!(this.props.mode === 'Spectator')}
+          /* Special styling options for later
+          customBoardStyle={}
+          customSquareStyles={}
+          customDarkSquareStyle={}
+          customLightSquareStyle={}
+          customPremoveDarkSquareStyle={}
+          customPremoveLightSquareStyle={}
+          (Square being hovered over with dragged piece)
+          cutomDropSquareStyle={}
+          */
+        />
+      </div>
     );
   }
 }
