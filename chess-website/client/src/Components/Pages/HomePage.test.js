@@ -11,8 +11,8 @@ describe('Home page', () => {
     expect(element).toBeInTheDocument();
   });
   test('Interactive chessboard works', () => {
-    const squareElements = screen.getByTestId('chessboard');
-    expect(squareElements).toBeInTheDocument();
+    const chessBoard = screen.getByTestId('chessboard');
+    expect(chessBoard).toBeInTheDocument();
   });
   test('Paragraphs render', () => {
     const p1 =
