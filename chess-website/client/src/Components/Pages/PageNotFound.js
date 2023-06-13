@@ -1,20 +1,26 @@
 import React from 'react';
 import './PageNotFound.css';
 import {Link} from 'react-router-dom';
+import {Typography} from '@mui/material';
 
+const textColor = '#fefefedf';
+const bodyTypographyStyling = {
+  color: textColor,
+  textOverflow: 'break-word',
+};
 
 const PageNotFound = () => (
 
   <div className="PageNotFound">
     <div className="scene">
 
-      <div className="textPageNotFound"> Oops, Page Not Found... </div>
+      <Typography
+        className="textPageNotFound"
+        variant='h3'
+        sx={bodyTypographyStyling}
+      > Oops, Page Not Found... </Typography>
 
-      <Link class="cta-btn" to="/">Back to Home</Link>
-
-      <br />
-      <br />
-      <br />
+      <Link className="cta-btn" to="/">Back to Home</Link>
     </div>
   </div>
 );

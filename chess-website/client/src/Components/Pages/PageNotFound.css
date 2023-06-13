@@ -1,17 +1,10 @@
-
 .PageNotFound{
     width: 100%;
-    background-color: rgb(255, 255, 255);
     border-radius: 5px;
     text-align: center;
 }
-  
-.scene {
-    display: inline-block;
-}
 
 .textPageNotFound {
-    color: #252525;
     font-size: 2em;
     font-weight: bold;
     padding-top: 30px;
