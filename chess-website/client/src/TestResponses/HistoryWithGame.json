@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "pgn": "1. f4 c5 2. e4 d6 3. c3 h5 4. Bb5+ Nd7 5. Qe2 f5 6. exf5 a6 7. Nf3 h4 8. f6 Rh7 9. Nd4 Rh6 10. Nf5 Rh5 11. Nxd6#",
+      "fen": "r1bqkbn1/1p1np1p1/p2N1P2/1Bp4r/5P1p/2P5/PP1PQ1PP/RNB1K2R b KQq - 0 11",
+      "moves": 11,
+      "black": "junetest2",
+      "white": "mrnibbles",
+      "duration": "2:32",
+      "date": "2023-06-06T21:26:58.164Z"
+    }
+  ],
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "access-control-allow-headers": "*",
+    "access-control-allow-methods": "*",
+    "access-control-allow-origin": "*",
+    "connection": "close",
+    "content-length": "380",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Wed, 14 Jun 2023 23:51:46 GMT",
+    "etag": "W/\"17c-8zlym1RaHfNpYknmsbxziV7SIOE\"",
+    "vary": "Accept-Encoding",
+    "x-powered-by": "Express"
+  },
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json"
+    },
+    "method": "post",
+    "url": "/history",
+    "data": "{\"username\":\"mrnibbles\"}"
+  },
+  "request": {}
+}

@@ -1,0 +1,48 @@
+{
+  "data": [],
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "access-control-allow-headers": "*",
+    "access-control-allow-methods": "*",
+    "access-control-allow-origin": "*",
+    "connection": "close",
+    "content-length": "2",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Thu, 15 Jun 2023 06:34:45 GMT",
+    "etag": "W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\"",
+    "vary": "Accept-Encoding",
+    "x-powered-by": "Express"
+  },
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json"
+    },
+    "method": "post",
+    "url": "/history",
+    "data": "{\"username\":\"nogames\"}"
+  },
+  "request": {}
+}
