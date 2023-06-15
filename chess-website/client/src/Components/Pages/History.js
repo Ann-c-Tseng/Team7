@@ -50,13 +50,13 @@ const Row = (props) => {
       <td>{result}</td>
       <td>{moves}</td>
       <td>{date}</td>
-      <div className="hover-box">
+      <td className="hover-box">
         <Chessboard
           arePiecesDraggable={false}
           boardWidth={220}
           position={fen}
         />
-      </div>
+      </td>
     </tr>
   );
 };

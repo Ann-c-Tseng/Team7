@@ -25,15 +25,15 @@ describe('info is shown correctly', () => {
     });
   });
   test('ELO', () => {
-    const ELOText = screen.getByText(/^\bELO: .{1,}$/, {exact: false});
+    const ELOText = screen.getByText(/^\bELO: .{1,}$/);
     expect(ELOText).toBeInTheDocument();
   });
   test('UID', () => {
-    const IDText = screen.getByText(/^\bUser ID: .{1,}$/, {exact: false});
+    const IDText = screen.getByText(/^\bUser ID: .{1,}$/);
     expect(IDText).toBeInTheDocument();
   });
   test('Email', () => {
-    const email = screen.getByText(/^\bEmail: .{1,}$/, {exact: false});
+    const email = screen.getByText(/^\bEmail: .{1,}$/);
     expect(email).toBeInTheDocument();
   });
   test.todo('Win streak');
