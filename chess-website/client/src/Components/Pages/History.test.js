@@ -27,7 +27,7 @@ describe('loads games properly', () => {
   });
 
   test('Ensure games are loaded correctly', () => {
-    const rows = screen.getAllByRole('rowgroup');
+    const rows = screen.getAllByRole('row');
     expect(rows.length).toEqual(2); // +1 b/c of table header
     expect(axios.post.mock.calls).toHaveLength(1);
   });

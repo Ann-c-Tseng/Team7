@@ -22,7 +22,6 @@ describe('Test each link', () => {
     for (let i = 0; i < links.length; i++) {
       links[i] = links[i].href;
     }
-    console.log(links);
     expect(links).toEqual(expect.arrayContaining([
       'http://localhost/',
       'http://localhost/login',

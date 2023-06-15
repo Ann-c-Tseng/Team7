@@ -1,0 +1,69 @@
+{
+  "data": [
+    {
+      "username": "mrnibbles",
+      "elo": 1000
+    },
+    {
+      "username": "mrnibbles2",
+      "elo": 1000
+    },
+    {
+      "username": "JuneTest",
+      "elo": 1000
+    },
+    {
+      "username": "junetest2",
+      "elo": 1000
+    },
+    {
+      "username": "nogames",
+      "elo": 1000
+    }
+  ],
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "access-control-allow-headers": "*",
+    "access-control-allow-methods": "*",
+    "access-control-allow-origin": "*",
+    "connection": "close",
+    "content-encoding": "gzip",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Thu, 15 Jun 2023 07:35:11 GMT",
+    "etag": "W/\"479-URWCOpzdW9S5y+wESJ/gkxOZmBs\"",
+    "transfer-encoding": "chunked",
+    "vary": "Accept-Encoding",
+    "x-powered-by": "Express"
+  },
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": null
+    },
+    "method": "post",
+    "url": "/leaderboard"
+  },
+  "request": {}
+}

@@ -39,6 +39,7 @@ const Profile = () => {
   useEffect(() => {
     axios.post('/profile', {email: useremail})
         .then((response) =>{
+          // console.log(response);
           setUserData(response.data);
           setLoading(false);
         });

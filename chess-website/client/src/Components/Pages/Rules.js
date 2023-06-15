@@ -83,7 +83,7 @@ export default function Rules() {
               </tbody>
             </table>
           </Box>
-          <Box className='board'>
+          <Box className='board' data-testid='chessboard'>
             <Chessboard arePiecesDraggable={false}/>
           </Box>
         </Box>

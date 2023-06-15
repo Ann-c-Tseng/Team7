@@ -1,0 +1,56 @@
+{
+  "data": {
+    "elo": 1000,
+    "id": "643a7fd88240a4255978960c",
+    "fullName": "mrnibbles",
+    "username": "mrnibbles",
+    "email": "mrnibbles@gmail.com",
+    "success": true,
+    "message": "Successfully received profile data."
+  },
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "access-control-allow-headers": "*",
+    "access-control-allow-methods": "*",
+    "access-control-allow-origin": "*",
+    "connection": "close",
+    "content-length": "183",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Thu, 15 Jun 2023 07:57:00 GMT",
+    "etag": "W/\"b7-XQhqeHEoVSXw7x0HvT1BsVanoeM\"",
+    "vary": "Accept-Encoding",
+    "x-powered-by": "Express"
+  },
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json"
+    },
+    "method": "post",
+    "url": "/profile",
+    "data": "{\"email\":\"mrnibbles@gmail.com\"}"
+  },
+  "request": {}
+}
