@@ -19,6 +19,7 @@ class ProtectedRoute extends React.Component {
     const authenticated = this.props.userAuthenticated;
     // Maybe in the future, verify their auth token
     if (authenticated) {
+      console.log('returning paragraph');
       return this.props.component;
     } else {
       return <Navigate to="/login"/>;
