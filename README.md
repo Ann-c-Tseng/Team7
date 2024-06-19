@@ -15,3 +15,5 @@ Directions for local usage:
 9. Open up two tabs and play!
 
 Original Team: Parker Gutierrez, Ann Tseng, Saunder VanWoerden, Suhyun Ban
+
+No longer actively maintained. Archived on 6/18/2024
